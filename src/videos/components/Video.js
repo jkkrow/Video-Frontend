@@ -2,6 +2,8 @@ import React, { useRef, useEffect } from "react";
 
 import { ReactComponent as PlayIcon } from "../../assets/icons/play.svg";
 import { ReactComponent as PauseIcon } from "../../assets/icons/pause.svg";
+import { ReactComponent as BackwardIcon } from "../../assets/icons/backward.svg";
+import { ReactComponent as ForwardIcon } from "../../assets/icons/forward.svg";
 import { ReactComponent as VolumeHighIcon } from "../../assets/icons/volume-high.svg";
 import { ReactComponent as VolumeLowIcon } from "../../assets/icons/volume-low.svg";
 import { ReactComponent as VolumeMuteIcon } from "../../assets/icons/volume-mute.svg";
@@ -13,6 +15,8 @@ const Video = (props) => {
   const vidContainerRef = useRef();
   const vidRef = useRef();
   const playbackAnimationRef = useRef();
+  const forwardAnimationRef = useRef();
+  const backwardAnimationRef = useRef();
   const vidControlsRef = useRef();
   const playButtonRef = useRef();
   const timeElapsedRef = useRef();
@@ -31,7 +35,26 @@ const Video = (props) => {
     }
   }, []);
 
-  // **PLAYBACK CONTROL
+  // TOGGLE SHOWING CONTROLS
+
+  let timer;
+
+  const hideControls = () => {
+    if (vidRef.current.paused) {
+      return;
+    }
+
+    vidControlsRef.current.classList.add("hide");
+  };
+
+  const showControls = () => {
+    vidControlsRef.current.classList.remove("hide");
+
+    clearTimeout(timer);
+    timer = setTimeout(() => hideControls(), [1000]);
+  };
+
+  // PLAYBACK CONTROL
 
   const togglePlay = () => {
     if (vidRef.current.paused || vidRef.current.ended) {
@@ -39,6 +62,8 @@ const Video = (props) => {
     } else {
       vidRef.current.pause();
     }
+
+    showControls();
 
     [...playbackAnimationRef.current.children].forEach((icon) =>
       icon.classList.toggle("hidden")
@@ -71,7 +96,7 @@ const Video = (props) => {
     }
   };
 
-  // **TIME CONTROL
+  // TIME CONTROL
 
   const formatTime = (timeInSeconds) => {
     const result = new Date(timeInSeconds * 1000).toISOString().substr(11, 8);
@@ -83,16 +108,6 @@ const Video = (props) => {
       // else show 00:00
       return result.substr(3);
     }
-  };
-
-  const initializeVideo = () => {
-    const videoDuration = vidRef.current.duration;
-    seekRef.current.setAttribute("max", videoDuration);
-    progressBarRef.current.setAttribute("max", videoDuration);
-
-    const result = formatTime(videoDuration);
-    durationRef.current.innerText = result;
-    durationRef.current.setAttribute("datetime", result);
   };
 
   const updateTime = () => {
@@ -113,7 +128,7 @@ const Video = (props) => {
     durationRef.current.setAttribute("datetime", remainedTime);
   };
 
-  // **SKIP CONTROL
+  // SKIP CONTROL
 
   const updateSeekTooltip = (event) => {
     const skipTo = Math.round(
@@ -144,7 +159,52 @@ const Video = (props) => {
     seekRef.current.value = skipTo;
   };
 
-  // **VOLUME CONTROL
+  const skipSeconds = (direction) => {
+    switch (direction) {
+      case "forward":
+        vidRef.current.currentTime += 10;
+        [...forwardAnimationRef.current.children].forEach((icon) =>
+          icon.classList.toggle("hidden")
+        );
+        forwardAnimationRef.current.animate(
+          [
+            {
+              opacity: 1,
+              transform: "scale(1)",
+            },
+            {
+              opacity: 0,
+              transform: "scale(1.3)",
+            },
+          ],
+          { duration: 500 }
+        );
+        break;
+      case "backward":
+        vidRef.current.currentTime -= 10;
+        [...backwardAnimationRef.current.children].forEach((icon) =>
+          icon.classList.toggle("hidden")
+        );
+        backwardAnimationRef.current.animate(
+          [
+            {
+              opacity: 1,
+              transform: "scale(1)",
+            },
+            {
+              opacity: 0,
+              transform: "scale(1.3)",
+            },
+          ],
+          { duration: 500 }
+        );
+        break;
+      default:
+        return;
+    }
+  };
+
+  // VOLUME CONTROL
 
   const updateVolume = () => {
     if (vidRef.current.muted) {
@@ -187,7 +247,7 @@ const Video = (props) => {
     }
   };
 
-  // **FULLSCREEN CONTROL
+  // FULLSCREEN CONTROL
 
   const toggleFullScreen = () => {
     const btn = fullScreenButtonRef.current;
@@ -211,33 +271,19 @@ const Video = (props) => {
     }
   };
 
-  // **TOGGLE SHOWING CONTROLS
-
-  const hideControls = () => {
-    if (vidRef.current.paused) {
-      return;
-    }
-
-    vidControlsRef.current.classList.add("hide");
-  };
-
-  const showControls = () => {
-    vidControlsRef.current.classList.remove("hide");
-  };
-
-  // **KEYBOARD SHORTKUTS
+  // KEYBOARD SHORTKUTS
 
   const keyboardShortcuts = (event) => {
     const { key } = event;
 
     switch (key) {
       case "ArrowRight":
-        // Skip 5 seconds
-        vidRef.current.currentTime += 5;
+        // Forward 10 seconds
+        skipSeconds("forward");
         break;
       case "ArrowLeft":
-        // Rewind 5 seconds
-        vidRef.current.currentTime -= 5;
+        // Rewind 10 seconds
+        skipSeconds("backward");
         break;
       case "ArrowUp":
         // Volume Up
@@ -261,13 +307,6 @@ const Video = (props) => {
       case " ":
       case "k":
         togglePlay();
-        if (vidRef.current.paused) {
-          showControls();
-        } else {
-          setTimeout(() => {
-            hideControls();
-          }, 2000);
-        }
         break;
       case "m":
         toggleMute();
@@ -280,12 +319,25 @@ const Video = (props) => {
     }
   };
 
-  useEffect(() => {
+  const initializeVideo = () => {
+    const videoDuration = vidRef.current.duration;
+    seekRef.current.setAttribute("max", videoDuration);
+    progressBarRef.current.setAttribute("max", videoDuration);
+
+    const result = formatTime(videoDuration);
+    durationRef.current.innerText = result;
+    durationRef.current.setAttribute("datetime", result);
+
     document.addEventListener("keyup", keyboardShortcuts);
-  });
+  };
 
   return (
-    <div ref={vidContainerRef} className="video-container">
+    <div
+      className="video-container"
+      ref={vidContainerRef}
+      onMouseMove={showControls}
+      onMouseLeave={hideControls}
+    >
       <video
         ref={vidRef}
         id={props.id}
@@ -297,36 +349,40 @@ const Video = (props) => {
         onLoadedMetadata={initializeVideo}
         onTimeUpdate={updateTime}
         onVolumeChange={updateVolumeIcon}
-        onMouseEnter={showControls}
-        onMouseLeave={hideControls}
+        onDoubleClick={toggleFullScreen}
       >
         <source src={props.src} type={props.type} />
       </video>
 
-      <div ref={playbackAnimationRef} className="playback-animation">
+      <div className="playback-animation" ref={playbackAnimationRef}>
         <PlayIcon className="hidden" />
         <PauseIcon />
       </div>
 
-      <div
-        className="video-controls"
-        ref={vidControlsRef}
-        onMouseEnter={showControls}
-        onMouseLeave={hideControls}
-      >
+      <div className="playback-animation" ref={forwardAnimationRef}>
+        <ForwardIcon />
+        <ForwardIcon className="hidden" />
+      </div>
+
+      <div className="playback-animation" ref={backwardAnimationRef}>
+        <BackwardIcon />
+        <BackwardIcon className="hidden" />
+      </div>
+
+      <div className="video-controls" ref={vidControlsRef}>
         <div className="video-controls__progress">
           <progress ref={progressBarRef} min="0"></progress>
-          <input
+          <div
+            className="seek"
             ref={seekRef}
             defaultValue="0"
-            className="seek"
             min="0"
             type="range"
             step="1"
             onMouseMove={updateSeekTooltip}
-            onInput={skipAhead}
+            onClick={skipAhead}
           />
-          <div ref={seekTooltipRef} className="seek-tooltip">
+          <div className="seek-tooltip" ref={seekTooltipRef}>
             00:00
           </div>
         </div>
@@ -334,31 +390,32 @@ const Video = (props) => {
         <div className="video-controls__bottom">
           <div className="video-controls__bottom--left">
             <div className="video-controls__playback">
-              <button
+              <div
+                className="video-controls__btn"
                 ref={playButtonRef}
                 data-title="Play (K)"
                 onClick={togglePlay}
               >
                 <PlayIcon />
                 <PauseIcon className="hidden" />
-              </button>
+              </div>
             </div>
 
             <div className="video-controls__volume">
-              <button
+              <div
+                className="video-controls__btn volume-button"
                 ref={volumeButtonRef}
                 onClick={toggleMute}
                 data-title="Mute (m)"
-                className="volume-button"
               >
                 <VolumeHighIcon />
                 <VolumeLowIcon className="hidden" />
                 <VolumeMuteIcon className="hidden" />
-              </button>
+              </div>
               <input
+                className="volume"
                 ref={volumeInputRef}
                 onInput={updateVolume}
-                className="volume"
                 type="range"
                 max="1"
                 min="0"
@@ -371,18 +428,18 @@ const Video = (props) => {
               <span> / </span>
               <time ref={durationRef}>00:00</time>
             </div>
+          </div>
 
-            <div className="video-controls__bottom--right">
-              <button
-                ref={fullScreenButtonRef}
-                onClick={toggleFullScreen}
-                data-title="Full screen (f)"
-                className="fullscreen-button"
-                id="fullscreen-button"
-              >
-                <FullscreenIcon />
-                <FullscreenExitIcon className="hidden" />
-              </button>
+          <div className="video-controls__bottom--right">
+            <div
+              className="video-controls__btn fullscreen-button"
+              ref={fullScreenButtonRef}
+              onClick={toggleFullScreen}
+              data-title="Full screen (f)"
+              id="fullscreen-button"
+            >
+              <FullscreenIcon />
+              <FullscreenExitIcon className="hidden" />
             </div>
           </div>
         </div>
