@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 
 import { ReactComponent as PlayIcon } from "../../assets/icons/play.svg";
 import { ReactComponent as PauseIcon } from "../../assets/icons/pause.svg";
@@ -12,6 +12,8 @@ import { ReactComponent as FullscreenExitIcon } from "../../assets/icons/fullscr
 import "./Video.css";
 
 const Video = (props) => {
+  const [loaded, setLoaded] = useState(false);
+  
   const vidContainerRef = useRef();
   const vidRef = useRef();
   const playbackAnimationRef = useRef();
@@ -27,13 +29,6 @@ const Video = (props) => {
   const volumeButtonRef = useRef();
   const volumeInputRef = useRef();
   const fullScreenButtonRef = useRef();
-
-  useEffect(() => {
-    if (!vidRef.current.canPlayType) {
-      vidRef.current.controls = true;
-      vidControlsRef.current.classList.add("hidden");
-    }
-  }, []);
 
   // TOGGLE SHOWING CONTROLS
 
@@ -54,22 +49,10 @@ const Video = (props) => {
     timer = setTimeout(() => hideControls(), [1000]);
   };
 
-  // PLAYBACK CONTROL
+  // PLAYBACK ANIMATION
 
-  const togglePlay = () => {
-    if (vidRef.current.paused || vidRef.current.ended) {
-      vidRef.current.play();
-    } else {
-      vidRef.current.pause();
-    }
-
-    showControls();
-
-    [...playbackAnimationRef.current.children].forEach((icon) =>
-      icon.classList.toggle("hidden")
-    );
-
-    playbackAnimationRef.current.animate(
+  const playbackAnimate = (element) => {
+    element.animate(
       [
         {
           opacity: 1,
@@ -84,16 +67,27 @@ const Video = (props) => {
     );
   };
 
-  const updatePlayButton = () => {
+  // PLAYBACK CONTROL
+
+  const togglePlay = () => {
+    if (vidRef.current.paused || vidRef.current.ended) {
+      vidRef.current.play();
+      playButtonRef.current.setAttribute("data-title", "Pause (k)");
+    } else {
+      vidRef.current.pause();
+      playButtonRef.current.setAttribute("data-title", "Play (k)");
+    }
+
+    showControls();
+
     [...playButtonRef.current.children].forEach((icon) =>
       icon.classList.toggle("hidden")
     );
+    [...playbackAnimationRef.current.children].forEach((icon) =>
+      icon.classList.toggle("hidden")
+    );
 
-    if (vidRef.current.paused) {
-      playButtonRef.current.setAttribute("data-title", "Play (k)");
-    } else {
-      playButtonRef.current.setAttribute("data-title", "Pause (k)");
-    }
+    playbackAnimate(playbackAnimationRef.current);
   };
 
   // TIME CONTROL
@@ -160,44 +154,22 @@ const Video = (props) => {
   };
 
   const skipSeconds = (direction) => {
+    seekRef.current.blur();
+
     switch (direction) {
       case "forward":
         vidRef.current.currentTime += 10;
         [...forwardAnimationRef.current.children].forEach((icon) =>
           icon.classList.toggle("hidden")
         );
-        forwardAnimationRef.current.animate(
-          [
-            {
-              opacity: 1,
-              transform: "scale(1)",
-            },
-            {
-              opacity: 0,
-              transform: "scale(1.3)",
-            },
-          ],
-          { duration: 500 }
-        );
+        playbackAnimate(forwardAnimationRef.current);
         break;
       case "backward":
         vidRef.current.currentTime -= 10;
         [...backwardAnimationRef.current.children].forEach((icon) =>
           icon.classList.toggle("hidden")
         );
-        backwardAnimationRef.current.animate(
-          [
-            {
-              opacity: 1,
-              transform: "scale(1)",
-            },
-            {
-              opacity: 0,
-              transform: "scale(1.3)",
-            },
-          ],
-          { duration: 500 }
-        );
+        playbackAnimate(backwardAnimationRef.current);
         break;
       default:
         return;
@@ -250,24 +222,22 @@ const Video = (props) => {
   // FULLSCREEN CONTROL
 
   const toggleFullScreen = () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      vidContainerRef.current.requestFullscreen();
+    }
+  };
+
+  const updateFullscreenIcon = (event) => {
     const btn = fullScreenButtonRef.current;
 
     [...btn.children].forEach((icon) => icon.classList.toggle("hidden"));
 
     if (document.fullscreenElement) {
-      document.exitFullscreen();
-      btn.setAttribute("data-title", "Full screen (f)");
-    } else if (document.webkitFullscreenElement) {
-      // For Safari
-      document.webkitExitFullscreen();
-      btn.setAttribute("data-title", "Full screen (f)");
-    } else if (vidContainerRef.current.webkitRequestFullscreen) {
-      // For Safari
-      vidContainerRef.current.webkitRequestFullscreen();
       btn.setAttribute("data-title", "Exit full screen (f)");
     } else {
-      vidContainerRef.current.requestFullscreen();
-      btn.setAttribute("data-title", "Exit full screen (f)");
+      btn.setAttribute("data-title", "Full screen (f)");
     }
   };
 
@@ -319,7 +289,14 @@ const Video = (props) => {
     }
   };
 
+  // INITIALIZE VIDEO
+
   const initializeVideo = () => {
+    if (!vidRef.current.canPlayType) {
+      vidRef.current.controls = true;
+      vidControlsRef.current.classList.add("hidden");
+    }
+
     const videoDuration = vidRef.current.duration;
     seekRef.current.setAttribute("max", videoDuration);
     progressBarRef.current.setAttribute("max", videoDuration);
@@ -329,6 +306,9 @@ const Video = (props) => {
     durationRef.current.setAttribute("datetime", result);
 
     document.addEventListener("keyup", keyboardShortcuts);
+    setLoaded(true);
+
+    document.addEventListener("fullscreenchange", updateFullscreenIcon);
   };
 
   return (
@@ -338,15 +318,16 @@ const Video = (props) => {
       onMouseMove={showControls}
       onMouseLeave={hideControls}
     >
+      {!loaded && <div className="loader">Loading...</div>}
+
       <video
         ref={vidRef}
         id={props.id}
         onContextMenu={(e) => e.preventDefault()}
         poster={props.poster}
         onClick={togglePlay}
-        onPlay={updatePlayButton}
-        onPause={updatePlayButton}
         onLoadedMetadata={initializeVideo}
+        onLoadStart={() => setLoaded(false)}
         onTimeUpdate={updateTime}
         onVolumeChange={updateVolumeIcon}
         onDoubleClick={toggleFullScreen}
@@ -372,7 +353,7 @@ const Video = (props) => {
       <div className="video-controls" ref={vidControlsRef}>
         <div className="video-controls__progress">
           <progress ref={progressBarRef} min="0"></progress>
-          <div
+          <input
             className="seek"
             ref={seekRef}
             defaultValue="0"
@@ -380,7 +361,7 @@ const Video = (props) => {
             type="range"
             step="1"
             onMouseMove={updateSeekTooltip}
-            onClick={skipAhead}
+            onChange={skipAhead}
           />
           <div className="seek-tooltip" ref={seekTooltipRef}>
             00:00
