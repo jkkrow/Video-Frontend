@@ -1,19 +1,22 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 
-import { ReactComponent as PlayIcon } from "../../assets/icons/play.svg";
-import { ReactComponent as PauseIcon } from "../../assets/icons/pause.svg";
-import { ReactComponent as BackwardIcon } from "../../assets/icons/backward.svg";
-import { ReactComponent as ForwardIcon } from "../../assets/icons/forward.svg";
-import { ReactComponent as VolumeHighIcon } from "../../assets/icons/volume-high.svg";
-import { ReactComponent as VolumeLowIcon } from "../../assets/icons/volume-low.svg";
-import { ReactComponent as VolumeMuteIcon } from "../../assets/icons/volume-mute.svg";
-import { ReactComponent as FullscreenIcon } from "../../assets/icons/fullscreen.svg";
-import { ReactComponent as FullscreenExitIcon } from "../../assets/icons/fullscreen-exit.svg";
-import "./Video.css";
+import { ReactComponent as PlayIcon } from "../assets/icons/play.svg";
+import { ReactComponent as PauseIcon } from "../assets/icons/pause.svg";
+import { ReactComponent as BackwardIcon } from "../assets/icons/backward.svg";
+import { ReactComponent as ForwardIcon } from "../assets/icons/forward.svg";
+import { ReactComponent as VolumeHighIcon } from "../assets/icons/volume-high.svg";
+import { ReactComponent as VolumeLowIcon } from "../assets/icons/volume-low.svg";
+import { ReactComponent as VolumeMuteIcon } from "../assets/icons/volume-mute.svg";
+import { ReactComponent as FullscreenIcon } from "../assets/icons/fullscreen.svg";
+import { ReactComponent as FullscreenExitIcon } from "../assets/icons/fullscreen-exit.svg";
+import LoadingSpinner from "./LoadingSpinner";
+import "./VideoPlayer.css";
+
+let TIMER;
 
 const Video = (props) => {
   const [loaded, setLoaded] = useState(false);
-  
+
   const vidContainerRef = useRef();
   const vidRef = useRef();
   const playbackAnimationRef = useRef();
@@ -32,26 +35,28 @@ const Video = (props) => {
 
   // TOGGLE SHOWING CONTROLS
 
-  let timer;
-
-  const hideControls = () => {
+  const hideControls = useCallback(() => {
     if (vidRef.current.paused) {
       return;
     }
 
     vidControlsRef.current.classList.add("hide");
-  };
+  }, []);
 
-  const showControls = () => {
+  const showControls = useCallback(() => {
     vidControlsRef.current.classList.remove("hide");
+    vidContainerRef.current.style.cursor = "default";
 
-    clearTimeout(timer);
-    timer = setTimeout(() => hideControls(), [1000]);
-  };
+    clearTimeout(TIMER);
+    TIMER = setTimeout(() => {
+      hideControls();
+      if (!vidRef.current.paused) vidContainerRef.current.style.cursor = "none";
+    }, [1500]);
+  }, [hideControls]);
 
   // PLAYBACK ANIMATION
 
-  const playbackAnimate = (element) => {
+  const playbackAnimate = useCallback((element) => {
     element.animate(
       [
         {
@@ -65,21 +70,21 @@ const Video = (props) => {
       ],
       { duration: 500 }
     );
-  };
+  }, []);
 
   // PLAYBACK CONTROL
 
-  const togglePlay = () => {
+  const togglePlay = useCallback(() => {
     if (vidRef.current.paused || vidRef.current.ended) {
       vidRef.current.play();
-      playButtonRef.current.setAttribute("data-title", "Pause (k)");
     } else {
       vidRef.current.pause();
-      playButtonRef.current.setAttribute("data-title", "Play (k)");
     }
 
     showControls();
+  }, [showControls]);
 
+  const updatePlaybackIcon = useCallback(() => {
     [...playButtonRef.current.children].forEach((icon) =>
       icon.classList.toggle("hidden")
     );
@@ -87,12 +92,14 @@ const Video = (props) => {
       icon.classList.toggle("hidden")
     );
 
-    playbackAnimate(playbackAnimationRef.current);
-  };
+    if (!vidRef.current.ended) {
+      playbackAnimate(playbackAnimationRef.current);
+    }
+  }, [playbackAnimate]);
 
   // TIME CONTROL
 
-  const formatTime = (timeInSeconds) => {
+  const formatTime = useCallback((timeInSeconds) => {
     const result = new Date(timeInSeconds * 1000).toISOString().substr(11, 8);
     // if duration is over hour
     if (Number(result.substr(0, 2)) > 0) {
@@ -102,9 +109,9 @@ const Video = (props) => {
       // else show 00:00
       return result.substr(3);
     }
-  };
+  }, []);
 
-  const updateTime = () => {
+  const updateTime = useCallback(() => {
     const currentVideoTime = vidRef.current.currentTime;
     // Progress UI
     seekRef.current.value = currentVideoTime;
@@ -120,30 +127,33 @@ const Video = (props) => {
     timeElapsedRef.current.setAttribute("datetime", currentTime);
     durationRef.current.innerText = remainedTime;
     durationRef.current.setAttribute("datetime", remainedTime);
-  };
+  }, [formatTime]);
 
   // SKIP CONTROL
 
-  const updateSeekTooltip = (event) => {
-    const skipTo = Math.round(
-      (event.nativeEvent.offsetX / event.target.clientWidth) *
-        parseInt(event.target.getAttribute("max"), 10)
-    );
-    seekRef.current.setAttribute("data-seek", skipTo);
-    let newTime;
-    if (skipTo > vidRef.current.duration) {
-      newTime = formatTime(vidRef.current.duration);
-    } else if (skipTo < 0) {
-      newTime = "00:00";
-    } else {
-      newTime = formatTime(skipTo);
-    }
-    seekTooltipRef.current.textContent = newTime;
-    const rect = vidRef.current.getBoundingClientRect();
-    seekTooltipRef.current.style.left = `${event.pageX - rect.left}px`;
-  };
+  const updateSeekTooltip = useCallback(
+    (event) => {
+      const skipTo =
+        (event.nativeEvent.offsetX / event.target.clientWidth) *
+        parseInt(event.target.getAttribute("max"), 10);
 
-  const skipAhead = (event) => {
+      seekRef.current.setAttribute("data-seek", skipTo);
+      let newTime;
+      if (skipTo > vidRef.current.duration) {
+        newTime = formatTime(vidRef.current.duration);
+      } else if (skipTo < 0) {
+        newTime = "00:00";
+      } else {
+        newTime = formatTime(skipTo);
+      }
+      seekTooltipRef.current.textContent = newTime;
+      const rect = vidRef.current.getBoundingClientRect();
+      seekTooltipRef.current.style.left = `${event.pageX - rect.left}px`;
+    },
+    [formatTime]
+  );
+
+  const skipAhead = useCallback((event) => {
     const skipTo = event.target.dataset.seek
       ? event.target.dataset.seek
       : event.target.value;
@@ -151,61 +161,62 @@ const Video = (props) => {
     vidRef.current.currentTime = skipTo;
     progressBarRef.current.value = skipTo;
     seekRef.current.value = skipTo;
-  };
+  }, []);
 
-  const skipSeconds = (direction) => {
-    seekRef.current.blur();
+  const skipSeconds = useCallback(
+    (direction) => {
+      seekRef.current.blur();
 
-    switch (direction) {
-      case "forward":
-        vidRef.current.currentTime += 10;
-        [...forwardAnimationRef.current.children].forEach((icon) =>
-          icon.classList.toggle("hidden")
-        );
-        playbackAnimate(forwardAnimationRef.current);
-        break;
-      case "backward":
-        vidRef.current.currentTime -= 10;
-        [...backwardAnimationRef.current.children].forEach((icon) =>
-          icon.classList.toggle("hidden")
-        );
-        playbackAnimate(backwardAnimationRef.current);
-        break;
-      default:
-        return;
-    }
-  };
+      switch (direction) {
+        case "forward":
+          vidRef.current.currentTime += 10;
+          [...forwardAnimationRef.current.children].forEach((icon) =>
+            icon.classList.toggle("hidden")
+          );
+          playbackAnimate(forwardAnimationRef.current);
+          break;
+        case "backward":
+          vidRef.current.currentTime -= 10;
+          [...backwardAnimationRef.current.children].forEach((icon) =>
+            icon.classList.toggle("hidden")
+          );
+          playbackAnimate(backwardAnimationRef.current);
+          break;
+        default:
+          return;
+      }
+    },
+    [playbackAnimate]
+  );
 
   // VOLUME CONTROL
 
-  const updateVolume = () => {
+  const updateVolume = useCallback(() => {
     if (vidRef.current.muted) {
       vidRef.current.muted = false;
     }
 
     vidRef.current.volume = volumeInputRef.current.value;
-  };
+  }, []);
 
-  const updateVolumeIcon = () => {
+  const updateVolumeIcon = useCallback(() => {
     const video = vidRef.current;
     const volumeIcons = [...volumeButtonRef.current.children];
 
     volumeIcons.forEach((icon) => {
       icon.classList.add("hidden");
     });
-    volumeButtonRef.current.setAttribute("data-title", "Mute (m)");
 
     if (video.muted || video.volume === 0) {
       volumeIcons[2].classList.remove("hidden");
-      volumeButtonRef.current.setAttribute("data-title", "Unmute (m)");
     } else if (video.volume > 0 && video.volume < 0.5) {
       volumeIcons[1].classList.remove("hidden");
     } else {
       volumeIcons[0].classList.remove("hidden");
     }
-  };
+  }, []);
 
-  const toggleMute = () => {
+  const toggleMute = useCallback(() => {
     vidRef.current.muted = !vidRef.current.muted;
 
     if (vidRef.current.muted) {
@@ -217,81 +228,71 @@ const Video = (props) => {
     } else {
       volumeInputRef.current.value = volumeInputRef.current.dataset.volume;
     }
-  };
+  }, []);
 
   // FULLSCREEN CONTROL
 
-  const toggleFullScreen = () => {
+  const toggleFullScreen = useCallback(() => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
       vidContainerRef.current.requestFullscreen();
     }
-  };
+  }, []);
 
-  const updateFullscreenIcon = (event) => {
+  const updateFullscreenIcon = useCallback((event) => {
     const btn = fullScreenButtonRef.current;
 
     [...btn.children].forEach((icon) => icon.classList.toggle("hidden"));
-
-    if (document.fullscreenElement) {
-      btn.setAttribute("data-title", "Exit full screen (f)");
-    } else {
-      btn.setAttribute("data-title", "Full screen (f)");
-    }
-  };
+  }, []);
 
   // KEYBOARD SHORTKUTS
 
-  const keyboardShortcuts = (event) => {
-    const { key } = event;
+  const keyboardShortcuts = useCallback(
+    (event) => {
+      const { key } = event;
 
-    switch (key) {
-      case "ArrowRight":
-        // Forward 10 seconds
-        skipSeconds("forward");
-        break;
-      case "ArrowLeft":
-        // Rewind 10 seconds
-        skipSeconds("backward");
-        break;
-      case "ArrowUp":
-        // Volume Up
-        if (vidRef.current.volume + 0.1 > 1) {
-          vidRef.current.volume = 1;
-        } else {
-          vidRef.current.volume += 0.1;
-        }
-        volumeInputRef.current.value = vidRef.current.volume;
-        break;
-      case "ArrowDown":
-        // Volume Down
-        if (vidRef.current.volume - 0.1 < 0) {
-          vidRef.current.volume = 0;
-        } else {
-          vidRef.current.volume -= 0.1;
-        }
-        volumeInputRef.current.value = vidRef.current.volume;
-        break;
+      switch (key) {
+        case "ArrowRight":
+          // Forward 10 seconds
+          skipSeconds("forward");
+          break;
+        case "ArrowLeft":
+          // Rewind 10 seconds
+          skipSeconds("backward");
+          break;
+        case "ArrowUp":
+          // Volume Up
+          if (vidRef.current.volume + 0.1 > 1) {
+            vidRef.current.volume = 1;
+          } else {
+            vidRef.current.volume += 0.1;
+          }
+          volumeInputRef.current.value = vidRef.current.volume;
+          break;
+        case "ArrowDown":
+          // Volume Down
+          if (vidRef.current.volume - 0.1 < 0) {
+            vidRef.current.volume = 0;
+          } else {
+            vidRef.current.volume -= 0.1;
+          }
+          volumeInputRef.current.value = vidRef.current.volume;
+          break;
 
-      case " ":
-      case "k":
-        togglePlay();
-        break;
-      case "m":
-        toggleMute();
-        break;
-      case "f":
-        toggleFullScreen();
-        break;
-      default:
-        return;
-    }
-  };
+        case " ":
+          togglePlay();
+          break;
+        default:
+          return;
+      }
+    },
+    [skipSeconds, togglePlay]
+  );
 
   // INITIALIZE VIDEO
 
-  const initializeVideo = () => {
+  const initializeVideo = useCallback(() => {
     if (!vidRef.current.canPlayType) {
       vidRef.current.controls = true;
       vidControlsRef.current.classList.add("hidden");
@@ -309,7 +310,7 @@ const Video = (props) => {
     setLoaded(true);
 
     document.addEventListener("fullscreenchange", updateFullscreenIcon);
-  };
+  }, [formatTime, keyboardShortcuts, updateFullscreenIcon]);
 
   return (
     <div
@@ -317,15 +318,17 @@ const Video = (props) => {
       ref={vidContainerRef}
       onMouseMove={showControls}
       onMouseLeave={hideControls}
+      onContextMenu={(e) => e.preventDefault()}
     >
-      {!loaded && <div className="loader">Loading...</div>}
+      {!loaded && <LoadingSpinner />}
 
       <video
         ref={vidRef}
         id={props.id}
-        onContextMenu={(e) => e.preventDefault()}
         poster={props.poster}
         onClick={togglePlay}
+        onPlay={updatePlaybackIcon}
+        onPause={updatePlaybackIcon}
         onLoadedMetadata={initializeVideo}
         onLoadStart={() => setLoaded(false)}
         onTimeUpdate={updateTime}
@@ -359,7 +362,7 @@ const Video = (props) => {
             defaultValue="0"
             min="0"
             type="range"
-            step="1"
+            step="0.1"
             onMouseMove={updateSeekTooltip}
             onChange={skipAhead}
           />
@@ -374,7 +377,6 @@ const Video = (props) => {
               <div
                 className="video-controls__btn"
                 ref={playButtonRef}
-                data-title="Play (K)"
                 onClick={togglePlay}
               >
                 <PlayIcon />
@@ -387,7 +389,6 @@ const Video = (props) => {
                 className="video-controls__btn volume-button"
                 ref={volumeButtonRef}
                 onClick={toggleMute}
-                data-title="Mute (m)"
               >
                 <VolumeHighIcon />
                 <VolumeLowIcon className="hidden" />
@@ -416,7 +417,6 @@ const Video = (props) => {
               className="video-controls__btn fullscreen-button"
               ref={fullScreenButtonRef}
               onClick={toggleFullScreen}
-              data-title="Full screen (f)"
               id="fullscreen-button"
             >
               <FullscreenIcon />
