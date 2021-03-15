@@ -43,7 +43,7 @@ export const useVideoPlayerControls = () => {
           transform: "scale(1.3)",
         },
       ],
-      { duration: 500 }
+      { duration: 700 }
     );
   }, []);
 
@@ -93,7 +93,7 @@ export const useVideoPlayerControls = () => {
   }, []);
 
   const updateTime = useCallback(
-    (vidRef, progressBarRef, seekRef, timeElapsedRef, durationRef) => {
+    (vidRef, progressBarRef, seekRef, timeElapsedRef) => {
       const currentVideoTime = vidRef.current.currentTime;
       // Progress UI
       seekRef.current.value = currentVideoTime;
@@ -101,14 +101,9 @@ export const useVideoPlayerControls = () => {
 
       // Time UI
       const currentTime = formatTime(currentVideoTime);
-      const remainedTime = formatTime(
-        Math.ceil(vidRef.current.duration) - currentVideoTime
-      );
 
       timeElapsedRef.current.innerText = currentTime;
       timeElapsedRef.current.setAttribute("datetime", currentTime);
-      durationRef.current.innerText = remainedTime;
-      durationRef.current.setAttribute("datetime", remainedTime);
     },
     [formatTime]
   );
@@ -148,7 +143,15 @@ export const useVideoPlayerControls = () => {
   }, []);
 
   const skipSeconds = useCallback(
-    (direction, vidRef, seekRef, forwardAnimationRef, backwardAnimationRef) => {
+    (
+      direction,
+      vidContainerRef,
+      vidRef,
+      vidControlsRef,
+      seekRef,
+      forwardAnimationRef,
+      backwardAnimationRef
+    ) => {
       seekRef.current.blur();
 
       switch (direction) {
@@ -158,6 +161,7 @@ export const useVideoPlayerControls = () => {
             icon.classList.toggle("hidden")
           );
           playbackAnimate(forwardAnimationRef.current);
+          showControls(vidContainerRef, vidRef, vidControlsRef);
           break;
         case "backward":
           vidRef.current.currentTime -= 10;
@@ -165,12 +169,13 @@ export const useVideoPlayerControls = () => {
             icon.classList.toggle("hidden")
           );
           playbackAnimate(backwardAnimationRef.current);
+          showControls(vidContainerRef, vidRef, vidControlsRef);
           break;
         default:
           return;
       }
     },
-    [playbackAnimate]
+    [playbackAnimate, showControls]
   );
 
   // VOLUME CONTROL
@@ -250,7 +255,9 @@ export const useVideoPlayerControls = () => {
           // Forward 10 seconds
           skipSeconds(
             "forward",
+            vidContainerRef,
             vidRef,
+            vidControlsRef,
             seekRef,
             forwardAnimationRef,
             backwardAnimationRef
@@ -260,7 +267,9 @@ export const useVideoPlayerControls = () => {
           // Rewind 10 seconds
           skipSeconds(
             "backward",
+            vidContainerRef,
             vidRef,
+            vidControlsRef,
             seekRef,
             forwardAnimationRef,
             backwardAnimationRef

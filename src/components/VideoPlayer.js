@@ -53,7 +53,7 @@ const Video = (props) => {
       ref={vidContainerRef}
       onMouseMove={() => showControls(vidContainerRef, vidRef, vidControlsRef)}
       onMouseLeave={() => hideControls(vidRef, vidControlsRef)}
-      onContextMenu={(e) => e.preventDefault()}
+      // onContextMenu={(e) => e.preventDefault()}
     >
       {!loaded && <LoadingSpinner />}
 
@@ -84,13 +84,7 @@ const Video = (props) => {
         }
         onLoadStart={() => setLoaded(false)}
         onTimeUpdate={() =>
-          updateTime(
-            vidRef,
-            progressBarRef,
-            seekRef,
-            timeElapsedRef,
-            durationRef
-          )
+          updateTime(vidRef, progressBarRef, seekRef, timeElapsedRef)
         }
         onVolumeChange={() => updateVolumeIcon(vidRef, volumeButtonRef)}
         onDoubleClick={() => toggleFullScreen(vidContainerRef)}
@@ -121,8 +115,8 @@ const Video = (props) => {
             ref={seekRef}
             defaultValue="0"
             min="0"
-            type="range"
             step="0.1"
+            type="range"
             onMouseMove={(event) =>
               updateSeekTooltip(event, vidRef, seekRef, seekTooltipRef)
             }
