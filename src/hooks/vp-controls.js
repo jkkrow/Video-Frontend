@@ -24,7 +24,7 @@ export const useVideoPlayerControls = () => {
         hideControls(vidRef, vidControlsRef);
         if (!vidRef.current.paused)
           vidContainerRef.current.style.cursor = "none";
-      }, [1500]);
+      }, [2000]);
     },
     [hideControls]
   );
@@ -93,17 +93,19 @@ export const useVideoPlayerControls = () => {
   }, []);
 
   const updateTime = useCallback(
-    (vidRef, progressBarRef, seekRef, timeElapsedRef) => {
+    (vidRef, progressBarRef, seekRef, durationRef) => {
       const currentVideoTime = vidRef.current.currentTime;
       // Progress UI
       seekRef.current.value = currentVideoTime;
       progressBarRef.current.value = currentVideoTime;
 
       // Time UI
-      const currentTime = formatTime(currentVideoTime);
+      const remainedTime = formatTime(
+        vidRef.current.duration - currentVideoTime
+      );
 
-      timeElapsedRef.current.innerText = currentTime;
-      timeElapsedRef.current.setAttribute("datetime", currentTime);
+      durationRef.current.innerText = remainedTime;
+      durationRef.current.setAttribute("datetime", remainedTime);
     },
     [formatTime]
   );
@@ -180,13 +182,17 @@ export const useVideoPlayerControls = () => {
 
   // VOLUME CONTROL
 
-  const updateVolume = useCallback((vidRef, volumeInputRef) => {
-    if (vidRef.current.muted) {
-      vidRef.current.muted = false;
-    }
+  const updateVolume = useCallback(
+    (vidRef, volumeProgressRef, volumeInputRef) => {
+      if (vidRef.current.muted) {
+        vidRef.current.muted = false;
+      }
 
-    vidRef.current.volume = volumeInputRef.current.value;
-  }, []);
+      vidRef.current.volume = volumeInputRef.current.value;
+      volumeProgressRef.current.value = volumeInputRef.current.value;
+    },
+    []
+  );
 
   const updateVolumeIcon = useCallback((vidRef, volumeButtonRef) => {
     const video = vidRef.current;
@@ -244,6 +250,7 @@ export const useVideoPlayerControls = () => {
       vidRef,
       vidControlsRef,
       seekRef,
+      volumeProgressRef,
       volumeInputRef,
       forwardAnimationRef,
       backwardAnimationRef
@@ -282,6 +289,7 @@ export const useVideoPlayerControls = () => {
           } else {
             vidRef.current.volume += 0.1;
           }
+          volumeProgressRef.current.value = vidRef.current.volume;
           volumeInputRef.current.value = vidRef.current.volume;
           break;
         case "ArrowDown":
@@ -291,6 +299,7 @@ export const useVideoPlayerControls = () => {
           } else {
             vidRef.current.volume -= 0.1;
           }
+          volumeProgressRef.current.value = vidRef.current.volume;
           volumeInputRef.current.value = vidRef.current.volume;
           break;
 
@@ -314,6 +323,7 @@ export const useVideoPlayerControls = () => {
       progressBarRef,
       seekRef,
       durationRef,
+      volumeProgressRef,
       volumeInputRef,
       forwardAnimationRef,
       backwardAnimationRef,
@@ -339,6 +349,7 @@ export const useVideoPlayerControls = () => {
           vidRef,
           vidControlsRef,
           seekRef,
+          volumeProgressRef,
           volumeInputRef,
           forwardAnimationRef,
           backwardAnimationRef

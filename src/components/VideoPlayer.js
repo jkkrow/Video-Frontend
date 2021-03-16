@@ -21,12 +21,12 @@ const Video = (props) => {
   const backwardAnimationRef = useRef();
   const vidControlsRef = useRef();
   const playButtonRef = useRef();
-  const timeElapsedRef = useRef();
   const durationRef = useRef();
   const progressBarRef = useRef();
   const seekRef = useRef();
   const seekTooltipRef = useRef();
   const volumeButtonRef = useRef();
+  const volumeProgressRef = useRef();
   const volumeInputRef = useRef();
   const fullScreenButtonRef = useRef();
 
@@ -76,6 +76,7 @@ const Video = (props) => {
             progressBarRef,
             seekRef,
             durationRef,
+            volumeProgressRef,
             volumeInputRef,
             forwardAnimationRef,
             backwardAnimationRef,
@@ -84,7 +85,7 @@ const Video = (props) => {
         }
         onLoadStart={() => setLoaded(false)}
         onTimeUpdate={() =>
-          updateTime(vidRef, progressBarRef, seekRef, timeElapsedRef)
+          updateTime(vidRef, progressBarRef, seekRef, durationRef)
         }
         onVolumeChange={() => updateVolumeIcon(vidRef, volumeButtonRef)}
         onDoubleClick={() => toggleFullScreen(vidContainerRef)}
@@ -108,6 +109,49 @@ const Video = (props) => {
       </div>
 
       <div className="video-controls" ref={vidControlsRef}>
+        <div className="video-controls__playback">
+          <div
+            className="video-controls__btn"
+            ref={playButtonRef}
+            onClick={() => togglePlay(vidContainerRef, vidRef, vidControlsRef)}
+          >
+            <PlayIcon />
+            <PauseIcon className="hidden" />
+          </div>
+        </div>
+
+        <div className="video-controls__volume">
+          <div
+            className="video-controls__btn"
+            ref={volumeButtonRef}
+            onClick={() => toggleMute(vidRef, volumeInputRef)}
+          >
+            <VolumeHighIcon />
+            <VolumeLowIcon className="hidden" />
+            <VolumeMuteIcon className="hidden" />
+          </div>
+          <div className="video-controls__volume-range__outer">
+            <div className="video-controls__volume-range__inner">
+              <progress
+                ref={volumeProgressRef}
+                min="0"
+                max="1"
+                value="1"
+              ></progress>
+              <input
+                ref={volumeInputRef}
+                type="range"
+                onInput={() =>
+                  updateVolume(vidRef, volumeProgressRef, volumeInputRef)
+                }
+                max="1"
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="video-controls__progress">
           <progress ref={progressBarRef} min="0"></progress>
           <input
@@ -129,60 +173,18 @@ const Video = (props) => {
           </div>
         </div>
 
-        <div className="video-controls__bottom">
-          <div className="video-controls__bottom--left">
-            <div className="video-controls__playback">
-              <div
-                className="video-controls__btn"
-                ref={playButtonRef}
-                onClick={() =>
-                  togglePlay(vidContainerRef, vidRef, vidControlsRef)
-                }
-              >
-                <PlayIcon />
-                <PauseIcon className="hidden" />
-              </div>
-            </div>
+        <div className="video-controls__time">
+          <time ref={durationRef}>00:00</time>
+        </div>
 
-            <div className="video-controls__volume">
-              <div
-                className="video-controls__btn volume-button"
-                ref={volumeButtonRef}
-                onClick={() => toggleMute(vidRef, volumeInputRef)}
-              >
-                <VolumeHighIcon />
-                <VolumeLowIcon className="hidden" />
-                <VolumeMuteIcon className="hidden" />
-              </div>
-              <input
-                className="volume"
-                ref={volumeInputRef}
-                onInput={() => updateVolume(vidRef, volumeInputRef)}
-                type="range"
-                max="1"
-                min="0"
-                step="0.01"
-              />
-            </div>
-
-            <div className="video-controls__time">
-              <time ref={timeElapsedRef}>00:00</time>
-              <span> / </span>
-              <time ref={durationRef}>00:00</time>
-            </div>
-          </div>
-
-          <div className="video-controls__bottom--right">
-            <div
-              className="video-controls__btn fullscreen-button"
-              ref={fullScreenButtonRef}
-              onClick={() => toggleFullScreen(vidContainerRef)}
-              id="fullscreen-button"
-            >
-              <FullscreenIcon />
-              <FullscreenExitIcon className="hidden" />
-            </div>
-          </div>
+        <div
+          className="video-controls__btn fullscreen-button"
+          ref={fullScreenButtonRef}
+          onClick={() => toggleFullScreen(vidContainerRef)}
+          id="fullscreen-button"
+        >
+          <FullscreenIcon />
+          <FullscreenExitIcon className="hidden" />
         </div>
       </div>
     </div>
