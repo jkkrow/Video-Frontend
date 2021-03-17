@@ -18,9 +18,10 @@ body {
 
 input[type="range"] {
   -webkit-appearance: none;
-  height: 0.6rem;
+  height: 100%;
   background: transparent;
   cursor: pointer;
+  z-index: 5;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
@@ -46,12 +47,12 @@ progress {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  border-radius: 50px;
-  width: 100%;
-  height: 0.6rem;
-  pointer-events: none;
   position: absolute;
   top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50px;
+  pointer-events: none;
 }
 
 progress::-webkit-progress-bar {
