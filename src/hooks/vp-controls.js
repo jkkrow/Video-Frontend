@@ -3,7 +3,11 @@ import { useCallback } from "react";
 let TIMER;
 
 const playbackAnimate = (element) => {
-  element.animate(
+  [...element.current.children].forEach((icon) =>
+    icon.classList.toggle("hidden")
+  );
+
+  element.current.animate(
     [
       {
         opacity: 1,
@@ -83,38 +87,45 @@ export const useVideoPlayerControls = () => {
     [...playButtonRef.current.children].forEach((icon) =>
       icon.classList.toggle("hidden")
     );
-    [...playbackAnimationRef.current.children].forEach((icon) =>
-      icon.classList.toggle("hidden")
-    );
 
     if (!vidRef.current.ended) {
-      playbackAnimate(playbackAnimationRef.current);
+      playbackAnimate(playbackAnimationRef);
     }
   }, []);
 
   // TIME CONTROL
 
   const updateTime = useCallback((refObject) => {
-    const { vidRef, currentProgressRef, seekRef, durationRef } = refObject;
+    const {
+      vidRef,
+      bufferProgressRef,
+      currentProgressRef,
+      seekRef,
+      durationRef,
+    } = refObject;
 
-    let range = 0;
+    const duration = vidRef.current.duration;
     const currentTime = vidRef.current.currentTime;
     const buffer = vidRef.current.buffered;
 
     // Progress UI
     seekRef.current.value = currentTime;
     currentProgressRef.current.style.width =
-      (currentTime / vidRef.current.duration) * 100 + "%";
+      (currentTime / duration) * 100 + "%";
 
     // Buffer UI
-    while (
-      !(buffer.start(range) <= currentTime && currentTime <= buffer.end(range))
-    ) {
-      range += 1;
+    if (duration > 0) {
+      for (let i = 0; i < buffer.length; i++) {
+        if (buffer.start(buffer.length - 1 - i) < vidRef.current.currentTime) {
+          bufferProgressRef.current.style.width =
+            (buffer.end(buffer.length - 1 - i) / duration) * 100 + "%";
+          break;
+        }
+      }
     }
 
     // Time UI
-    const remainedTime = formatTime(vidRef.current.duration - currentTime);
+    const remainedTime = formatTime(duration - currentTime);
 
     durationRef.current.innerText = remainedTime;
     durationRef.current.setAttribute("datetime", remainedTime);
@@ -170,18 +181,12 @@ export const useVideoPlayerControls = () => {
       switch (direction) {
         case "forward":
           vidRef.current.currentTime += 10;
-          [...forwardAnimationRef.current.children].forEach((icon) =>
-            icon.classList.toggle("hidden")
-          );
-          playbackAnimate(forwardAnimationRef.current);
+          playbackAnimate(forwardAnimationRef);
           showControls(refObject);
           break;
         case "backward":
           vidRef.current.currentTime -= 10;
-          [...backwardAnimationRef.current.children].forEach((icon) =>
-            icon.classList.toggle("hidden")
-          );
-          playbackAnimate(backwardAnimationRef.current);
+          playbackAnimate(backwardAnimationRef);
           showControls(refObject);
           break;
         default:
@@ -206,7 +211,13 @@ export const useVideoPlayerControls = () => {
   }, []);
 
   const updateVolumeWithKey = useCallback((direction, refObject) => {
-    const { vidRef, currentVolumeRef, volumeInputRef } = refObject;
+    const {
+      vidRef,
+      volumeUpAnimationRef,
+      volumeDownAnimationRef,
+      currentVolumeRef,
+      volumeInputRef,
+    } = refObject;
 
     switch (direction) {
       case "up":
@@ -215,6 +226,7 @@ export const useVideoPlayerControls = () => {
         } else {
           vidRef.current.volume += 0.1;
         }
+        playbackAnimate(volumeUpAnimationRef);
         break;
       case "down":
         if (vidRef.current.volume - 0.1 < 0) {
@@ -222,6 +234,7 @@ export const useVideoPlayerControls = () => {
         } else {
           vidRef.current.volume -= 0.1;
         }
+        playbackAnimate(volumeDownAnimationRef);
         break;
       default:
         break;

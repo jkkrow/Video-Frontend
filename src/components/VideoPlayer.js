@@ -21,6 +21,8 @@ const Video = (props) => {
   const playbackAnimationRef = useRef();
   const forwardAnimationRef = useRef();
   const backwardAnimationRef = useRef();
+  const volumeUpAnimationRef = useRef();
+  const volumeDownAnimationRef = useRef();
   const playButtonRef = useRef();
   const durationRef = useRef();
   const currentProgressRef = useRef();
@@ -39,6 +41,8 @@ const Video = (props) => {
     playbackAnimationRef,
     forwardAnimationRef,
     backwardAnimationRef,
+    volumeUpAnimationRef,
+    volumeDownAnimationRef,
     playButtonRef,
     durationRef,
     currentProgressRef,
@@ -80,6 +84,8 @@ const Video = (props) => {
         playbackRef={playbackAnimationRef}
         forwardRef={forwardAnimationRef}
         backwardRef={backwardAnimationRef}
+        upRef={volumeUpAnimationRef}
+        downRef={volumeDownAnimationRef}
       />
 
       <video
