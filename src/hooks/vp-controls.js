@@ -205,6 +205,32 @@ export const useVideoPlayerControls = () => {
       volumeInputRef.current.value * 100 + "%";
   }, []);
 
+  const updateVolumeWithKey = useCallback((direction, refObject) => {
+    const { vidRef, currentVolumeRef, volumeInputRef } = refObject;
+
+    switch (direction) {
+      case "up":
+        if (vidRef.current.volume + 0.1 > 1) {
+          vidRef.current.volume = 1;
+        } else {
+          vidRef.current.volume += 0.1;
+        }
+        break;
+      case "down":
+        if (vidRef.current.volume - 0.1 < 0) {
+          vidRef.current.volume = 0;
+        } else {
+          vidRef.current.volume -= 0.1;
+        }
+        break;
+      default:
+        break;
+    }
+
+    currentVolumeRef.current.style.width = vidRef.current.volume * 100 + "%";
+    volumeInputRef.current.value = vidRef.current.volume;
+  }, []);
+
   const updateVolumeIcon = useCallback((refObject) => {
     const { vidRef, volumeButtonRef } = refObject;
 
@@ -265,7 +291,6 @@ export const useVideoPlayerControls = () => {
   const keyboardShortcuts = useCallback(
     (event, refObject) => {
       const { key } = event;
-      const { vidRef, currentVolumeRef, volumeInputRef } = refObject;
 
       switch (key) {
         case "ArrowRight":
@@ -278,25 +303,11 @@ export const useVideoPlayerControls = () => {
           break;
         case "ArrowUp":
           // Volume Up
-          if (vidRef.current.volume + 0.1 > 1) {
-            vidRef.current.volume = 1;
-          } else {
-            vidRef.current.volume += 0.1;
-          }
-          currentVolumeRef.current.style.width =
-            vidRef.current.volume * 100 + "%";
-          volumeInputRef.current.value = vidRef.current.volume;
+          updateVolumeWithKey("up", refObject);
           break;
         case "ArrowDown":
           // Volume Down
-          if (vidRef.current.volume - 0.1 < 0) {
-            vidRef.current.volume = 0;
-          } else {
-            vidRef.current.volume -= 0.1;
-          }
-          currentVolumeRef.current.style.width =
-            vidRef.current.volume * 100 + "%";
-          volumeInputRef.current.value = vidRef.current.volume;
+          updateVolumeWithKey("down", refObject);
           break;
 
         case " ":
@@ -306,7 +317,7 @@ export const useVideoPlayerControls = () => {
           return;
       }
     },
-    [skipSeconds, togglePlay]
+    [skipSeconds, updateVolumeWithKey, togglePlay]
   );
 
   // INITIALIZE VIDEO
