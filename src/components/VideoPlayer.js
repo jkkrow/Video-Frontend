@@ -23,12 +23,12 @@ const Video = (props) => {
   const backwardAnimationRef = useRef();
   const playButtonRef = useRef();
   const durationRef = useRef();
-  const progressBarRef = useRef();
-  const bufferRef = useRef();
+  const currentProgressRef = useRef();
+  const bufferProgressRef = useRef();
   const seekRef = useRef();
   const seekTooltipRef = useRef();
   const volumeButtonRef = useRef();
-  const volumeProgressRef = useRef();
+  const currentVolumeRef = useRef();
   const volumeInputRef = useRef();
   const fullScreenButtonRef = useRef();
 
@@ -41,12 +41,12 @@ const Video = (props) => {
     backwardAnimationRef,
     playButtonRef,
     durationRef,
-    progressBarRef,
-    bufferRef,
+    currentProgressRef,
+    bufferProgressRef,
     seekRef,
     seekTooltipRef,
     volumeButtonRef,
-    volumeProgressRef,
+    currentVolumeRef,
     volumeInputRef,
     fullScreenButtonRef,
   };
@@ -123,7 +123,11 @@ const Video = (props) => {
           </div>
           <div className="vp-controls__volume__range--outer">
             <div className="vp-controls__volume__range--inner">
-              <progress ref={volumeProgressRef} max="1" value="1" />
+              <div className="vp-controls__range--background" />
+              <div
+                ref={currentVolumeRef}
+                className="vp-controls__range--current"
+              />
               <input
                 ref={volumeInputRef}
                 type="range"
@@ -136,15 +140,14 @@ const Video = (props) => {
         </div>
 
         <div className="vp-controls__progress">
-          <div className="vp-controls__progress--background" />
-          <div ref={bufferRef} className="vp-controls__progress--buffer" />
+          <div className="vp-controls__range--background" />
+          <div ref={bufferProgressRef} className="vp-controls__range--buffer" />
           <div
-            ref={progressBarRef}
-            className="vp-controls__progress--current"
+            ref={currentProgressRef}
+            className="vp-controls__range--current"
           />
-          {/* <progress ref={progressBarRef} /> */}
           <input
-            className="vp-controls__progress--seek"
+            className="vp-controls__range--seek"
             ref={seekRef}
             defaultValue="0"
             step="0.1"
@@ -153,7 +156,7 @@ const Video = (props) => {
             onChange={(e) => skipAhead(e, refObject)}
           />
           <span
-            className="vp-controls__progress--seek-tooltip"
+            className="vp-controls__range--seek-tooltip"
             ref={seekTooltipRef}
           >
             00:00

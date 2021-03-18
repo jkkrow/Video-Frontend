@@ -95,7 +95,7 @@ export const useVideoPlayerControls = () => {
   // TIME CONTROL
 
   const updateTime = useCallback((refObject) => {
-    const { vidRef, progressBarRef, seekRef, durationRef } = refObject;
+    const { vidRef, currentProgressRef, seekRef, durationRef } = refObject;
 
     let range = 0;
     const currentTime = vidRef.current.currentTime;
@@ -103,7 +103,7 @@ export const useVideoPlayerControls = () => {
 
     // Progress UI
     seekRef.current.value = currentTime;
-    progressBarRef.current.style.width =
+    currentProgressRef.current.style.width =
       (currentTime / vidRef.current.duration) * 100 + "%";
 
     // Buffer UI
@@ -144,7 +144,7 @@ export const useVideoPlayerControls = () => {
   }, []);
 
   const skipAhead = useCallback((event, refObject) => {
-    const { vidRef, progressBarRef, seekRef } = refObject;
+    const { vidRef, currentProgressRef, seekRef } = refObject;
 
     const skipTo = event.target.dataset.seek
       ? event.target.dataset.seek
@@ -152,7 +152,7 @@ export const useVideoPlayerControls = () => {
 
     vidRef.current.currentTime = skipTo;
     seekRef.current.value = skipTo;
-    progressBarRef.current.style.width =
+    currentProgressRef.current.style.width =
       (skipTo / vidRef.current.duration) * 100 + "%";
   }, []);
 
@@ -194,14 +194,15 @@ export const useVideoPlayerControls = () => {
   // VOLUME CONTROL
 
   const updateVolume = useCallback((refObject) => {
-    const { vidRef, volumeProgressRef, volumeInputRef } = refObject;
+    const { vidRef, currentVolumeRef, volumeInputRef } = refObject;
 
     if (vidRef.current.muted) {
       vidRef.current.muted = false;
     }
 
     vidRef.current.volume = volumeInputRef.current.value;
-    volumeProgressRef.current.value = volumeInputRef.current.value;
+    currentVolumeRef.current.style.width =
+      volumeInputRef.current.value * 100 + "%";
   }, []);
 
   const updateVolumeIcon = useCallback((refObject) => {
@@ -264,7 +265,7 @@ export const useVideoPlayerControls = () => {
   const keyboardShortcuts = useCallback(
     (event, refObject) => {
       const { key } = event;
-      const { vidRef, volumeProgressRef, volumeInputRef } = refObject;
+      const { vidRef, currentVolumeRef, volumeInputRef } = refObject;
 
       switch (key) {
         case "ArrowRight":
@@ -282,7 +283,8 @@ export const useVideoPlayerControls = () => {
           } else {
             vidRef.current.volume += 0.1;
           }
-          volumeProgressRef.current.value = vidRef.current.volume;
+          currentVolumeRef.current.style.width =
+            vidRef.current.volume * 100 + "%";
           volumeInputRef.current.value = vidRef.current.volume;
           break;
         case "ArrowDown":
@@ -292,7 +294,8 @@ export const useVideoPlayerControls = () => {
           } else {
             vidRef.current.volume -= 0.1;
           }
-          volumeProgressRef.current.value = vidRef.current.volume;
+          currentVolumeRef.current.style.width =
+            vidRef.current.volume * 100 + "%";
           volumeInputRef.current.value = vidRef.current.volume;
           break;
 
@@ -313,7 +316,7 @@ export const useVideoPlayerControls = () => {
       const {
         vidRef,
         vidControlsRef,
-        progressBarRef,
+        currentProgressRef,
         seekRef,
         durationRef,
       } = refObject;
@@ -325,7 +328,7 @@ export const useVideoPlayerControls = () => {
 
       const videoDuration = vidRef.current.duration;
       seekRef.current.setAttribute("max", videoDuration);
-      progressBarRef.current.setAttribute("max", videoDuration);
+      currentProgressRef.current.setAttribute("max", videoDuration);
 
       const result = formatTime(videoDuration);
       durationRef.current.innerText = result;
