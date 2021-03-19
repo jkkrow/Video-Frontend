@@ -99,8 +99,6 @@ const Video = (props) => {
         onTimeUpdate={() => updateTime(refObject)}
         onVolumeChange={() => updateVolumeIcon(refObject)}
         onDoubleClick={() => toggleFullScreen(refObject)}
-        onLoadStart={() => setLoading(true)}
-        onCanPlay={() => setLoading(false)}
       >
         <source src={props.src} type={props.type} />
       </video>

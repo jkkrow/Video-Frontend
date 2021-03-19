@@ -117,7 +117,7 @@
 
 .vp-controls__progress div {
   position: absolute;
-  height: 0.6rem;
+  height: 0.5rem;
   margin: auto;
   border-radius: 50px;
   transform: scaleY(1);

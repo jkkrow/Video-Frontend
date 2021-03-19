@@ -6,6 +6,7 @@ function App() {
   return (
     <div className="App">
       <VideoPlayer src={ExampleVid} />
+      {/* <VideoPlayer src="https://vjs.zencdn.net/v/oceans.mp4" /> */}
     </div>
   );
 }
