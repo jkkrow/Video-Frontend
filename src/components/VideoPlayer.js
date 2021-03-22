@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 
 import { ReactComponent as PlayIcon } from "../assets/icons/play.svg";
 import { ReactComponent as PauseIcon } from "../assets/icons/pause.svg";
@@ -13,8 +13,6 @@ import { useVideoPlayerControls } from "../hooks/vp-controls";
 import "./VideoPlayer.css";
 
 const Video = (props) => {
-  const [loading, setLoading] = useState(true);
-
   const vidContainerRef = useRef();
   const vidRef = useRef();
   const vidControlsRef = useRef();
@@ -56,10 +54,13 @@ const Video = (props) => {
   };
 
   const {
+    loading,
     hideControls,
     showControls,
     togglePlay,
     updatePlaybackIcon,
+    videoBuffering,
+    finishedBuffer,
     updateTime,
     updateSeekTooltip,
     skipAhead,
@@ -95,10 +96,12 @@ const Video = (props) => {
         onClick={() => togglePlay(refObject)}
         onPlay={() => updatePlaybackIcon(refObject)}
         onPause={() => updatePlaybackIcon(refObject)}
-        onLoadedMetadata={() => initializeVideo(refObject, setLoading)}
+        onLoadedMetadata={() => initializeVideo(refObject)}
         onTimeUpdate={() => updateTime(refObject)}
         onVolumeChange={() => updateVolumeIcon(refObject)}
         onDoubleClick={() => toggleFullScreen(refObject)}
+        onWaiting={() => videoBuffering()}
+        onCanPlay={() => finishedBuffer()}
       >
         <source src={props.src} type={props.type} />
       </video>
@@ -137,7 +140,7 @@ const Video = (props) => {
                 type="range"
                 onInput={() => updateVolume(refObject)}
                 max="1"
-                step="0.1"
+                step="0.05"
               />
             </div>
           </div>

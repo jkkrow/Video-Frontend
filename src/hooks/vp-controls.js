@@ -1,6 +1,6 @@
-import { useCallback } from "react";
+import { useState, useCallback } from "react";
 
-let TIMER;
+let TIMER, BUFFERTIMER;
 
 const playbackAnimate = (element) => {
   [...element.current.children].forEach((icon) =>
@@ -35,6 +35,9 @@ const formatTime = (timeInSeconds) => {
 };
 
 export const useVideoPlayerControls = () => {
+  const [loading, setLoading] = useState(true);
+  const [buffer, setBuffer] = useState(false);
+
   // TOGGLE SHOWING CONTROLS
   const hideControls = useCallback((refObject) => {
     const { vidContainerRef, vidRef, vidControlsRef } = refObject;
@@ -90,6 +93,119 @@ export const useVideoPlayerControls = () => {
 
     if (!vidRef.current.ended) {
       playbackAnimate(playbackAnimationRef);
+    }
+  }, []);
+
+  // LOADING CONTROL
+
+  const videoBuffering = () => {
+    console.log("waiting");
+    setBuffer(true);
+    clearTimeout(BUFFERTIMER);
+    BUFFERTIMER = setTimeout(() => {
+      buffer && setLoading(true);
+    }, 1000);
+  };
+
+  const finishedBuffer = () => {
+    console.log("canPlay");
+    clearTimeout(BUFFERTIMER);
+    setBuffer(false);
+  };
+
+  // VOLUME CONTROL
+
+  const updateVolume = useCallback((refObject) => {
+    const { vidRef, currentVolumeRef, volumeInputRef } = refObject;
+
+    console.log(vidRef.current.volume);
+
+    if (vidRef.current.volume === 0) {
+      vidRef.current.muted = true;
+    } else {
+      vidRef.current.muted = false;
+      volumeInputRef.current.setAttribute(
+        "data-volume",
+        volumeInputRef.current.value
+      );
+    }
+
+    vidRef.current.volume = volumeInputRef.current.value;
+    currentVolumeRef.current.style.width =
+      volumeInputRef.current.value * 100 + "%";
+  }, []);
+
+  const updateVolumeWithKey = useCallback((direction, refObject) => {
+    const {
+      vidRef,
+      volumeUpAnimationRef,
+      volumeDownAnimationRef,
+      currentVolumeRef,
+      volumeInputRef,
+    } = refObject;
+
+    volumeInputRef.current.blur();
+
+    switch (direction) {
+      case "up":
+        if (vidRef.current.volume + 0.05 > 1) {
+          vidRef.current.volume = 1;
+        } else {
+          vidRef.current.volume += 0.05;
+        }
+        playbackAnimate(volumeUpAnimationRef);
+        break;
+      case "down":
+        if (vidRef.current.volume - 0.05 < 0) {
+          vidRef.current.volume = 0;
+        } else {
+          vidRef.current.volume -= 0.05;
+        }
+        playbackAnimate(volumeDownAnimationRef);
+        break;
+      default:
+        break;
+    }
+
+    currentVolumeRef.current.style.width = vidRef.current.volume * 100 + "%";
+    volumeInputRef.current.value = vidRef.current.volume;
+  }, []);
+
+  const updateVolumeIcon = useCallback((refObject) => {
+    const { vidRef, volumeButtonRef } = refObject;
+
+    const video = vidRef.current;
+    const volumeIcons = [...volumeButtonRef.current.children];
+
+    volumeIcons.forEach((icon) => {
+      icon.classList.add("hidden");
+    });
+
+    if (video.muted || video.volume === 0) {
+      volumeIcons[2].classList.remove("hidden");
+    } else if (video.volume > 0 && video.volume < 0.5) {
+      volumeIcons[1].classList.remove("hidden");
+    } else {
+      volumeIcons[0].classList.remove("hidden");
+    }
+  }, []);
+
+  const toggleMute = useCallback((refObject) => {
+    const { vidRef, currentVolumeRef, volumeInputRef } = refObject;
+
+    if (vidRef.current.volume !== 0) {
+      volumeInputRef.current.setAttribute(
+        "data-volume",
+        volumeInputRef.current.value
+      );
+      vidRef.current.volume = 0;
+      volumeInputRef.current.value = 0;
+      currentVolumeRef.current.style.width = 0;
+    } else {
+      vidRef.current.volume = volumeInputRef.current.dataset.volume;
+      volumeInputRef.current.value = volumeInputRef.current.dataset.volume;
+      currentVolumeRef.current.style.width =
+        volumeInputRef.current.dataset.volume * 100 + "%";
     }
   }, []);
 
@@ -157,6 +273,8 @@ export const useVideoPlayerControls = () => {
   const skipAhead = useCallback((event, refObject) => {
     const { vidRef, currentProgressRef, seekRef } = refObject;
 
+    event.preventDefault();
+
     const skipTo = event.target.dataset.seek
       ? event.target.dataset.seek
       : event.target.value;
@@ -195,89 +313,6 @@ export const useVideoPlayerControls = () => {
     },
     [showControls]
   );
-
-  // VOLUME CONTROL
-
-  const updateVolume = useCallback((refObject) => {
-    const { vidRef, currentVolumeRef, volumeInputRef } = refObject;
-
-    if (vidRef.current.muted) {
-      vidRef.current.muted = false;
-    }
-
-    vidRef.current.volume = volumeInputRef.current.value;
-    currentVolumeRef.current.style.width =
-      volumeInputRef.current.value * 100 + "%";
-  }, []);
-
-  const updateVolumeWithKey = useCallback((direction, refObject) => {
-    const {
-      vidRef,
-      volumeUpAnimationRef,
-      volumeDownAnimationRef,
-      currentVolumeRef,
-      volumeInputRef,
-    } = refObject;
-
-    switch (direction) {
-      case "up":
-        if (vidRef.current.volume + 0.1 > 1) {
-          vidRef.current.volume = 1;
-        } else {
-          vidRef.current.volume += 0.1;
-        }
-        playbackAnimate(volumeUpAnimationRef);
-        break;
-      case "down":
-        if (vidRef.current.volume - 0.1 < 0) {
-          vidRef.current.volume = 0;
-        } else {
-          vidRef.current.volume -= 0.1;
-        }
-        playbackAnimate(volumeDownAnimationRef);
-        break;
-      default:
-        break;
-    }
-
-    currentVolumeRef.current.style.width = vidRef.current.volume * 100 + "%";
-    volumeInputRef.current.value = vidRef.current.volume;
-  }, []);
-
-  const updateVolumeIcon = useCallback((refObject) => {
-    const { vidRef, volumeButtonRef } = refObject;
-
-    const video = vidRef.current;
-    const volumeIcons = [...volumeButtonRef.current.children];
-
-    volumeIcons.forEach((icon) => {
-      icon.classList.add("hidden");
-    });
-
-    if (video.muted || video.volume === 0) {
-      volumeIcons[2].classList.remove("hidden");
-    } else if (video.volume > 0 && video.volume < 0.5) {
-      volumeIcons[1].classList.remove("hidden");
-    } else {
-      volumeIcons[0].classList.remove("hidden");
-    }
-  }, []);
-
-  const toggleMute = useCallback((refObject) => {
-    const { vidRef, volumeInputRef } = refObject;
-
-    vidRef.current.muted = !vidRef.current.muted;
-
-    if (vidRef.current.muted) {
-      volumeInputRef.current.setAttribute(
-        "data-volume",
-        volumeInputRef.current.value
-      );
-      volumeInputRef.current.value = 0;
-    } else {
-      volumeInputRef.current.value = volumeInputRef.current.dataset.volume;
-    }
-  }, []);
 
   // FULLSCREEN CONTROL
 
@@ -336,7 +371,7 @@ export const useVideoPlayerControls = () => {
   // INITIALIZE VIDEO
 
   const initializeVideo = useCallback(
-    (refObject, setLoading) => {
+    (refObject) => {
       const {
         vidRef,
         vidControlsRef,
@@ -371,10 +406,13 @@ export const useVideoPlayerControls = () => {
   );
 
   return {
+    loading,
     hideControls,
     showControls,
     togglePlay,
     updatePlaybackIcon,
+    videoBuffering,
+    finishedBuffer,
     updateTime,
     updateSeekTooltip,
     skipAhead,
