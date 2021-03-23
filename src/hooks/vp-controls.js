@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-let TIMER, BUFFERTIMER;
+let CONTROLSTIMER, BUFFERTIMER;
 
 const playbackAnimate = (element) => {
   [...element.current.children].forEach((icon) =>
@@ -36,7 +36,6 @@ const formatTime = (timeInSeconds) => {
 
 export const useVideoPlayerControls = () => {
   const [loading, setLoading] = useState(true);
-  const [buffer, setBuffer] = useState(false);
 
   // TOGGLE SHOWING CONTROLS
   const hideControls = useCallback((refObject) => {
@@ -46,8 +45,8 @@ export const useVideoPlayerControls = () => {
       return;
     }
 
-    clearTimeout(TIMER);
-    TIMER = setTimeout(() => {
+    clearTimeout(CONTROLSTIMER);
+    CONTROLSTIMER = setTimeout(() => {
       vidControlsRef.current.classList.add("hide");
       if (!vidRef.current.paused) {
         vidContainerRef.current.style.cursor = "none";
@@ -99,43 +98,27 @@ export const useVideoPlayerControls = () => {
   // LOADING CONTROL
 
   const videoBuffering = () => {
-    console.log("waiting");
-    setBuffer(true);
-    clearTimeout(BUFFERTIMER);
     BUFFERTIMER = setTimeout(() => {
-      buffer && setLoading(true);
-    }, 1000);
+      setLoading(true);
+    }, 500);
   };
 
   const finishedBuffer = () => {
-    console.log("canPlay");
     clearTimeout(BUFFERTIMER);
-    setBuffer(false);
+    setLoading(false);
   };
 
   // VOLUME CONTROL
 
-  const updateVolume = useCallback((refObject) => {
+  const controlVolumeByInput = useCallback((refObject) => {
     const { vidRef, currentVolumeRef, volumeInputRef } = refObject;
-
-    console.log(vidRef.current.volume);
-
-    if (vidRef.current.volume === 0) {
-      vidRef.current.muted = true;
-    } else {
-      vidRef.current.muted = false;
-      volumeInputRef.current.setAttribute(
-        "data-volume",
-        volumeInputRef.current.value
-      );
-    }
 
     vidRef.current.volume = volumeInputRef.current.value;
     currentVolumeRef.current.style.width =
       volumeInputRef.current.value * 100 + "%";
   }, []);
 
-  const updateVolumeWithKey = useCallback((direction, refObject) => {
+  const controlVolumeByKey = useCallback((direction, refObject) => {
     const {
       vidRef,
       volumeUpAnimationRef,
@@ -151,7 +134,7 @@ export const useVideoPlayerControls = () => {
         if (vidRef.current.volume + 0.05 > 1) {
           vidRef.current.volume = 1;
         } else {
-          vidRef.current.volume += 0.05;
+          vidRef.current.volume = (vidRef.current.volume + 0.05).toFixed(2);
         }
         playbackAnimate(volumeUpAnimationRef);
         break;
@@ -159,7 +142,7 @@ export const useVideoPlayerControls = () => {
         if (vidRef.current.volume - 0.05 < 0) {
           vidRef.current.volume = 0;
         } else {
-          vidRef.current.volume -= 0.05;
+          vidRef.current.volume = (vidRef.current.volume - 0.05).toFixed(2);
         }
         playbackAnimate(volumeDownAnimationRef);
         break;
@@ -171,11 +154,21 @@ export const useVideoPlayerControls = () => {
     volumeInputRef.current.value = vidRef.current.volume;
   }, []);
 
-  const updateVolumeIcon = useCallback((refObject) => {
-    const { vidRef, volumeButtonRef } = refObject;
+  const updateVolume = useCallback((refObject) => {
+    const { vidRef, volumeButtonRef, volumeInputRef } = refObject;
 
     const video = vidRef.current;
     const volumeIcons = [...volumeButtonRef.current.children];
+
+    if (video.volume === 0) {
+      video.muted = true;
+    } else {
+      video.muted = false;
+      volumeInputRef.current.setAttribute(
+        "data-volume",
+        volumeInputRef.current.value
+      );
+    }
 
     volumeIcons.forEach((icon) => {
       icon.classList.add("hidden");
@@ -351,11 +344,11 @@ export const useVideoPlayerControls = () => {
           break;
         case "ArrowUp":
           // Volume Up
-          updateVolumeWithKey("up", refObject);
+          controlVolumeByKey("up", refObject);
           break;
         case "ArrowDown":
           // Volume Down
-          updateVolumeWithKey("down", refObject);
+          controlVolumeByKey("down", refObject);
           break;
 
         case " ":
@@ -365,7 +358,7 @@ export const useVideoPlayerControls = () => {
           return;
       }
     },
-    [skipSeconds, updateVolumeWithKey, togglePlay]
+    [skipSeconds, controlVolumeByKey, togglePlay]
   );
 
   // INITIALIZE VIDEO
@@ -416,8 +409,8 @@ export const useVideoPlayerControls = () => {
     updateTime,
     updateSeekTooltip,
     skipAhead,
+    controlVolumeByInput,
     updateVolume,
-    updateVolumeIcon,
     toggleMute,
     toggleFullScreen,
     initializeVideo,

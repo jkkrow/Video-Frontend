@@ -64,8 +64,8 @@ const Video = (props) => {
     updateTime,
     updateSeekTooltip,
     skipAhead,
+    controlVolumeByInput,
     updateVolume,
-    updateVolumeIcon,
     toggleMute,
     toggleFullScreen,
     initializeVideo,
@@ -98,7 +98,7 @@ const Video = (props) => {
         onPause={() => updatePlaybackIcon(refObject)}
         onLoadedMetadata={() => initializeVideo(refObject)}
         onTimeUpdate={() => updateTime(refObject)}
-        onVolumeChange={() => updateVolumeIcon(refObject)}
+        onVolumeChange={() => updateVolume(refObject)}
         onDoubleClick={() => toggleFullScreen(refObject)}
         onWaiting={() => videoBuffering()}
         onCanPlay={() => finishedBuffer()}
@@ -138,7 +138,7 @@ const Video = (props) => {
               <input
                 ref={volumeInputRef}
                 type="range"
-                onInput={() => updateVolume(refObject)}
+                onInput={() => controlVolumeByInput(refObject)}
                 max="1"
                 step="0.05"
               />
@@ -160,7 +160,7 @@ const Video = (props) => {
             step="0.1"
             type="range"
             onMouseMove={(e) => updateSeekTooltip(e, refObject)}
-            onChange={(e) => skipAhead(e, refObject)}
+            onInput={(e) => skipAhead(e, refObject)}
           />
           <span
             className="vp-controls__range--seek-tooltip"
