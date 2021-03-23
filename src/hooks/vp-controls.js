@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 
 let CONTROLSTIMER, BUFFERTIMER;
 
-const playbackAnimate = (element) => {
+const centerDisplayAnimate = (element) => {
   [...element.current.children].forEach((icon) =>
     icon.classList.toggle("hidden")
   );
@@ -84,26 +84,30 @@ export const useVideoPlayerControls = () => {
   );
 
   const updatePlaybackIcon = useCallback((refObject) => {
-    const { vidRef, playbackAnimationRef, playButtonRef } = refObject;
+    const { vidRef, playbackDisplayRef, playButtonRef } = refObject;
 
     [...playButtonRef.current.children].forEach((icon) =>
       icon.classList.toggle("hidden")
     );
 
     if (!vidRef.current.ended) {
-      playbackAnimate(playbackAnimationRef);
+      centerDisplayAnimate(playbackDisplayRef);
+    } else {
+      [...playbackDisplayRef.current.children].forEach((icon) =>
+        icon.classList.toggle("hidden")
+      );
     }
   }, []);
 
   // LOADING CONTROL
 
-  const videoBuffering = () => {
+  const videoBufferStart = () => {
     BUFFERTIMER = setTimeout(() => {
       setLoading(true);
     }, 500);
   };
 
-  const finishedBuffer = () => {
+  const videoBufferFinish = () => {
     clearTimeout(BUFFERTIMER);
     setLoading(false);
   };
@@ -121,8 +125,8 @@ export const useVideoPlayerControls = () => {
   const controlVolumeByKey = useCallback((direction, refObject) => {
     const {
       vidRef,
-      volumeUpAnimationRef,
-      volumeDownAnimationRef,
+      volumeUpDisplayRef,
+      volumeDownDisplayRef,
       currentVolumeRef,
       volumeInputRef,
     } = refObject;
@@ -136,7 +140,7 @@ export const useVideoPlayerControls = () => {
         } else {
           vidRef.current.volume = (vidRef.current.volume + 0.05).toFixed(2);
         }
-        playbackAnimate(volumeUpAnimationRef);
+        centerDisplayAnimate(volumeUpDisplayRef);
         break;
       case "down":
         if (vidRef.current.volume - 0.05 < 0) {
@@ -144,7 +148,7 @@ export const useVideoPlayerControls = () => {
         } else {
           vidRef.current.volume = (vidRef.current.volume - 0.05).toFixed(2);
         }
-        playbackAnimate(volumeDownAnimationRef);
+        centerDisplayAnimate(volumeDownDisplayRef);
         break;
       default:
         break;
@@ -263,7 +267,7 @@ export const useVideoPlayerControls = () => {
     seekTooltipRef.current.style.left = `${event.pageX - rect.left}px`;
   }, []);
 
-  const skipAhead = useCallback((event, refObject) => {
+  const skipByInput = useCallback((event, refObject) => {
     const { vidRef, currentProgressRef, seekRef } = refObject;
 
     event.preventDefault();
@@ -278,13 +282,13 @@ export const useVideoPlayerControls = () => {
       (skipTo / vidRef.current.duration) * 100 + "%";
   }, []);
 
-  const skipSeconds = useCallback(
+  const skipByKey = useCallback(
     (direction, refObject) => {
       const {
         vidRef,
         seekRef,
-        forwardAnimationRef,
-        backwardAnimationRef,
+        forwardDisplayRef,
+        backwardDisplayRef,
       } = refObject;
 
       seekRef.current.blur();
@@ -292,17 +296,17 @@ export const useVideoPlayerControls = () => {
       switch (direction) {
         case "forward":
           vidRef.current.currentTime += 10;
-          playbackAnimate(forwardAnimationRef);
-          showControls(refObject);
+          centerDisplayAnimate(forwardDisplayRef);
           break;
         case "backward":
           vidRef.current.currentTime -= 10;
-          playbackAnimate(backwardAnimationRef);
-          showControls(refObject);
+          centerDisplayAnimate(backwardDisplayRef);
           break;
         default:
           return;
       }
+
+      showControls(refObject);
     },
     [showControls]
   );
@@ -336,11 +340,11 @@ export const useVideoPlayerControls = () => {
       switch (key) {
         case "ArrowRight":
           // Forward 10 seconds
-          skipSeconds("forward", refObject);
+          skipByKey("forward", refObject);
           break;
         case "ArrowLeft":
           // Rewind 10 seconds
-          skipSeconds("backward", refObject);
+          skipByKey("backward", refObject);
           break;
         case "ArrowUp":
           // Volume Up
@@ -358,7 +362,7 @@ export const useVideoPlayerControls = () => {
           return;
       }
     },
-    [skipSeconds, controlVolumeByKey, togglePlay]
+    [skipByKey, controlVolumeByKey, togglePlay]
   );
 
   // INITIALIZE VIDEO
@@ -404,11 +408,11 @@ export const useVideoPlayerControls = () => {
     showControls,
     togglePlay,
     updatePlaybackIcon,
-    videoBuffering,
-    finishedBuffer,
+    videoBufferStart,
+    videoBufferFinish,
     updateTime,
     updateSeekTooltip,
-    skipAhead,
+    skipByInput,
     controlVolumeByInput,
     updateVolume,
     toggleMute,

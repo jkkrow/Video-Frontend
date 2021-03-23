@@ -8,7 +8,7 @@ import { ReactComponent as VolumeMuteIcon } from "../assets/icons/volume-mute.sv
 import { ReactComponent as FullscreenIcon } from "../assets/icons/fullscreen.svg";
 import { ReactComponent as FullscreenExitIcon } from "../assets/icons/fullscreen-exit.svg";
 import LoadingSpinner from "./LoadingSpinner";
-import PlaybackAnimation from "./PlaybackAnimation";
+import CenterDisplay from "./CenterDisplay";
 import { useVideoPlayerControls } from "../hooks/vp-controls";
 import "./VideoPlayer.css";
 
@@ -16,11 +16,11 @@ const Video = (props) => {
   const vidContainerRef = useRef();
   const vidRef = useRef();
   const vidControlsRef = useRef();
-  const playbackAnimationRef = useRef();
-  const forwardAnimationRef = useRef();
-  const backwardAnimationRef = useRef();
-  const volumeUpAnimationRef = useRef();
-  const volumeDownAnimationRef = useRef();
+  const playbackDisplayRef = useRef();
+  const forwardDisplayRef = useRef();
+  const backwardDisplayRef = useRef();
+  const volumeUpDisplayRef = useRef();
+  const volumeDownDisplayRef = useRef();
   const playButtonRef = useRef();
   const durationRef = useRef();
   const currentProgressRef = useRef();
@@ -36,11 +36,11 @@ const Video = (props) => {
     vidContainerRef,
     vidRef,
     vidControlsRef,
-    playbackAnimationRef,
-    forwardAnimationRef,
-    backwardAnimationRef,
-    volumeUpAnimationRef,
-    volumeDownAnimationRef,
+    playbackDisplayRef,
+    forwardDisplayRef,
+    backwardDisplayRef,
+    volumeUpDisplayRef,
+    volumeDownDisplayRef,
     playButtonRef,
     durationRef,
     currentProgressRef,
@@ -59,11 +59,11 @@ const Video = (props) => {
     showControls,
     togglePlay,
     updatePlaybackIcon,
-    videoBuffering,
-    finishedBuffer,
+    videoBufferStart,
+    videoBufferFinish,
     updateTime,
     updateSeekTooltip,
-    skipAhead,
+    skipByInput,
     controlVolumeByInput,
     updateVolume,
     toggleMute,
@@ -81,12 +81,12 @@ const Video = (props) => {
     >
       {loading && <LoadingSpinner />}
 
-      <PlaybackAnimation
-        playbackRef={playbackAnimationRef}
-        forwardRef={forwardAnimationRef}
-        backwardRef={backwardAnimationRef}
-        upRef={volumeUpAnimationRef}
-        downRef={volumeDownAnimationRef}
+      <CenterDisplay
+        playbackRef={playbackDisplayRef}
+        forwardRef={forwardDisplayRef}
+        backwardRef={backwardDisplayRef}
+        upRef={volumeUpDisplayRef}
+        downRef={volumeDownDisplayRef}
       />
 
       <video
@@ -100,8 +100,8 @@ const Video = (props) => {
         onTimeUpdate={() => updateTime(refObject)}
         onVolumeChange={() => updateVolume(refObject)}
         onDoubleClick={() => toggleFullScreen(refObject)}
-        onWaiting={() => videoBuffering()}
-        onCanPlay={() => finishedBuffer()}
+        onWaiting={() => videoBufferStart()}
+        onCanPlay={() => videoBufferFinish()}
       >
         <source src={props.src} type={props.type} />
       </video>
@@ -160,7 +160,7 @@ const Video = (props) => {
             step="0.1"
             type="range"
             onMouseMove={(e) => updateSeekTooltip(e, refObject)}
-            onInput={(e) => skipAhead(e, refObject)}
+            onInput={(e) => skipByInput(e, refObject)}
           />
           <span
             className="vp-controls__range--seek-tooltip"
