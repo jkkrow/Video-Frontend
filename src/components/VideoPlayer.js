@@ -3,6 +3,7 @@ import React, { useRef } from "react";
 import { ReactComponent as PlayIcon } from "../assets/icons/play.svg";
 import { ReactComponent as PauseIcon } from "../assets/icons/pause.svg";
 import { ReactComponent as VolumeHighIcon } from "../assets/icons/volume-high.svg";
+import { ReactComponent as VolumeMiddleIcon } from "../assets/icons/volume-middle.svg";
 import { ReactComponent as VolumeLowIcon } from "../assets/icons/volume-low.svg";
 import { ReactComponent as VolumeMuteIcon } from "../assets/icons/volume-mute.svg";
 import { ReactComponent as FullscreenIcon } from "../assets/icons/fullscreen.svg";
@@ -12,7 +13,7 @@ import CenterDisplay from "./CenterDisplay";
 import { useVideoPlayerControls } from "../hooks/vp-controls";
 import "./VideoPlayer.css";
 
-const Video = (props) => {
+const VideoPlayer = (props) => {
   const vidContainerRef = useRef();
   const vidRef = useRef();
   const vidControlsRef = useRef();
@@ -125,6 +126,7 @@ const Video = (props) => {
             onClick={() => toggleMute(refObject)}
           >
             <VolumeHighIcon />
+            <VolumeMiddleIcon className="hidden" />
             <VolumeLowIcon className="hidden" />
             <VolumeMuteIcon className="hidden" />
           </div>
@@ -171,7 +173,7 @@ const Video = (props) => {
         </div>
 
         <div className="vp-controls__time">
-          <time ref={durationRef}>00:00</time>
+          <time ref={durationRef}></time>
         </div>
 
         <div
@@ -187,4 +189,4 @@ const Video = (props) => {
   );
 };
 
-export default Video;
+export default VideoPlayer;

@@ -179,11 +179,14 @@ export const useVideoPlayerControls = () => {
     });
 
     if (video.muted || video.volume === 0) {
+      volumeIcons[3].classList.remove("hidden");
+    } else if (video.volume > 0 && video.volume < 0.3) {
       volumeIcons[2].classList.remove("hidden");
-    } else if (video.volume > 0 && video.volume < 0.5) {
+    } else if (video.volume >= 0.3 && video.volume < 0.7) {
       volumeIcons[1].classList.remove("hidden");
     } else {
       volumeIcons[0].classList.remove("hidden");
+      
     }
   }, []);
 
