@@ -2,8 +2,8 @@ import React, { Suspense } from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import "./App.css";
 
-const VideoComponent = React.lazy(() => import("./pages/Video"));
-const VideoUploadComponent = React.lazy(() => import("./pages/VideoUpload"));
+const VideoComponent = React.lazy(() => import("./pages/VideoPage"));
+const VideoUploadComponent = React.lazy(() => import("./pages/UploadVideoPage"));
 
 function App() {
   return (

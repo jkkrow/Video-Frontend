@@ -2,9 +2,9 @@ import React from "react";
 
 import "./LoadingSpinner.css";
 
-const LoadingSpinner = () => {
+const LoadingSpinner = React.forwardRef((props, ref) => {
   return (
-    <div className="loading-spinner">
+    <div className="lds-spinner__container" ref={ref}>
       <div className="lds-spinner">
         <div></div>
         <div></div>
@@ -21,6 +21,6 @@ const LoadingSpinner = () => {
       </div>
     </div>
   );
-};
+});
 
 export default LoadingSpinner;

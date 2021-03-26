@@ -2,15 +2,15 @@ import React from "react";
 
 import VideoPlayer from "../components/VideoPlayer";
 import ExampleVid from "../assets/videos/vid_1_720p.mp4";
-import "./Video.css";
+import "./VideoPage.css";
 
-const Video = (props) => {
+const VideoPage = (props) => {
   return (
-    <div className="video">
+    <div className="video-page">
       <VideoPlayer src={ExampleVid} />
       {/* <VideoPlayer src="https://vjs.zencdn.net/v/oceans.mp4" /> */}
     </div>
   );
 };
 
-export default Video;
+export default VideoPage;

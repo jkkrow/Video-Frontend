@@ -6,37 +6,37 @@ import { ReactComponent as ForwardIcon } from "../assets/icons/forward.svg";
 import { ReactComponent as BackwardIcon } from "../assets/icons/backward.svg";
 import { ReactComponent as VolumeUpIcon } from "../assets/icons/volume-up.svg";
 import { ReactComponent as VolumeDownIcon } from "../assets/icons/volume-down.svg";
-import "./CenterDisplay.css";
+import "./ActionUI.css";
 
-const CenterDisplay = (props) => {
+const ActionUI = React.forwardRef((props, ref) => {
   return (
-    <React.Fragment>
-      <div className="center-display" ref={props.playbackRef}>
+    <div ref={ref} className="action-ui">
+      <div>
         <PlayIcon className="hidden" />
         <PauseIcon />
       </div>
 
-      <div className="center-display" ref={props.forwardRef}>
-        <ForwardIcon />
-        <ForwardIcon className="hidden" />
-      </div>
-
-      <div className="center-display" ref={props.backwardRef}>
-        <BackwardIcon />
-        <BackwardIcon className="hidden" />
-      </div>
-
-      <div className="center-display" ref={props.upRef}>
+      <div>
         <VolumeUpIcon />
         <VolumeUpIcon className="hidden" />
       </div>
 
-      <div className="center-display" ref={props.downRef}>
+      <div>
         <VolumeDownIcon />
         <VolumeDownIcon className="hidden" />
       </div>
-    </React.Fragment>
-  );
-};
 
-export default CenterDisplay;
+      <div>
+        <ForwardIcon />
+        <ForwardIcon className="hidden" />
+      </div>
+
+      <div>
+        <BackwardIcon />
+        <BackwardIcon className="hidden" />
+      </div>
+    </div>
+  );
+});
+
+export default ActionUI;

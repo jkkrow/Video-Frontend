@@ -1,4 +1,4 @@
-.center-display {
+.action-ui div {
   pointer-events: none;
   position: absolute;
   top: 50%;
@@ -16,7 +16,7 @@
   opacity: 0;
 }
 
-.center-display svg {
+.action-ui svg {
   width: 3rem;
   height: 3rem;
   fill: #fff;
