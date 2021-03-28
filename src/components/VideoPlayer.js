@@ -151,6 +151,7 @@ const VideoPlayer = (props) => {
         </div>
       </div>
 
+      {/* Loading Spinner */}
       <div className="lds-spinner__container" ref={loadingSpinnerRef}>
         <div className="lds-spinner">
           <div></div>
@@ -167,7 +168,7 @@ const VideoPlayer = (props) => {
           <div></div>
         </div>
       </div>
-
+      {/* Action UI */}
       <div className="action-ui" ref={actionUIRef}>
         <div>
           <PlayIcon className="hidden" />

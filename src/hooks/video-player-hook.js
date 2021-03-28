@@ -245,8 +245,6 @@ export const useVideoPlayerControls = () => {
   }, []);
 
   const skipByInput = useCallback((event) => {
-    event.preventDefault();
-
     const skipTo = event.target.dataset.seek
       ? event.target.dataset.seek
       : event.target.value;
@@ -299,6 +297,7 @@ export const useVideoPlayerControls = () => {
 
   const keyboardShortcuts = useCallback(
     (event) => {
+      event.preventDefault();
       const { key } = event;
 
       switch (key) {
@@ -318,7 +317,6 @@ export const useVideoPlayerControls = () => {
           // Volume Down
           controlVolumeByKey("down");
           break;
-
         case " ":
           togglePlay();
           break;
@@ -345,8 +343,8 @@ export const useVideoPlayerControls = () => {
     durationRef.current.innerText = result;
     durationRef.current.setAttribute("datetime", result);
 
-    document.addEventListener("keyup", (event) => keyboardShortcuts(event));
-    document.addEventListener("fullscreenchange", () => updateFullscreenIcon());
+    document.addEventListener("keyup", keyboardShortcuts);
+    document.addEventListener("fullscreenchange", updateFullscreenIcon);
   }, [keyboardShortcuts, updateFullscreenIcon]);
 
   return {
