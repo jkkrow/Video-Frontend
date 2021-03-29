@@ -174,8 +174,8 @@ const VideoPlayer = ({ src, type }) => {
       {/* Action UI */}
       <div className="action-ui" ref={actionUIRef}>
         <div>
-          <PlayIcon className="hidden" />
-          <PauseIcon />
+          <PlayIcon />
+          <PauseIcon className="hidden" />
         </div>
         <div>
           <VolumeUpIcon />

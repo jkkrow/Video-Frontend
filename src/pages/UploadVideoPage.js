@@ -5,34 +5,58 @@ import VideoPlayer from "../components/VideoPlayer";
 import "./UploadVideoPage.css";
 
 const UploadVideoPage = (props) => {
-  const [file, setFile] = useState();
-  const [source, setSource] = useState();
+  const [files, setFiles] = useState([]);
+  const [sources, setSources] = useState([]);
 
   const onFileChangeHandler = (event) => {
-    if (event.target.files?.[0]) {
-      setFile(event.target.files[0]);
+    if (!event.target.files?.length) return;
 
+    // Add files to state
+    const targetFiles = [...files, ...event.target.files];
+    const fileSet = new Set();
+    const validFiles = targetFiles.filter((file) => {
+      const duplicate = fileSet.has(file.name);
+      fileSet.add(file.name);
+
+      return !duplicate;
+    });
+    setFiles(validFiles);
+
+    // Read files to show preview
+    validFiles.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setSource(e.target.result);
+        setSources((prev) => [...new Set([...prev, e.target.result])]);
       };
-
-      reader.readAsDataURL(event.target.files[0]);
-    }
+      reader.readAsDataURL(file);
+    });
   };
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
 
-    axios.put("http://localhost:5000/api/upload/", file);
+    axios.put("http://localhost:5000/api/upload/", files);
   };
 
   return (
     <div className="video-upload">
       <form onSubmit={onSubmitHandler}>
-        <input type="file" accept=".mp4" onChange={onFileChangeHandler} />
+        <input
+          type="file"
+          multiple
+          accept=".mp4"
+          onChange={onFileChangeHandler}
+        />
       </form>
-      {source && <VideoPlayer src={source} />}
+      <ul>
+        {sources.length
+          ? sources.map((src) => (
+              <li>
+                <VideoPlayer src={src} />
+              </li>
+            ))
+          : null}
+      </ul>
     </div>
   );
 };

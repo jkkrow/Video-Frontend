@@ -2,26 +2,6 @@ import { useRef, useCallback } from "react";
 
 let CONTROLSTIMER, BUFFERTIMER;
 
-const displayActionUI = (element, index) => {
-  [...element.current.children[index].children].forEach((icon) =>
-    icon.classList.toggle("hidden")
-  );
-
-  element.current.children[index].animate(
-    [
-      {
-        opacity: 1,
-        transform: "scale(1)",
-      },
-      {
-        opacity: 0,
-        transform: "scale(1.3)",
-      },
-    ],
-    { duration: 800 }
-  );
-};
-
 const formatTime = (timeInSeconds) => {
   const result = new Date(timeInSeconds * 1000).toISOString().substr(11, 8);
   // if duration is over hour
@@ -50,6 +30,40 @@ export const useVideoPlayerControls = () => {
   const currentVolumeRef = useRef();
   const volumeInputRef = useRef();
   const fullScreenButtonRef = useRef();
+
+  // DISPLAYING ACTION UI
+  const displayActionUI = useCallback((element, index) => {
+    if (index === 0) {
+      // playback ui
+      [...element.current.children[index].children].forEach((icon) =>
+        icon.classList.remove("hidden")
+      );
+
+      if (vidRef.current.paused) {
+        element.current.children[index].children[0].classList.add("hidden");
+      } else {
+        element.current.children[index].children[1].classList.add("hidden");
+      }
+    } else {
+      [...element.current.children[index].children].forEach((icon) =>
+        icon.classList.toggle("hidden")
+      );
+    }
+
+    element.current.children[index].animate(
+      [
+        {
+          opacity: 1,
+          transform: "scale(1)",
+        },
+        {
+          opacity: 0,
+          transform: "scale(1.3)",
+        },
+      ],
+      { duration: 800 }
+    );
+  }, []);
 
   // TOGGLE SHOWING CONTROLS
   const hideControls = useCallback(() => {
@@ -82,20 +96,17 @@ export const useVideoPlayerControls = () => {
       vidRef.current.pause();
     }
 
-    [...playButtonRef.current.children].forEach((icon) =>
-      icon.classList.toggle("hidden")
-    );
     displayActionUI(actionUIRef, 0);
 
     showControls();
-  }, [showControls]);
+  }, [showControls, displayActionUI]);
 
   const updatePlaybackIcon = useCallback(() => {
-    if (!vidRef.current.ended) return;
-
-    [...actionUIRef.current.children[0].children].forEach((icon) =>
-      icon.classList.toggle("hidden")
-    );
+    if (vidRef.current.ended) {
+      [...actionUIRef.current.children[0].children].forEach((icon) =>
+        icon.classList.toggle("hidden")
+      );
+    }
 
     [...playButtonRef.current.children].forEach((icon) => {
       icon.classList.toggle("hidden");
@@ -122,33 +133,36 @@ export const useVideoPlayerControls = () => {
       volumeInputRef.current.value * 100 + "%";
   }, []);
 
-  const controlVolumeByKey = useCallback((direction) => {
-    volumeInputRef.current.blur();
+  const controlVolumeByKey = useCallback(
+    (direction) => {
+      volumeInputRef.current.blur();
 
-    switch (direction) {
-      case "up":
-        if (vidRef.current.volume + 0.05 > 1) {
-          vidRef.current.volume = 1;
-        } else {
-          vidRef.current.volume = (vidRef.current.volume + 0.05).toFixed(2);
-        }
-        displayActionUI(actionUIRef, 1);
-        break;
-      case "down":
-        if (vidRef.current.volume - 0.05 < 0) {
-          vidRef.current.volume = 0;
-        } else {
-          vidRef.current.volume = (vidRef.current.volume - 0.05).toFixed(2);
-        }
-        displayActionUI(actionUIRef, 2);
-        break;
-      default:
-        break;
-    }
+      switch (direction) {
+        case "up":
+          if (vidRef.current.volume + 0.05 > 1) {
+            vidRef.current.volume = 1;
+          } else {
+            vidRef.current.volume = (vidRef.current.volume + 0.05).toFixed(2);
+          }
+          displayActionUI(actionUIRef, 1);
+          break;
+        case "down":
+          if (vidRef.current.volume - 0.05 < 0) {
+            vidRef.current.volume = 0;
+          } else {
+            vidRef.current.volume = (vidRef.current.volume - 0.05).toFixed(2);
+          }
+          displayActionUI(actionUIRef, 2);
+          break;
+        default:
+          break;
+      }
 
-    currentVolumeRef.current.style.width = vidRef.current.volume * 100 + "%";
-    volumeInputRef.current.value = vidRef.current.volume;
-  }, []);
+      currentVolumeRef.current.style.width = vidRef.current.volume * 100 + "%";
+      volumeInputRef.current.value = vidRef.current.volume;
+    },
+    [displayActionUI]
+  );
 
   const updateVolume = useCallback(() => {
     const video = vidRef.current;
@@ -283,7 +297,7 @@ export const useVideoPlayerControls = () => {
 
       showControls();
     },
-    [showControls]
+    [showControls, displayActionUI]
   );
 
   // FULLSCREEN CONTROL
