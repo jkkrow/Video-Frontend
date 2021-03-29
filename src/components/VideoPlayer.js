@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { ReactComponent as PlayIcon } from "../assets/icons/play.svg";
 import { ReactComponent as PauseIcon } from "../assets/icons/pause.svg";
@@ -15,7 +15,7 @@ import { ReactComponent as FullscreenExitIcon } from "../assets/icons/fullscreen
 import { useVideoPlayerControls } from "../hooks/video-player-hook";
 import "./VideoPlayer.css";
 
-const VideoPlayer = (props) => {
+const VideoPlayer = ({ src, type }) => {
   const {
     vidContainerRef,
     vidRef,
@@ -48,6 +48,10 @@ const VideoPlayer = (props) => {
     initializeVideo,
   } = useVideoPlayerControls();
 
+  useEffect(() => {
+    vidRef.current.setAttribute("src", src);
+  }, [vidRef, src]);
+
   return (
     <div
       className="vp-container"
@@ -58,8 +62,7 @@ const VideoPlayer = (props) => {
     >
       <video
         ref={vidRef}
-        id={props.id}
-        poster={props.poster}
+        autoPlay
         onLoadedMetadata={initializeVideo}
         onClick={togglePlay}
         onPlay={updatePlaybackIcon}
@@ -70,7 +73,7 @@ const VideoPlayer = (props) => {
         onWaiting={showLoadingSpinner}
         onCanPlay={hideLoadingSpinner}
       >
-        <source src={props.src} type={props.type} />
+        <source src={src} type={type} />
       </video>
       <div className="vp-controls" ref={vidControlsRef}>
         <div className="vp-controls__playback">

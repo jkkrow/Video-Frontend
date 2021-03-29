@@ -82,21 +82,24 @@ export const useVideoPlayerControls = () => {
       vidRef.current.pause();
     }
 
+    [...playButtonRef.current.children].forEach((icon) =>
+      icon.classList.toggle("hidden")
+    );
+    displayActionUI(actionUIRef, 0);
+
     showControls();
   }, [showControls]);
 
   const updatePlaybackIcon = useCallback(() => {
-    [...playButtonRef.current.children].forEach((icon) =>
+    if (!vidRef.current.ended) return;
+
+    [...actionUIRef.current.children[0].children].forEach((icon) =>
       icon.classList.toggle("hidden")
     );
 
-    if (!vidRef.current.ended) {
-      displayActionUI(actionUIRef, 0);
-    } else {
-      [...actionUIRef.current.children[0].children].forEach((icon) =>
-        icon.classList.toggle("hidden")
-      );
-    }
+    [...playButtonRef.current.children].forEach((icon) => {
+      icon.classList.toggle("hidden");
+    });
   }, []);
 
   // LOADING CONTROL
@@ -196,8 +199,8 @@ export const useVideoPlayerControls = () => {
   // TIME CONTROL
 
   const updateTime = useCallback(() => {
-    const duration = vidRef.current.duration;
-    const currentTime = vidRef.current.currentTime;
+    const duration = vidRef.current.duration || 0;
+    const currentTime = vidRef.current.currentTime || 0;
     const buffer = vidRef.current.buffered;
 
     // Progress UI
@@ -208,7 +211,10 @@ export const useVideoPlayerControls = () => {
     // Buffer UI
     if (duration > 0) {
       for (let i = 0; i < buffer.length; i++) {
-        if (buffer.start(buffer.length - 1 - i) < vidRef.current.currentTime) {
+        if (
+          buffer.start(buffer.length - 1 - i) === 0 ||
+          buffer.start(buffer.length - 1 - i) < vidRef.current.currentTime
+        ) {
           bufferProgressRef.current.style.width =
             (buffer.end(buffer.length - 1 - i) / duration) * 100 + "%";
           break;
@@ -218,7 +224,6 @@ export const useVideoPlayerControls = () => {
 
     // Time UI
     const remainedTime = formatTime(duration - currentTime);
-
     durationRef.current.innerText = remainedTime;
     durationRef.current.setAttribute("datetime", remainedTime);
   }, []);
@@ -231,6 +236,7 @@ export const useVideoPlayerControls = () => {
       parseInt(event.target.getAttribute("max"), 10);
 
     seekRef.current.setAttribute("data-seek", skipTo);
+
     let newTime;
     if (skipTo > vidRef.current.duration) {
       newTime = formatTime(vidRef.current.duration);
@@ -239,8 +245,11 @@ export const useVideoPlayerControls = () => {
     } else {
       newTime = formatTime(skipTo);
     }
+
     seekTooltipRef.current.textContent = newTime;
+
     const rect = vidRef.current.getBoundingClientRect();
+
     seekTooltipRef.current.style.left = `${event.pageX - rect.left}px`;
   }, []);
 
@@ -339,13 +348,11 @@ export const useVideoPlayerControls = () => {
     seekRef.current.setAttribute("max", videoDuration);
     currentProgressRef.current.setAttribute("max", videoDuration);
 
-    const result = formatTime(videoDuration);
-    durationRef.current.innerText = result;
-    durationRef.current.setAttribute("datetime", result);
+    updateTime();
 
     document.addEventListener("keyup", keyboardShortcuts);
     document.addEventListener("fullscreenchange", updateFullscreenIcon);
-  }, [keyboardShortcuts, updateFullscreenIcon]);
+  }, [updateTime, keyboardShortcuts, updateFullscreenIcon]);
 
   return {
     vidContainerRef,

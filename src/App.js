@@ -3,15 +3,17 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import "./App.css";
 
 const VideoComponent = React.lazy(() => import("./pages/VideoPage"));
-const VideoUploadComponent = React.lazy(() => import("./pages/UploadVideoPage"));
+const VideoUploadComponent = React.lazy(() =>
+  import("./pages/UploadVideoPage")
+);
 
 function App() {
   return (
     <BrowserRouter>
       <Suspense fallback={<div>Loading...</div>}>
         <Switch>
-          <Route exact path="/" component={VideoComponent} />
-          <Route path="/upload" component={VideoUploadComponent} />
+          <Route exact path="/" component={VideoUploadComponent} />
+          <Route exact path="/video" component={VideoComponent} />
           <Redirect to="/" />
         </Switch>
       </Suspense>
