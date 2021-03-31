@@ -1,4 +1,5 @@
 import { useRef, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 
 let CONTROLSTIMER, BUFFERTIMER;
 
@@ -30,6 +31,8 @@ export const useVideoPlayerControls = () => {
   const currentVolumeRef = useRef();
   const volumeInputRef = useRef();
   const fullScreenButtonRef = useRef();
+
+  const location = useLocation();
 
   // DISPLAYING ACTION UI
   const displayActionUI = useCallback((element, index) => {
@@ -364,9 +367,12 @@ export const useVideoPlayerControls = () => {
 
     updateTime();
 
-    document.addEventListener("keyup", keyboardShortcuts);
     document.addEventListener("fullscreenchange", updateFullscreenIcon);
-  }, [updateTime, keyboardShortcuts, updateFullscreenIcon]);
+
+    if (location.pathname === "/video") {
+      document.addEventListener("keyup", keyboardShortcuts);
+    }
+  }, [updateTime, updateFullscreenIcon, location, keyboardShortcuts]);
 
   return {
     vidContainerRef,

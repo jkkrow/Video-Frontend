@@ -1,21 +1,21 @@
 import React, { useEffect } from "react";
 
-import { ReactComponent as PlayIcon } from "../assets/icons/play.svg";
-import { ReactComponent as PauseIcon } from "../assets/icons/pause.svg";
-import { ReactComponent as VolumeHighIcon } from "../assets/icons/volume-high.svg";
-import { ReactComponent as VolumeMiddleIcon } from "../assets/icons/volume-middle.svg";
-import { ReactComponent as VolumeLowIcon } from "../assets/icons/volume-low.svg";
-import { ReactComponent as VolumeMuteIcon } from "../assets/icons/volume-mute.svg";
-import { ReactComponent as VolumeUpIcon } from "../assets/icons/volume-up.svg";
-import { ReactComponent as VolumeDownIcon } from "../assets/icons/volume-down.svg";
-import { ReactComponent as ForwardIcon } from "../assets/icons/forward.svg";
-import { ReactComponent as BackwardIcon } from "../assets/icons/backward.svg";
-import { ReactComponent as FullscreenIcon } from "../assets/icons/fullscreen.svg";
-import { ReactComponent as FullscreenExitIcon } from "../assets/icons/fullscreen-exit.svg";
-import { useVideoPlayerControls } from "../hooks/video-player-hook";
+import { ReactComponent as PlayIcon } from "../../assets/icons/play.svg";
+import { ReactComponent as PauseIcon } from "../../assets/icons/pause.svg";
+import { ReactComponent as VolumeHighIcon } from "../../assets/icons/volume-high.svg";
+import { ReactComponent as VolumeMiddleIcon } from "../../assets/icons/volume-middle.svg";
+import { ReactComponent as VolumeLowIcon } from "../../assets/icons/volume-low.svg";
+import { ReactComponent as VolumeMuteIcon } from "../../assets/icons/volume-mute.svg";
+import { ReactComponent as VolumeUpIcon } from "../../assets/icons/volume-up.svg";
+import { ReactComponent as VolumeDownIcon } from "../../assets/icons/volume-down.svg";
+import { ReactComponent as ForwardIcon } from "../../assets/icons/forward.svg";
+import { ReactComponent as BackwardIcon } from "../../assets/icons/backward.svg";
+import { ReactComponent as FullscreenIcon } from "../../assets/icons/fullscreen.svg";
+import { ReactComponent as FullscreenExitIcon } from "../../assets/icons/fullscreen-exit.svg";
+import { useVideoPlayerControls } from "../../hooks/video-player-hook";
 import "./VideoPlayer.css";
 
-const VideoPlayer = ({ src, type }) => {
+const VideoPlayer = ({ src, type, autoPlay, style }) => {
   const {
     vidContainerRef,
     vidRef,
@@ -59,10 +59,11 @@ const VideoPlayer = ({ src, type }) => {
       onMouseMove={showControls}
       onMouseLeave={hideControls}
       // onContextMenu={(e) => e.preventDefault()}
+      style={style}
     >
       <video
         ref={vidRef}
-        autoPlay
+        autoPlay={autoPlay}
         onLoadedMetadata={initializeVideo}
         onClick={togglePlay}
         onPlay={updatePlaybackIcon}

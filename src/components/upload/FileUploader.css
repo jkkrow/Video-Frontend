@@ -1,0 +1,6 @@
+.file-uploader__button {
+  width: 10rem;
+  padding: 2rem;
+  border: 1px solid var(--video-red);
+  cursor: pointer;
+}

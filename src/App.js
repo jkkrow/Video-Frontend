@@ -1,22 +1,25 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
-import "./App.css";
 
-const VideoComponent = React.lazy(() => import("./pages/VideoPage"));
-const VideoUploadComponent = React.lazy(() =>
-  import("./pages/UploadVideoPage")
-);
+import ContextRoute from "./context/ContextRoute";
+import VideoPage from "./pages/VideoPage";
+import UploadVideoPage from "./pages/UploadVideoPage";
+import UploadContextProvider from "./context/upload-context";
+import "./App.css";
 
 function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Switch>
-          <Route exact path="/" component={VideoUploadComponent} />
-          <Route exact path="/video" component={VideoComponent} />
-          <Redirect to="/" />
-        </Switch>
-      </Suspense>
+      <Switch>
+        <ContextRoute
+          exact
+          path="/"
+          Provider={UploadContextProvider}
+          Component={UploadVideoPage}
+        />
+        <Route exact path="/video" component={VideoPage} />
+        <Redirect to="/" />
+      </Switch>
     </BrowserRouter>
   );
 }
