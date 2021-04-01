@@ -9,10 +9,8 @@ const AppendNext = ({ from }) => {
 
   return (
     <div className="append-next">
-      <div className="">
-        <Plus onClick={() => setOpen(true)} />
-        {open && <FileUploader from={from} />}
-      </div>
+      <Plus className="append-next__button" onClick={() => setOpen(true)} />
+      {open && <FileUploader from={from} />}
     </div>
   );
 };

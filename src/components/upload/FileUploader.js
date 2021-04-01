@@ -1,12 +1,14 @@
 import React, { useState, useRef, useContext } from "react";
 
+import { ReactComponent as Change } from "../../assets/icons/change.svg";
+import { ReactComponent as Remove } from "../../assets/icons/remove.svg";
 import VideoPlayer from "../../components/video/VideoPlayer";
 import AppendNext from "./AppendNext";
-import { UploadContext } from "../../context/upload-context";
+// import { UploadContext } from "../../context/upload-context";
 import "./FileUploader.css";
 
 const FileUploader = ({ from }) => {
-  const { initPart, addPart } = useContext(UploadContext);
+  // const { initPart, addPart } = useContext(UploadContext);
   const [part, setPart] = useState();
   const [source, setSource] = useState();
   const fileUploaderRef = useRef();
@@ -23,7 +25,7 @@ const FileUploader = ({ from }) => {
     setPart(currentPart);
 
     // Add to entire upload state
-    from ? addPart(currentPart, from) : initPart(currentPart);
+    // from ? addPart(currentPart, from) : initPart(currentPart);
 
     // Read file to show preview
     const reader = new FileReader();
@@ -33,31 +35,26 @@ const FileUploader = ({ from }) => {
 
   return (
     <div className="file-uploader">
-      <input
-        ref={fileUploaderRef}
-        type="file"
-        hidden
-        accept=".mp4"
-        onChange={onFileChangeHandler}
-      />
-
       <div
-        className="file-uploader__button"
-        onClick={() => fileUploaderRef.current.click()}
+        className="file-uploader__dnd"
+        onClick={() => (!source ? fileUploaderRef.current.click() : null)}
       >
-        Upload
+        <input
+          ref={fileUploaderRef}
+          type="file"
+          hidden
+          accept=".mp4"
+          onChange={onFileChangeHandler}
+        />
+        {source && <VideoPlayer src={source} autoPlay={false} />}
+        {source && (
+          <div className="file-uploader__progress">
+            <Change onClick={() => fileUploaderRef.current.click()} />
+            <Remove />
+          </div>
+        )}
       </div>
-
-      {source && (
-        <div>
-          <VideoPlayer
-            src={source}
-            autoPlay={false}
-            style={{ width: "30rem" }}
-          />
-          <AppendNext from={part} />
-        </div>
-      )}
+      {source && <AppendNext from={part} />}
     </div>
   );
 };

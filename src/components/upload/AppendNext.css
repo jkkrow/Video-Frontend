@@ -1,0 +1,11 @@
+.append-next {
+  position: relative;
+  display: flex;
+}
+
+.append-next__button {
+  width: 4rem;
+  height: 4rem;
+  margin: auto 1rem;
+  fill: black;
+}
