@@ -1,36 +1,46 @@
 import React, { useState, useRef, useContext } from "react";
 
-import { ReactComponent as Change } from "../../assets/icons/change.svg";
-import { ReactComponent as Remove } from "../../assets/icons/remove.svg";
-import VideoPlayer from "../../components/video/VideoPlayer";
+import { ReactComponent as Change } from "assets/icons/change.svg";
+import { ReactComponent as Remove } from "assets/icons/remove.svg";
+import VideoPlayer from "components/video/VideoPlayer";
 import AppendNext from "./AppendNext";
-// import { UploadContext } from "../../context/upload-context";
+import { UploadContext } from "context/upload-context";
+import axios from "axios";
 import "./FileUploader.css";
 
 const FileUploader = ({ from }) => {
-  // const { initPart, addPart } = useContext(UploadContext);
+  const { appendNext } = useContext(UploadContext);
   const [part, setPart] = useState();
   const [source, setSource] = useState();
   const fileUploaderRef = useRef();
 
-  const onFileChangeHandler = (event) => {
+  const onFileChangeHandler = async (event) => {
     if (!event.target.files?.length) return;
 
-    const currentPart = {
-      file: event.target.files[0].name,
-      next: [],
-    };
+    const file = event.target.files[0];
 
     // Add part to state
-    setPart(currentPart);
+    setPart(file.name);
 
     // Add to entire upload state
-    // from ? addPart(currentPart, from) : initPart(currentPart);
+    appendNext(file.name, from);
 
     // Read file to show preview
     const reader = new FileReader();
     reader.onload = (e) => setSource(e.target.result);
-    reader.readAsDataURL(event.target.files[0]);
+    reader.readAsDataURL(file);
+
+    // Upload file to AWS S3
+    // const uploadConfig = await axios.get(
+    //   `${process.env.REACT_APP_SERVER_URL}/upload`
+    // );
+
+    // await axios.put(uploadConfig.data.url, file, {
+    //   headers: { "Content-Type": file.type },
+    //   onUploadProgress: (progressEvent) => {
+    //     console.log(progressEvent);
+    //   },
+    // });
   };
 
   return (

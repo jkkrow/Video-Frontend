@@ -8,7 +8,7 @@
   position: relative;
   width: 30rem;
   height: calc(30rem * 9 / 16);
-  background-image: linear-gradient(rgb(136, 136, 136), rgb(66, 66, 66));
+  background-color: rgb(75, 75, 75);
 }
 
 .file-uploader__progress {

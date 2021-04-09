@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { ReactComponent as Plus } from "../../assets/icons/plus.svg";
+import { ReactComponent as Plus } from "assets/icons/plus.svg";
 import FileUploader from "./FileUploader";
 import "./AppendNext.css";
 

@@ -1,7 +1,7 @@
 import React from "react";
 
-import VideoPlayer from "../components/video/VideoPlayer";
-import ExampleVid from "../assets/videos/vid_1_720p.mp4";
+import VideoPlayer from "components/video/VideoPlayer";
+import ExampleVid from "assets/videos/vid_1_720p.mp4";
 import "./VideoPage.css";
 
 const VideoPage = (props) => {
