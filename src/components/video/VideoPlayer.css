@@ -101,7 +101,9 @@
 .vp-controls__volume__range--inner input {
   position: absolute;
   width: 100%;
+  transform: scale(1);
   transform-origin: left;
+  transition: transform 200ms ease-out;
 }
 
 .vp-controls__volume__range--inner div {

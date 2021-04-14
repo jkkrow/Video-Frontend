@@ -11,13 +11,13 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
+        <Route exact path="/" component={VideoPage} />
         <ContextRoute
           exact
-          path="/"
+          path="/upload"
           Provider={UploadContextProvider}
           Component={UploadVideoPage}
         />
-        <Route exact path="/video" component={VideoPage} />
         <Redirect to="/" />
       </Switch>
     </BrowserRouter>

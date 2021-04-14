@@ -16,9 +16,9 @@ const formatTime = (timeInSeconds) => {
 };
 
 export const useVideoPlayerControls = () => {
-  const vidContainerRef = useRef();
-  const vidRef = useRef();
-  const vidControlsRef = useRef();
+  const videoContainerRef = useRef();
+  const videoRef = useRef();
+  const videoControlsRef = useRef();
   const loadingSpinnerRef = useRef();
   const actionUIRef = useRef();
   const playButtonRef = useRef();
@@ -34,7 +34,26 @@ export const useVideoPlayerControls = () => {
 
   const location = useLocation();
 
-  // DISPLAYING ACTION UI
+  /*
+   * ERROR HANDLER
+   */
+
+  const onError = useCallback((error) => {
+    console.error("Error code", error.code, "object", error);
+  }, []);
+
+  const onErrorEvent = useCallback(
+    (event) => {
+      // Extract the shaka.util.Error object from the event.
+      onError(event.detail);
+    },
+    [onError]
+  );
+
+  /*
+   * DISPLAYING ACTION UI
+   */
+
   const displayActionUI = useCallback((element, index) => {
     if (index === 0) {
       // playback ui
@@ -42,7 +61,7 @@ export const useVideoPlayerControls = () => {
         icon.classList.remove("hidden")
       );
 
-      if (vidRef.current.paused) {
+      if (videoRef.current.paused) {
         element.current.children[index].children[0].classList.add("hidden");
       } else {
         element.current.children[index].children[1].classList.add("hidden");
@@ -68,35 +87,40 @@ export const useVideoPlayerControls = () => {
     );
   }, []);
 
-  // TOGGLE SHOWING CONTROLS
+  /*
+   * TOGGLE SHOWING CONTROLS
+   */
+
   const hideControls = useCallback(() => {
-    if (vidRef.current.paused) {
+    if (videoRef.current.paused) {
       return;
     }
 
     clearTimeout(CONTROLSTIMER);
     CONTROLSTIMER = setTimeout(() => {
-      vidControlsRef.current.classList.add("hide");
-      if (!vidRef.current.paused) {
-        vidContainerRef.current.style.cursor = "none";
+      videoControlsRef.current.classList.add("hide");
+      if (!videoRef.current.paused) {
+        videoContainerRef.current.style.cursor = "none";
       }
     }, 2000);
   }, []);
 
   const showControls = useCallback(() => {
-    vidControlsRef.current.classList.remove("hide");
-    vidContainerRef.current.style.cursor = "default";
+    videoControlsRef.current.classList.remove("hide");
+    videoContainerRef.current.style.cursor = "default";
 
     hideControls();
   }, [hideControls]);
 
-  // PLAYBACK CONTROL
+  /*
+   * PLAYBACK CONTROL
+   */
 
   const togglePlay = useCallback(() => {
-    if (vidRef.current.paused || vidRef.current.ended) {
-      vidRef.current.play();
+    if (videoRef.current.paused || videoRef.current.ended) {
+      videoRef.current.play();
     } else {
-      vidRef.current.pause();
+      videoRef.current.pause();
     }
 
     displayActionUI(actionUIRef, 0);
@@ -105,7 +129,7 @@ export const useVideoPlayerControls = () => {
   }, [showControls, displayActionUI]);
 
   const updatePlaybackIcon = useCallback(() => {
-    if (vidRef.current.ended) {
+    if (videoRef.current.ended) {
       [...actionUIRef.current.children[0].children].forEach((icon) =>
         icon.classList.toggle("hidden")
       );
@@ -116,7 +140,10 @@ export const useVideoPlayerControls = () => {
     });
   }, []);
 
-  // LOADING CONTROL
+  /*
+   * LOADING CONTROL
+   */
+
   const showLoadingSpinner = useCallback(() => {
     BUFFERTIMER = setTimeout(() => {
       loadingSpinnerRef.current.classList.remove("hidden");
@@ -128,10 +155,12 @@ export const useVideoPlayerControls = () => {
     loadingSpinnerRef.current.classList.add("hidden");
   }, []);
 
-  // VOLUME CONTROL
+  /*
+   * VOLUME CONTROL
+   */
 
   const controlVolumeByInput = useCallback(() => {
-    vidRef.current.volume = volumeInputRef.current.value;
+    videoRef.current.volume = volumeInputRef.current.value;
     currentVolumeRef.current.style.width =
       volumeInputRef.current.value * 100 + "%";
   }, []);
@@ -142,18 +171,22 @@ export const useVideoPlayerControls = () => {
 
       switch (direction) {
         case "up":
-          if (vidRef.current.volume + 0.05 > 1) {
-            vidRef.current.volume = 1;
+          if (videoRef.current.volume + 0.05 > 1) {
+            videoRef.current.volume = 1;
           } else {
-            vidRef.current.volume = (vidRef.current.volume + 0.05).toFixed(2);
+            videoRef.current.volume = (videoRef.current.volume + 0.05).toFixed(
+              2
+            );
           }
           displayActionUI(actionUIRef, 1);
           break;
         case "down":
-          if (vidRef.current.volume - 0.05 < 0) {
-            vidRef.current.volume = 0;
+          if (videoRef.current.volume - 0.05 < 0) {
+            videoRef.current.volume = 0;
           } else {
-            vidRef.current.volume = (vidRef.current.volume - 0.05).toFixed(2);
+            videoRef.current.volume = (videoRef.current.volume - 0.05).toFixed(
+              2
+            );
           }
           displayActionUI(actionUIRef, 2);
           break;
@@ -161,14 +194,15 @@ export const useVideoPlayerControls = () => {
           break;
       }
 
-      currentVolumeRef.current.style.width = vidRef.current.volume * 100 + "%";
-      volumeInputRef.current.value = vidRef.current.volume;
+      currentVolumeRef.current.style.width =
+        videoRef.current.volume * 100 + "%";
+      volumeInputRef.current.value = videoRef.current.volume;
     },
     [displayActionUI]
   );
 
   const updateVolume = useCallback(() => {
-    const video = vidRef.current;
+    const video = videoRef.current;
     const volumeIcons = [...volumeButtonRef.current.children];
 
     if (video.volume === 0) {
@@ -197,28 +231,30 @@ export const useVideoPlayerControls = () => {
   }, []);
 
   const toggleMute = useCallback(() => {
-    if (vidRef.current.volume !== 0) {
+    if (videoRef.current.volume !== 0) {
       volumeInputRef.current.setAttribute(
         "data-volume",
         volumeInputRef.current.value
       );
-      vidRef.current.volume = 0;
+      videoRef.current.volume = 0;
       volumeInputRef.current.value = 0;
       currentVolumeRef.current.style.width = 0;
     } else {
-      vidRef.current.volume = volumeInputRef.current.dataset.volume;
+      videoRef.current.volume = volumeInputRef.current.dataset.volume;
       volumeInputRef.current.value = volumeInputRef.current.dataset.volume;
       currentVolumeRef.current.style.width =
         volumeInputRef.current.dataset.volume * 100 + "%";
     }
   }, []);
 
-  // TIME CONTROL
+  /*
+   * TIME CONTROL
+   */
 
   const updateTime = useCallback(() => {
-    const duration = vidRef.current.duration || 0;
-    const currentTime = vidRef.current.currentTime || 0;
-    const buffer = vidRef.current.buffered;
+    const duration = videoRef.current.duration || 0;
+    const currentTime = videoRef.current.currentTime || 0;
+    const buffer = videoRef.current.buffered;
 
     // Progress UI
     seekRef.current.value = currentTime;
@@ -230,7 +266,7 @@ export const useVideoPlayerControls = () => {
       for (let i = 0; i < buffer.length; i++) {
         if (
           buffer.start(buffer.length - 1 - i) === 0 ||
-          buffer.start(buffer.length - 1 - i) < vidRef.current.currentTime
+          buffer.start(buffer.length - 1 - i) < videoRef.current.currentTime
         ) {
           bufferProgressRef.current.style.width =
             (buffer.end(buffer.length - 1 - i) / duration) * 100 + "%";
@@ -245,7 +281,9 @@ export const useVideoPlayerControls = () => {
     durationRef.current.setAttribute("datetime", remainedTime);
   }, []);
 
-  // SKIP CONTROL
+  /*
+   * SKIP CONTROL
+   */
 
   const updateSeekTooltip = useCallback((event) => {
     const skipTo =
@@ -255,8 +293,8 @@ export const useVideoPlayerControls = () => {
     seekRef.current.setAttribute("data-seek", skipTo);
 
     let newTime;
-    if (skipTo > vidRef.current.duration) {
-      newTime = formatTime(vidRef.current.duration);
+    if (skipTo > videoRef.current.duration) {
+      newTime = formatTime(videoRef.current.duration);
     } else if (skipTo < 0) {
       newTime = "00:00";
     } else {
@@ -265,7 +303,7 @@ export const useVideoPlayerControls = () => {
 
     seekTooltipRef.current.textContent = newTime;
 
-    const rect = vidRef.current.getBoundingClientRect();
+    const rect = videoRef.current.getBoundingClientRect();
 
     seekTooltipRef.current.style.left = `${event.pageX - rect.left}px`;
   }, []);
@@ -275,10 +313,10 @@ export const useVideoPlayerControls = () => {
       ? event.target.dataset.seek
       : event.target.value;
 
-    vidRef.current.currentTime = skipTo;
+    videoRef.current.currentTime = skipTo;
     seekRef.current.value = skipTo;
     currentProgressRef.current.style.width =
-      (skipTo / vidRef.current.duration) * 100 + "%";
+      (skipTo / videoRef.current.duration) * 100 + "%";
   }, []);
 
   const skipByKey = useCallback(
@@ -287,11 +325,11 @@ export const useVideoPlayerControls = () => {
 
       switch (direction) {
         case "forward":
-          vidRef.current.currentTime += 10;
+          videoRef.current.currentTime += 10;
           displayActionUI(actionUIRef, 3);
           break;
         case "backward":
-          vidRef.current.currentTime -= 10;
+          videoRef.current.currentTime -= 10;
           displayActionUI(actionUIRef, 4);
           break;
         default:
@@ -303,13 +341,15 @@ export const useVideoPlayerControls = () => {
     [showControls, displayActionUI]
   );
 
-  // FULLSCREEN CONTROL
+  /*
+   * FULLSCREEN CONTROL
+   */
 
   const toggleFullScreen = useCallback(() => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
-      vidContainerRef.current.requestFullscreen();
+      videoContainerRef.current.requestFullscreen();
     }
   }, []);
 
@@ -319,7 +359,9 @@ export const useVideoPlayerControls = () => {
     );
   }, []);
 
-  // KEYBOARD SHORTKUTS
+  /*
+   * KEYBOARD SHORTKUTS
+   */
 
   const keyboardShortcuts = useCallback(
     (event) => {
@@ -353,15 +395,17 @@ export const useVideoPlayerControls = () => {
     [skipByKey, controlVolumeByKey, togglePlay]
   );
 
-  // INITIALIZE VIDEO
+  /*
+   * INITIALIZE VIDEO
+   */
 
   const initializeVideo = useCallback(() => {
-    if (!vidRef.current.canPlayType) {
-      vidRef.current.controls = true;
-      vidControlsRef.current.classList.add("hidden");
+    if (!videoRef.current.canPlayType) {
+      videoRef.current.controls = true;
+      videoControlsRef.current.classList.add("hidden");
     }
 
-    const videoDuration = vidRef.current.duration;
+    const videoDuration = videoRef.current.duration;
     seekRef.current.setAttribute("max", videoDuration);
     currentProgressRef.current.setAttribute("max", videoDuration);
 
@@ -369,15 +413,15 @@ export const useVideoPlayerControls = () => {
 
     document.addEventListener("fullscreenchange", updateFullscreenIcon);
 
-    if (location.pathname === "/video") {
+    if (location.pathname === "/") {
       document.addEventListener("keyup", keyboardShortcuts);
     }
   }, [updateTime, updateFullscreenIcon, location, keyboardShortcuts]);
 
   return {
-    vidContainerRef,
-    vidRef,
-    vidControlsRef,
+    videoContainerRef,
+    videoRef,
+    videoControlsRef,
     loadingSpinnerRef,
     actionUIRef,
     playButtonRef,
@@ -390,6 +434,8 @@ export const useVideoPlayerControls = () => {
     currentVolumeRef,
     volumeInputRef,
     fullScreenButtonRef,
+    onError,
+    onErrorEvent,
     hideControls,
     showControls,
     togglePlay,

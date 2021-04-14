@@ -1,6 +1,6 @@
 .upload-video-page {
   position: relative;
   display: flex;
-  align-items: center;
   height: 100vh;
+  margin: 3rem;
 }

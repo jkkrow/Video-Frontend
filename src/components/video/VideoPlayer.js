@@ -14,12 +14,13 @@ import { ReactComponent as FullscreenIcon } from "assets/icons/fullscreen.svg";
 import { ReactComponent as FullscreenExitIcon } from "assets/icons/fullscreen-exit.svg";
 import { useVideoPlayerControls } from "hooks/video-player-hook";
 import "./VideoPlayer.css";
+const shaka = require("shaka-player/dist/shaka-player.ui.js");
 
 const VideoPlayer = ({ src, type, autoPlay, style }) => {
   const {
-    vidContainerRef,
-    vidRef,
-    vidControlsRef,
+    videoContainerRef,
+    videoRef,
+    videoControlsRef,
     loadingSpinnerRef,
     actionUIRef,
     playButtonRef,
@@ -32,6 +33,8 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
     currentVolumeRef,
     volumeInputRef,
     fullScreenButtonRef,
+    onError,
+    onErrorEvent,
     hideControls,
     showControls,
     togglePlay,
@@ -49,20 +52,29 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
   } = useVideoPlayerControls();
 
   useEffect(() => {
-    vidRef.current.setAttribute("src", src);
-  }, [vidRef, src]);
+    let player = new shaka.Player(videoRef.current);
+
+    player.addEventListener("error", onErrorEvent);
+
+    // Try to load a manifest.
+    // This is an asynchronous process.
+    player
+      .load(src)
+      .then(() => {})
+      .catch(onError);
+  }, [src, onError, onErrorEvent, videoRef]);
 
   return (
     <div
       className="vp-container"
-      ref={vidContainerRef}
+      ref={videoContainerRef}
       onMouseMove={showControls}
       onMouseLeave={hideControls}
       // onContextMenu={(e) => e.preventDefault()}
       style={style}
     >
       <video
-        ref={vidRef}
+        ref={videoRef}
         autoPlay={autoPlay}
         onLoadedMetadata={initializeVideo}
         onClick={togglePlay}
@@ -76,7 +88,7 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
       >
         <source src={src} type={type} />
       </video>
-      <div className="vp-controls" ref={vidControlsRef}>
+      <div className="vp-controls" ref={videoControlsRef}>
         <div className="vp-controls__playback">
           <div
             className="vp-controls__btn"

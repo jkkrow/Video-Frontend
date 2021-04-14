@@ -5,7 +5,7 @@ import { ReactComponent as Remove } from "assets/icons/remove.svg";
 import VideoPlayer from "components/video/VideoPlayer";
 import AppendNext from "./AppendNext";
 import { UploadContext } from "context/upload-context";
-import axios from "axios";
+// import axios from "axios";
 import "./FileUploader.css";
 
 const FileUploader = ({ from }) => {
@@ -26,9 +26,7 @@ const FileUploader = ({ from }) => {
     appendNext(file.name, from);
 
     // Read file to show preview
-    const reader = new FileReader();
-    reader.onload = (e) => setSource(e.target.result);
-    reader.readAsDataURL(file);
+    setSource(URL.createObjectURL(file));
 
     // Upload file to AWS S3
     // const uploadConfig = await axios.get(
