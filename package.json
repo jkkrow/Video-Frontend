@@ -14,7 +14,6 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "shaka-player": "^3.0.10",
-    "shaka-player-react": "^1.1.2",
     "video.js": "^7.11.8",
     "web-vitals": "^1.1.0"
   },

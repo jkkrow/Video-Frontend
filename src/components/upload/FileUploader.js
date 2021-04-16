@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext } from "react";
 
 import { ReactComponent as Change } from "assets/icons/change.svg";
 import { ReactComponent as Remove } from "assets/icons/remove.svg";

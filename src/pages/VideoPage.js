@@ -1,5 +1,3 @@
-import React from "react";
-
 import VideoPlayer from "components/video/VideoPlayer";
 // import VideoShakaPlayer from "components/video/VideoShakaPlayer";
 // import ExampleVid from "assets/videos/vid_1_720p.mp4";

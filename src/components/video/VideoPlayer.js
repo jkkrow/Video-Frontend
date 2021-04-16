@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 import { ReactComponent as PlayIcon } from "assets/icons/play.svg";
 import { ReactComponent as PauseIcon } from "assets/icons/pause.svg";
@@ -22,17 +22,17 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
     videoRef,
     videoControlsRef,
     loadingSpinnerRef,
-    actionUIRef,
+    centerUIRef,
     playButtonRef,
-    durationRef,
+    timeRef,
     currentProgressRef,
     bufferProgressRef,
-    seekRef,
+    seekProgressRef,
     seekTooltipRef,
     volumeButtonRef,
     currentVolumeRef,
     volumeInputRef,
-    fullScreenButtonRef,
+    fullscreenButtonRef,
     onError,
     onErrorEvent,
     hideControls,
@@ -47,7 +47,7 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
     controlVolumeByInput,
     updateVolume,
     toggleMute,
-    toggleFullScreen,
+    toggleFullscreen,
     initializeVideo,
   } = useVideoPlayerControls();
 
@@ -82,7 +82,7 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
         onPause={updatePlaybackIcon}
         onVolumeChange={updateVolume}
         onTimeUpdate={updateTime}
-        onDoubleClick={toggleFullScreen}
+        onDoubleClick={toggleFullscreen}
         onWaiting={showLoadingSpinner}
         onCanPlay={hideLoadingSpinner}
       >
@@ -111,8 +111,8 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
             <VolumeLowIcon className="hidden" />
             <VolumeMuteIcon className="hidden" />
           </div>
-          <div className="vp-controls__volume__range--outer">
-            <div className="vp-controls__volume__range--inner">
+          <div className="vp-controls__range--outer">
+            <div className="vp-controls__range--inner">
               <div className="vp-controls__range--background" />
               <div
                 className="vp-controls__range--current"
@@ -138,7 +138,7 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
           />
           <input
             className="vp-controls__range--seek"
-            ref={seekRef}
+            ref={seekProgressRef}
             defaultValue="0"
             step="0.1"
             type="range"
@@ -154,13 +154,13 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
         </div>
 
         <div className="vp-controls__time">
-          <time ref={durationRef}></time>
+          <time ref={timeRef}></time>
         </div>
 
         <div
           className="vp-controls__btn"
-          ref={fullScreenButtonRef}
-          onClick={toggleFullScreen}
+          ref={fullscreenButtonRef}
+          onClick={toggleFullscreen}
         >
           <FullscreenIcon />
           <FullscreenExitIcon className="hidden" />
@@ -168,8 +168,8 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
       </div>
 
       {/* Loading Spinner */}
-      <div className="lds-spinner__container" ref={loadingSpinnerRef}>
-        <div className="lds-spinner">
+      <div className="vp-spinner__container" ref={loadingSpinnerRef}>
+        <div className="vp-spinner">
           <div></div>
           <div></div>
           <div></div>
@@ -184,8 +184,9 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
           <div></div>
         </div>
       </div>
-      {/* Action UI */}
-      <div className="action-ui" ref={actionUIRef}>
+
+      {/* Center UI */}
+      <div className="vp-center-ui" ref={centerUIRef}>
         <div>
           <PlayIcon />
           <PauseIcon className="hidden" />

@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import ContextRoute from "context/ContextRoute";
@@ -7,7 +6,7 @@ import UploadVideoPage from "pages/UploadVideoPage";
 import UploadContextProvider from "context/upload-context";
 import "./App.css";
 
-function App() {
+const App = () => {
   return (
     <BrowserRouter>
       <Switch>
@@ -22,6 +21,6 @@ function App() {
       </Switch>
     </BrowserRouter>
   );
-}
+};
 
 export default App;

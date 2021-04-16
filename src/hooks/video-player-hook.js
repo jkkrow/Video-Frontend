@@ -20,17 +20,17 @@ export const useVideoPlayerControls = () => {
   const videoRef = useRef();
   const videoControlsRef = useRef();
   const loadingSpinnerRef = useRef();
-  const actionUIRef = useRef();
+  const centerUIRef = useRef();
   const playButtonRef = useRef();
-  const durationRef = useRef();
+  const timeRef = useRef();
   const currentProgressRef = useRef();
   const bufferProgressRef = useRef();
-  const seekRef = useRef();
+  const seekProgressRef = useRef();
   const seekTooltipRef = useRef();
   const volumeButtonRef = useRef();
   const currentVolumeRef = useRef();
   const volumeInputRef = useRef();
-  const fullScreenButtonRef = useRef();
+  const fullscreenButtonRef = useRef();
 
   const location = useLocation();
 
@@ -51,10 +51,10 @@ export const useVideoPlayerControls = () => {
   );
 
   /*
-   * DISPLAYING ACTION UI
+   * DISPLAYING CENTER UI
    */
 
-  const displayActionUI = useCallback((element, index) => {
+  const displayCenterUI = useCallback((element, index) => {
     if (index === 0) {
       // playback ui
       [...element.current.children[index].children].forEach((icon) =>
@@ -123,14 +123,14 @@ export const useVideoPlayerControls = () => {
       videoRef.current.pause();
     }
 
-    displayActionUI(actionUIRef, 0);
+    displayCenterUI(centerUIRef, 0);
 
     showControls();
-  }, [showControls, displayActionUI]);
+  }, [showControls, displayCenterUI]);
 
   const updatePlaybackIcon = useCallback(() => {
     if (videoRef.current.ended) {
-      [...actionUIRef.current.children[0].children].forEach((icon) =>
+      [...centerUIRef.current.children[0].children].forEach((icon) =>
         icon.classList.toggle("hidden")
       );
     }
@@ -178,7 +178,7 @@ export const useVideoPlayerControls = () => {
               2
             );
           }
-          displayActionUI(actionUIRef, 1);
+          displayCenterUI(centerUIRef, 1);
           break;
         case "down":
           if (videoRef.current.volume - 0.05 < 0) {
@@ -188,7 +188,7 @@ export const useVideoPlayerControls = () => {
               2
             );
           }
-          displayActionUI(actionUIRef, 2);
+          displayCenterUI(centerUIRef, 2);
           break;
         default:
           break;
@@ -198,7 +198,7 @@ export const useVideoPlayerControls = () => {
         videoRef.current.volume * 100 + "%";
       volumeInputRef.current.value = videoRef.current.volume;
     },
-    [displayActionUI]
+    [displayCenterUI]
   );
 
   const updateVolume = useCallback(() => {
@@ -257,7 +257,7 @@ export const useVideoPlayerControls = () => {
     const buffer = videoRef.current.buffered;
 
     // Progress UI
-    seekRef.current.value = currentTime;
+    seekProgressRef.current.value = currentTime;
     currentProgressRef.current.style.width =
       (currentTime / duration) * 100 + "%";
 
@@ -277,8 +277,8 @@ export const useVideoPlayerControls = () => {
 
     // Time UI
     const remainedTime = formatTime(duration - currentTime);
-    durationRef.current.innerText = remainedTime;
-    durationRef.current.setAttribute("datetime", remainedTime);
+    timeRef.current.innerText = remainedTime;
+    timeRef.current.setAttribute("datetime", remainedTime);
   }, []);
 
   /*
@@ -290,7 +290,7 @@ export const useVideoPlayerControls = () => {
       (event.nativeEvent.offsetX / event.target.clientWidth) *
       parseInt(event.target.getAttribute("max"), 10);
 
-    seekRef.current.setAttribute("data-seek", skipTo);
+    seekProgressRef.current.setAttribute("data-seek", skipTo);
 
     let newTime;
     if (skipTo > videoRef.current.duration) {
@@ -314,23 +314,23 @@ export const useVideoPlayerControls = () => {
       : event.target.value;
 
     videoRef.current.currentTime = skipTo;
-    seekRef.current.value = skipTo;
+    seekProgressRef.current.value = skipTo;
     currentProgressRef.current.style.width =
       (skipTo / videoRef.current.duration) * 100 + "%";
   }, []);
 
   const skipByKey = useCallback(
     (direction) => {
-      seekRef.current.blur();
+      seekProgressRef.current.blur();
 
       switch (direction) {
         case "forward":
           videoRef.current.currentTime += 10;
-          displayActionUI(actionUIRef, 3);
+          displayCenterUI(centerUIRef, 3);
           break;
         case "backward":
           videoRef.current.currentTime -= 10;
-          displayActionUI(actionUIRef, 4);
+          displayCenterUI(centerUIRef, 4);
           break;
         default:
           return;
@@ -338,14 +338,14 @@ export const useVideoPlayerControls = () => {
 
       showControls();
     },
-    [showControls, displayActionUI]
+    [showControls, displayCenterUI]
   );
 
   /*
    * FULLSCREEN CONTROL
    */
 
-  const toggleFullScreen = useCallback(() => {
+  const toggleFullscreen = useCallback(() => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
@@ -354,7 +354,7 @@ export const useVideoPlayerControls = () => {
   }, []);
 
   const updateFullscreenIcon = useCallback(() => {
-    [...fullScreenButtonRef.current.children].forEach((icon) =>
+    [...fullscreenButtonRef.current.children].forEach((icon) =>
       icon.classList.toggle("hidden")
     );
   }, []);
@@ -406,7 +406,7 @@ export const useVideoPlayerControls = () => {
     }
 
     const videoDuration = videoRef.current.duration;
-    seekRef.current.setAttribute("max", videoDuration);
+    seekProgressRef.current.setAttribute("max", videoDuration);
     currentProgressRef.current.setAttribute("max", videoDuration);
 
     updateTime();
@@ -423,17 +423,17 @@ export const useVideoPlayerControls = () => {
     videoRef,
     videoControlsRef,
     loadingSpinnerRef,
-    actionUIRef,
+    centerUIRef,
     playButtonRef,
-    durationRef,
+    timeRef,
     currentProgressRef,
     bufferProgressRef,
-    seekRef,
+    seekProgressRef,
     seekTooltipRef,
     volumeButtonRef,
     currentVolumeRef,
     volumeInputRef,
-    fullScreenButtonRef,
+    fullscreenButtonRef,
     onError,
     onErrorEvent,
     hideControls,
@@ -448,7 +448,7 @@ export const useVideoPlayerControls = () => {
     controlVolumeByInput,
     updateVolume,
     toggleMute,
-    toggleFullScreen,
+    toggleFullscreen,
     initializeVideo,
   };
 };

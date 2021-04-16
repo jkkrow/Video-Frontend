@@ -1,5 +1,3 @@
-import React from "react";
-
 import FileUploader from "components/upload/FileUploader";
 import "./UploadVideoPage.css";
 
