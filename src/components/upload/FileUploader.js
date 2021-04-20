@@ -2,7 +2,7 @@ import { useState, useRef, useContext } from "react";
 
 import { ReactComponent as Change } from "assets/icons/change.svg";
 import { ReactComponent as Remove } from "assets/icons/remove.svg";
-import VideoPlayer from "components/video/VideoPlayer";
+import VideoPlayer from "components/Video/VideoPlayer";
 import AppendNext from "./AppendNext";
 import { UploadContext } from "context/upload-context";
 // import axios from "axios";

@@ -16,7 +16,7 @@ import { useVideoPlayerControls } from "hooks/video-player-hook";
 import "./VideoPlayer.css";
 const shaka = require("shaka-player/dist/shaka-player.ui.js");
 
-const VideoPlayer = ({ src, type, autoPlay, style }) => {
+const VideoPlayer = ({ src, autoPlay, style }) => {
   const {
     videoContainerRef,
     videoRef,
@@ -33,8 +33,7 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
     currentVolumeRef,
     volumeInputRef,
     fullscreenButtonRef,
-    onError,
-    onErrorEvent,
+    errorHandler,
     hideControls,
     showControls,
     togglePlay,
@@ -52,17 +51,15 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
   } = useVideoPlayerControls();
 
   useEffect(() => {
+    // Connect video to Shaka Player
     let player = new shaka.Player(videoRef.current);
 
-    player.addEventListener("error", onErrorEvent);
-
-    // Try to load a manifest.
-    // This is an asynchronous process.
+    // Try to load a manifest (async process).
     player
       .load(src)
       .then(() => {})
-      .catch(onError);
-  }, [src, onError, onErrorEvent, videoRef]);
+      .catch((err) => console.log(err));
+  }, [src, videoRef]);
 
   return (
     <div
@@ -85,9 +82,9 @@ const VideoPlayer = ({ src, type, autoPlay, style }) => {
         onDoubleClick={toggleFullscreen}
         onWaiting={showLoadingSpinner}
         onCanPlay={hideLoadingSpinner}
-      >
-        <source src={src} type={type} />
-      </video>
+        onError={errorHandler}
+      />
+
       <div className="vp-controls" ref={videoControlsRef}>
         <div className="vp-controls__playback">
           <div

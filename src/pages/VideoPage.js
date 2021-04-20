@@ -1,4 +1,4 @@
-import VideoPlayer from "components/video/VideoPlayer";
+import VideoPlayer from "components/Video/VideoPlayer";
 // import VideoShakaPlayer from "components/video/VideoShakaPlayer";
 // import ExampleVid from "assets/videos/vid_1_720p.mp4";
 import "./VideoPage.css";

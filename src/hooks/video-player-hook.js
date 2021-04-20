@@ -1,7 +1,6 @@
 import { useRef, useCallback } from "react";
-import { useLocation } from "react-router-dom";
 
-let CONTROLSTIMER, BUFFERTIMER;
+let CONTROLSTIMER, BUFFERTIMER, VOLUMETIMER;
 
 const formatTime = (timeInSeconds) => {
   const result = new Date(timeInSeconds * 1000).toISOString().substr(11, 8);
@@ -32,47 +31,41 @@ export const useVideoPlayerControls = () => {
   const volumeInputRef = useRef();
   const fullscreenButtonRef = useRef();
 
-  const location = useLocation();
-
   /*
    * ERROR HANDLER
    */
 
-  const onError = useCallback((error) => {
-    console.error("Error code", error.code, "object", error);
-  }, []);
-
-  const onErrorEvent = useCallback(
+  const errorHandler = useCallback(
     (event) => {
       // Extract the shaka.util.Error object from the event.
-      onError(event.detail);
+      console.log("Error code", event.detail.code, "object", event.detail);
     },
-    [onError]
+    []
   );
 
   /*
    * DISPLAYING CENTER UI
    */
 
-  const displayCenterUI = useCallback((element, index) => {
+  const displayCenterUI = useCallback((index) => {
     if (index === 0) {
       // playback ui
-      [...element.current.children[index].children].forEach((icon) =>
+      [...centerUIRef.current.children[index].children].forEach((icon) =>
         icon.classList.remove("hidden")
       );
 
       if (videoRef.current.paused) {
-        element.current.children[index].children[0].classList.add("hidden");
+        centerUIRef.current.children[index].children[0].classList.add("hidden");
       } else {
-        element.current.children[index].children[1].classList.add("hidden");
+        centerUIRef.current.children[index].children[1].classList.add("hidden");
       }
     } else {
-      [...element.current.children[index].children].forEach((icon) =>
+      [...centerUIRef.current.children[index].children].forEach((icon) =>
         icon.classList.toggle("hidden")
       );
     }
 
-    element.current.children[index].animate(
+    centerUIRef.current.children[index].animate(
       [
         {
           opacity: 1,
@@ -123,7 +116,7 @@ export const useVideoPlayerControls = () => {
       videoRef.current.pause();
     }
 
-    displayCenterUI(centerUIRef, 0);
+    displayCenterUI(0);
 
     showControls();
   }, [showControls, displayCenterUI]);
@@ -161,8 +154,6 @@ export const useVideoPlayerControls = () => {
 
   const controlVolumeByInput = useCallback(() => {
     videoRef.current.volume = volumeInputRef.current.value;
-    currentVolumeRef.current.style.width =
-      volumeInputRef.current.value * 100 + "%";
   }, []);
 
   const controlVolumeByKey = useCallback(
@@ -178,7 +169,7 @@ export const useVideoPlayerControls = () => {
               2
             );
           }
-          displayCenterUI(centerUIRef, 1);
+          displayCenterUI(1);
           break;
         case "down":
           if (videoRef.current.volume - 0.05 < 0) {
@@ -188,15 +179,11 @@ export const useVideoPlayerControls = () => {
               2
             );
           }
-          displayCenterUI(centerUIRef, 2);
+          displayCenterUI(2);
           break;
         default:
           break;
       }
-
-      currentVolumeRef.current.style.width =
-        videoRef.current.volume * 100 + "%";
-      volumeInputRef.current.value = videoRef.current.volume;
     },
     [displayCenterUI]
   );
@@ -204,6 +191,9 @@ export const useVideoPlayerControls = () => {
   const updateVolume = useCallback(() => {
     const video = videoRef.current;
     const volumeIcons = [...volumeButtonRef.current.children];
+
+    currentVolumeRef.current.style.width = video.volume * 100 + "%";
+    volumeInputRef.current.value = video.volume;
 
     if (video.volume === 0) {
       video.muted = true;
@@ -228,6 +218,11 @@ export const useVideoPlayerControls = () => {
     } else {
       volumeIcons[0].classList.remove("hidden");
     }
+
+    clearTimeout(VOLUMETIMER);
+    VOLUMETIMER = setTimeout(() => {
+      localStorage.setItem("video-volume", video.volume);
+    }, 500);
   }, []);
 
   const toggleMute = useCallback(() => {
@@ -326,11 +321,11 @@ export const useVideoPlayerControls = () => {
       switch (direction) {
         case "forward":
           videoRef.current.currentTime += 10;
-          displayCenterUI(centerUIRef, 3);
+          displayCenterUI(3);
           break;
         case "backward":
           videoRef.current.currentTime -= 10;
-          displayCenterUI(centerUIRef, 4);
+          displayCenterUI(4);
           break;
         default:
           return;
@@ -405,18 +400,17 @@ export const useVideoPlayerControls = () => {
       videoControlsRef.current.classList.add("hidden");
     }
 
+    videoRef.current.volume = localStorage.getItem("video-volume");
+
     const videoDuration = videoRef.current.duration;
     seekProgressRef.current.setAttribute("max", videoDuration);
     currentProgressRef.current.setAttribute("max", videoDuration);
 
     updateTime();
 
+    document.addEventListener("keyup", keyboardShortcuts);
     document.addEventListener("fullscreenchange", updateFullscreenIcon);
-
-    if (location.pathname === "/") {
-      document.addEventListener("keyup", keyboardShortcuts);
-    }
-  }, [updateTime, updateFullscreenIcon, location, keyboardShortcuts]);
+  }, [updateTime, updateFullscreenIcon, keyboardShortcuts]);
 
   return {
     videoContainerRef,
@@ -434,8 +428,7 @@ export const useVideoPlayerControls = () => {
     currentVolumeRef,
     volumeInputRef,
     fullscreenButtonRef,
-    onError,
-    onErrorEvent,
+    errorHandler,
     hideControls,
     showControls,
     togglePlay,

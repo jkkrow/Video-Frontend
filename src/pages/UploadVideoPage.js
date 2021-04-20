@@ -1,4 +1,4 @@
-import FileUploader from "components/upload/FileUploader";
+import FileUploader from "components/Upload/FileUploader";
 import "./UploadVideoPage.css";
 
 const UploadVideoPage = () => {
