@@ -175,6 +175,10 @@
   margin: 0 0.5rem;
 }
 
+.vp-controls svg {
+  fill: #fff;
+}
+
 .vp-center-ui div {
   pointer-events: none;
   position: absolute;
@@ -196,7 +200,6 @@
 .vp-center-ui svg {
   width: 3.5rem;
   height: 3.5rem;
-  fill: #fff;
   cursor: pointer;
 }
 

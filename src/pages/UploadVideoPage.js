@@ -4,7 +4,9 @@ import "./UploadVideoPage.css";
 const UploadVideoPage = () => {
   return (
     <div className="upload-video-page">
-      <FileUploader />
+      <div className="upload-file">
+        <FileUploader />
+      </div>
     </div>
   );
 };

@@ -1,9 +1,8 @@
 import { useState, useRef, useContext } from "react";
 
-import { ReactComponent as Change } from "assets/icons/change.svg";
-import { ReactComponent as Remove } from "assets/icons/remove.svg";
+import { ReactComponent as Plus } from "assets/icons/plus.svg";
 import VideoPlayer from "components/Video/VideoPlayer";
-import AppendNext from "./AppendNext";
+import AppendNext from "./AddFile";
 import { UploadContext } from "context/upload-context";
 // import axios from "axios";
 import "./FileUploader.css";
@@ -12,7 +11,13 @@ const FileUploader = ({ from }) => {
   const { appendNext } = useContext(UploadContext);
   const [part, setPart] = useState();
   const [source, setSource] = useState();
+  const [children, setChildren] = useState([]);
   const fileUploaderRef = useRef();
+
+  const openFileInputHandler = () => fileUploaderRef.current.click();
+
+  const appendChildHandler = () =>
+    setChildren((prev) => (prev.length === 6 ? prev : [...prev, ""]));
 
   const onFileChangeHandler = async (event) => {
     if (!event.target.files?.length) return;
@@ -43,26 +48,26 @@ const FileUploader = ({ from }) => {
 
   return (
     <div className="file-uploader">
-      <div
-        className="file-uploader__dnd"
-        onClick={() => (!source ? fileUploaderRef.current.click() : null)}
-      >
+      <div className="file-uploader__header">
         <input
           ref={fileUploaderRef}
-          type="file"
           hidden
+          type="file"
           accept=".mp4"
           onChange={onFileChangeHandler}
         />
-        {source && <VideoPlayer src={source} autoPlay={false} />}
-        {source && (
-          <div className="file-uploader__progress">
-            <Change onClick={() => fileUploaderRef.current.click()} />
-            <Remove />
-          </div>
-        )}
+        <div className="file-uploader_title" onClick={openFileInputHandler}>
+          {!part ? "Add File" : part}
+        </div>
+        <div className="file-uploader__progress"></div>
+        {part && <Plus onClick={appendChildHandler} />}
       </div>
-      {source && <AppendNext from={part} />}
+      <div className="file-uploader__children">
+        {children.map((child) => (
+          <FileUploader />
+        ))}
+      </div>
+      {/* {source && <AppendNext from={part} />} */}
     </div>
   );
 };

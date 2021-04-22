@@ -1,24 +1,24 @@
 .file-uploader {
-  position: absolute;
-  display: flex;
-  margin-left: 6rem;
+  width: 95%;
 }
 
-.file-uploader__dnd {
-  position: relative;
-  width: 30rem;
-  height: calc(30rem * 9 / 16);
-  border: 1px solid var(--grey);
-}
-
-.file-uploader__progress {
-  position: absolute;
+.file-uploader__header {
   display: flex;
+  justify-content: space-around;
   align-items: center;
-  width: 100%;
   height: 5rem;
+  border-bottom: 1px solid var(--grey);
 }
 
-.file-uploader__progress svg {
-  fill: var(--grey);
+.file-uploader__title {
+  width: 5rem;
+  text-overflow: ellipsis;
+}
+
+.file-uploader__children {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  top: 100%;
+  width: 100%;
 }

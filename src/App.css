@@ -56,10 +56,14 @@ input[type="range"]:focus {
   outline: none;
 }
 
+button {
+  cursor: pointer;
+}
+
 svg {
   width: 2.5rem;
   height: 2.5rem;
-  fill: #fff;
+  fill: black;
   cursor: pointer;
 }
 

@@ -1,6 +1,11 @@
 .upload-video-page {
-  position: relative;
+  margin-top: 5rem;
+  display: grid;
+  grid-template-columns: 60%;
+  justify-content: center;
+}
+
+.upload-file {
   display: flex;
-  height: 100vh;
-  margin: 3rem;
+  justify-content: center;
 }

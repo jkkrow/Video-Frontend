@@ -51,6 +51,10 @@ const VideoPlayer = ({ src, autoPlay, style }) => {
   } = useVideoPlayerControls();
 
   useEffect(() => {
+    // If src type is Blob
+    if (src.substr(0, 4) === "blob")
+      return videoRef.current.setAttribute("src", src);
+
     // Connect video to Shaka Player
     let player = new shaka.Player(videoRef.current);
 
