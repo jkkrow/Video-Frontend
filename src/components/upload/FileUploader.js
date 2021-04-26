@@ -1,8 +1,7 @@
 import { useState, useRef, useContext } from "react";
 
 import { ReactComponent as Plus } from "assets/icons/plus.svg";
-import VideoPlayer from "components/Video/VideoPlayer";
-import AppendNext from "./AddFile";
+import { ReactComponent as Remove } from "assets/icons/remove.svg";
 import { UploadContext } from "context/upload-context";
 // import axios from "axios";
 import "./FileUploader.css";
@@ -10,16 +9,15 @@ import "./FileUploader.css";
 const FileUploader = ({ from }) => {
   const { appendNext } = useContext(UploadContext);
   const [part, setPart] = useState();
-  const [source, setSource] = useState();
-  const [children, setChildren] = useState([]);
+  // const [source, setSource] = useState();
+  const [isAppending, setIsAppending] = useState(false);
   const fileUploaderRef = useRef();
 
   const openFileInputHandler = () => fileUploaderRef.current.click();
 
-  const appendChildHandler = () =>
-    setChildren((prev) => (prev.length === 6 ? prev : [...prev, ""]));
+  const toggleAppendChildHandler = () => setIsAppending((prev) => !prev);
 
-  const onFileChangeHandler = async (event) => {
+  const fileChangeHandler = async (event) => {
     if (!event.target.files?.length) return;
 
     const file = event.target.files[0];
@@ -31,7 +29,7 @@ const FileUploader = ({ from }) => {
     appendNext(file.name, from);
 
     // Read file to show preview
-    setSource(URL.createObjectURL(file));
+    // setSource(URL.createObjectURL(file));
 
     // Upload file to AWS S3
     // const uploadConfig = await axios.get(
@@ -54,20 +52,22 @@ const FileUploader = ({ from }) => {
           hidden
           type="file"
           accept=".mp4"
-          onChange={onFileChangeHandler}
+          onChange={fileChangeHandler}
         />
         <div className="file-uploader_title" onClick={openFileInputHandler}>
           {!part ? "Add File" : part}
         </div>
         <div className="file-uploader__progress"></div>
-        {part && <Plus onClick={appendChildHandler} />}
+        {part &&
+          (isAppending ? (
+            <Remove onClick={toggleAppendChildHandler} />
+          ) : (
+            <Plus onClick={toggleAppendChildHandler} />
+          ))}
       </div>
       <div className="file-uploader__children">
-        {children.map((child) => (
-          <FileUploader />
-        ))}
+        {isAppending && <FileUploader from={part} />}
       </div>
-      {/* {source && <AppendNext from={part} />} */}
     </div>
   );
 };

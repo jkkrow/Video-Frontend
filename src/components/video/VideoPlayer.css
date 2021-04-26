@@ -36,7 +36,6 @@
   margin: 0 0.5rem;
   border: none;
   outline: none;
-  color: #fff;
   background-color: transparent;
   cursor: pointer;
   transform: scale(1);
@@ -164,19 +163,13 @@
   padding: 0.3rem;
   content: attr(data-title);
   font-weight: bold;
-  color: #fff;
   background-color: rgba(0, 0, 0, 0.8);
   opacity: 0;
   transition: opacity 200ms ease-out;
 }
 
 .vp-controls__time {
-  color: #fff;
   margin: 0 0.5rem;
-}
-
-.vp-controls svg {
-  fill: #fff;
 }
 
 .vp-center-ui div {

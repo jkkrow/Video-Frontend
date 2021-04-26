@@ -1,30 +1,33 @@
 import { createContext, useState } from "react";
 
-import VideoClass from "classes/VideoClass";
+import VideoTree from "classes/VideoTree";
 
 export const UploadContext = createContext();
 
 const UploadContextProvider = (props) => {
-  const [whole, setWhole] = useState(new VideoClass(null));
+  const [videoTree, setVideoTree] = useState(new VideoTree(null));
 
-  const appendNext = (name, from) => {
-    if (!from) {
-      return setWhole((prev) => {
-        const newState = prev;
-        newState.root.name = name;
-        return newState;
-      });
-    }
-
-    setWhole((prev) => {
+  const inititateUpload = (name) => {
+    setVideoTree((prev) => {
       const newState = prev;
-      newState.append(name, from);
+      newState.root.name = name;
+      return newState;
+    });
+  };
+
+  const appendNext = (files, parent) => {
+    setVideoTree((prev) => {
+      const newState = prev;
+      files.forEach((file) => {
+        newState.append(file.name, parent);
+      });
+      // newState.append(files, parent);
       return newState;
     });
   };
 
   return (
-    <UploadContext.Provider value={{ whole, appendNext }}>
+    <UploadContext.Provider value={{ videoTree, inititateUpload, appendNext }}>
       {props.children}
     </UploadContext.Provider>
   );

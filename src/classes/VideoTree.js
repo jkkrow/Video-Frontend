@@ -48,15 +48,3 @@ class VideoTree {
 }
 
 export default VideoTree;
-
-// const videoTree = new VideoTree("video-1");
-
-// videoTree.append("video-2", "video-1");
-// videoTree.append("video-3", "video-1");
-// videoTree.append("video-4", "video-2");
-
-// videoTree.change("video-2", "NEW-video-2");
-
-// console.log(JSON.stringify(videoTree, null, 4));
-
-// console.log(videoTree.find("video-1"));
