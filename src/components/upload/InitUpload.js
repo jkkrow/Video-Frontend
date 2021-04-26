@@ -1,14 +1,16 @@
-import { useRef, useContext } from "react";
+import { useRef } from "react";
 
-import { UploadContext } from "context/upload-context";
 import "./InitUpload.css";
 
-const InitUpload = () => {
-  const { initiateUpload } = useContext(UploadContext);
+const InitUpload = ({ onChange }) => {
   const fileUploaderRef = useRef();
 
+  const openFileInputHandler = () => fileUploaderRef.current.click();
+
   const fileChangeHandler = (event) => {
-    initiateUpload(event.target.files[0].name);
+    if (!event.target.files?.length) return;
+
+    onChange(event.target.files[0]);
   };
 
   return (
@@ -20,6 +22,7 @@ const InitUpload = () => {
         accept=".mp4"
         onChange={fileChangeHandler}
       />
+      <div onClick={openFileInputHandler}>Start Upload</div>
     </div>
   );
 };

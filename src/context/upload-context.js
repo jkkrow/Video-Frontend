@@ -5,21 +5,17 @@ import VideoTree from "classes/VideoTree";
 export const UploadContext = createContext();
 
 const UploadContextProvider = (props) => {
-  const [videoTree, setVideoTree] = useState(new VideoTree(null));
+  const [videoTree, setVideoTree] = useState(null);
 
-  const inititateUpload = (name) => {
-    setVideoTree((prev) => {
-      const newState = prev;
-      newState.root.name = name;
-      return newState;
-    });
+  const initiateUpload = (file) => {
+    setVideoTree(new VideoTree(file));
   };
 
   const appendNext = (files, parent) => {
     setVideoTree((prev) => {
       const newState = prev;
       files.forEach((file) => {
-        newState.append(file.name, parent);
+        newState.append(file, parent);
       });
       // newState.append(files, parent);
       return newState;
@@ -27,7 +23,7 @@ const UploadContextProvider = (props) => {
   };
 
   return (
-    <UploadContext.Provider value={{ videoTree, inititateUpload, appendNext }}>
+    <UploadContext.Provider value={{ videoTree, initiateUpload, appendNext }}>
       {props.children}
     </UploadContext.Provider>
   );

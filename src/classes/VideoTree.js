@@ -1,13 +1,13 @@
-class Node {
-  constructor(name) {
-    this.name = name;
-    this.next = [];
+class VideoNode {
+  constructor(file) {
+    this.file = file;
+    this.children = [];
   }
 }
 
 class VideoTree {
-  constructor(name) {
-    this.root = new Node(name);
+  constructor(file) {
+    this.root = new VideoNode(file);
   }
 
   find(name) {
@@ -19,31 +19,31 @@ class VideoTree {
     while (queue.length > 0) {
       currentNode = queue.shift();
 
-      if (currentNode.name === name) return currentNode;
+      if (currentNode.file.name === name) return currentNode;
 
-      if (currentNode.next.length)
-        currentNode.next.forEach((child) => queue.push(child));
+      if (currentNode.children.length)
+        currentNode.children.forEach((child) => queue.push(child));
     }
 
     return null;
   }
 
-  append(name, parentName) {
-    const parentNode = this.find(parentName);
+  append(file, parentNode) {
+    const parent = this.find(parentNode.file.name);
 
-    if (!parentNode) return null;
+    if (!parent) return null;
 
-    const newNode = new Node(name);
+    const newNode = new VideoNode(file);
 
-    parentNode.next.push(newNode);
+    parent.children = [...parent.children, newNode];
   }
 
-  change(name, newName) {
-    const targetNode = this.find(name);
+  change(currentFile, newFile) {
+    const targetNode = this.find(currentFile.name);
 
     if (!targetNode) return null;
 
-    targetNode.name = newName;
+    targetNode.file = newFile;
   }
 }
 

@@ -26,7 +26,7 @@
   transition: transform 200ms ease-out;
 }
 
-.tree-node__open-children.rotate {
+.tree-node__open-children.rotated {
   transform: rotate(90deg);
 }
 
@@ -38,21 +38,6 @@
   width: 100%;
 }
 
-.tree-node-display-enter {
-  opacity: 0;
-  transform: translateY(-20%);
-  transition: all 200ms ease-out;
-}
-.tree-node-display-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-}
-.tree-node-display-exit {
-  opacity: 1;
-  transform: translateY(0);
-}
-.tree-node-display-exit-active {
-  opacity: 0;
-  transform: translateY(-20%);
-  transition: all 200ms ease-out;
+.tree-node__children.hide {
+  display: none;
 }

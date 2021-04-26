@@ -1,21 +1,14 @@
-import { useState, useRef, useContext } from "react";
+import { useState, useRef } from "react";
 
 import { ReactComponent as Plus } from "assets/icons/plus.svg";
-import { ReactComponent as Remove } from "assets/icons/remove.svg";
-import { UploadContext } from "context/upload-context";
-// import axios from "axios";
 import "./FileUploader.css";
 
 const FileUploader = ({ from }) => {
-  const { appendNext } = useContext(UploadContext);
-  const [part, setPart] = useState();
-  // const [source, setSource] = useState();
-  const [isAppending, setIsAppending] = useState(false);
+  const [file, setFile] = useState(null);
+  const [children, setChildren] = useState([]);
   const fileUploaderRef = useRef();
 
   const openFileInputHandler = () => fileUploaderRef.current.click();
-
-  const toggleAppendChildHandler = () => setIsAppending((prev) => !prev);
 
   const fileChangeHandler = async (event) => {
     if (!event.target.files?.length) return;
@@ -57,16 +50,12 @@ const FileUploader = ({ from }) => {
         <div className="file-uploader_title" onClick={openFileInputHandler}>
           {!part ? "Add File" : part}
         </div>
-        <div className="file-uploader__progress"></div>
-        {part &&
-          (isAppending ? (
-            <Remove onClick={toggleAppendChildHandler} />
-          ) : (
-            <Plus onClick={toggleAppendChildHandler} />
-          ))}
       </div>
       <div className="file-uploader__children">
-        {isAppending && <FileUploader from={part} />}
+        {children.length > 0 &&
+          children.map((item) => {
+            <FileUploader key={item.file.lastModified} from={part} />;
+          })}
       </div>
     </div>
   );

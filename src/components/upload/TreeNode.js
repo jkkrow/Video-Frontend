@@ -1,16 +1,29 @@
-import { useState, useRef, useContext } from "react";
-import { CSSTransition } from "react-transition-group";
+import { useState, useRef, useEffect } from "react";
 // import axios from "axios";
 
-import { ReactComponent as Right } from "assets/icons/right-angle.svg";
-import { ReactComponent as Plus } from "assets/icons/plus.svg";
-import { UploadContext } from "context/upload-context";
+import { ReactComponent as Opener } from "assets/icons/right-angle.svg";
+import { ReactComponent as Add } from "assets/icons/plus.svg";
 import "./TreeNode.css";
 
 const TreeNode = ({ node }) => {
-  const { appendNext } = useContext(UploadContext);
   const [openChildren, setOpenChildren] = useState(false);
+  const [children, setChildren] = useState([]);
   const fileUploaderRef = useRef();
+
+  useEffect(() => {
+    // const uploadToAWS = async () => {
+    //   const uploadConfig = await axios.get(
+    //     `${process.env.REACT_APP_SERVER_URL}/upload`
+    //   );
+    //   await axios.put(uploadConfig.data.url, node.file, {
+    //     headers: { "Content-Type": node.file.type },
+    //     onUploadProgress: (progressEvent) => {
+    //       console.log(progressEvent);
+    //     },
+    //   });
+    // };
+    // uploadToAWS();
+  }, []);
 
   const displayChildrenHandler = () => setOpenChildren((prev) => !prev);
 
@@ -19,24 +32,20 @@ const TreeNode = ({ node }) => {
   const fileChangeHandler = async (event) => {
     if (!event.target.files?.length) return;
 
-    const files = [...event.target.files];
+    // FILTER DUPLICATED FILES***
+    setChildren((prev) => {
+      const filterSet = new Set();
+      const files = [...prev, ...event.target.files];
 
-    // Add to entire upload tree
-    appendNext(files, node.title);
+      return files.filter((item) => {
+        const duplicate = filterSet.has(item.name);
+        filterSet.add(item.name);
+        return !duplicate;
+      });
+    });
 
-    // Upload file to AWS S3
-    // for (let i = 0; i < files.length; i++) {
-    //   const uploadConfig = await axios.get(
-    //     `${process.env.REACT_APP_SERVER_URL}/upload`
-    //   );
-
-    //   await axios.put(uploadConfig.data.url, files[i], {
-    //     headers: { "Content-Type": files[i].type },
-    //     onUploadProgress: (progressEvent) => {
-    //       console.log(progressEvent);
-    //     },
-    //   });
-    // }
+    // Open children nodes
+    setOpenChildren(true);
   };
 
   return (
@@ -50,31 +59,23 @@ const TreeNode = ({ node }) => {
           accept=".mp4"
           onChange={fileChangeHandler}
         />
-        <Right
-          className={`tree-node__open-children ${openChildren && "rotate"}`}
-          onClick={displayChildrenHandler}
-        />
-        <div>test</div>
+        {children.length > 0 && (
+          <Opener
+            className={`tree-node__open-children${
+              openChildren ? " rotated" : ""
+            }`}
+            onClick={displayChildrenHandler}
+          />
+        )}
+        <div>{node.name}</div>
         <div className="tree-node__progress"></div>
-        <Plus onClick={openFileInputHandler} />
+        <Add onClick={openFileInputHandler} />
       </div>
 
-      <CSSTransition
-        classNames="tree-node-display"
-        in={openChildren}
-        timeout={200}
-        mountOnEnter
-        unmountOnExit
-      >
-        <div className="tree-node__children">
-          {node.children.map((child) => {
-            <TreeNode key={child} />;
-          })}
-          <div>test1</div>
-          <div>test2</div>
-          <div>test3</div>
-        </div>
-      </CSSTransition>
+      <div className={`tree-node__children${!openChildren ? " hide" : ""}`}>
+        {children.length > 0 &&
+          children.map((file) => <TreeNode key={file.name} node={file} />)}
+      </div>
     </div>
   );
 };

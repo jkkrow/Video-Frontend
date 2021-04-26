@@ -1,17 +1,16 @@
-import { useContext } from "react";
+import { useState } from "react";
 
 import TreeNode from "./TreeNode";
 import InitUpload from "./InitUpload";
-import { UploadContext } from "context/upload-context";
 import "./FileTree.css";
 
 const FileTree = () => {
-  const { videoTree } = useContext(UploadContext);
+  const [root, setRoot] = useState(null);
 
   return (
     <div className="file-tree">
-      {!videoTree.root.name && <InitUpload />}
-      {videoTree.root.name && <TreeNode node={videoTree.root} />}
+      {!root && <InitUpload onChange={setRoot} />}
+      {root && <TreeNode node={root} />}
     </div>
   );
 };
