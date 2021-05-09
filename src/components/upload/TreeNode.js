@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 // import axios from "axios";
 
-import { ReactComponent as Opener } from "assets/icons/right-angle.svg";
-import { ReactComponent as Add } from "assets/icons/plus.svg";
+import { ReactComponent as ChildrenOpener } from "assets/icons/right-angle.svg";
+import { ReactComponent as ChildrenAdder } from "assets/icons/plus.svg";
 import "./TreeNode.css";
 
 const TreeNode = ({ node }) => {
@@ -32,7 +32,7 @@ const TreeNode = ({ node }) => {
   const fileChangeHandler = async (event) => {
     if (!event.target.files?.length) return;
 
-    // FILTER DUPLICATED FILES***
+    // Filter duplicated files and Add to state
     setChildren((prev) => {
       const filterSet = new Set();
       const files = [...prev, ...event.target.files];
@@ -50,26 +50,35 @@ const TreeNode = ({ node }) => {
 
   return (
     <div className="tree-node">
-      <div className="tree-node__header">
-        <input
-          ref={fileUploaderRef}
-          hidden
-          multiple
-          type="file"
-          accept=".mp4"
-          onChange={fileChangeHandler}
-        />
+      <div className="tree-node__body">
+        <div className="tree-node__header">
+          <input
+            ref={fileUploaderRef}
+            hidden
+            multiple
+            type="file"
+            accept=".mp4"
+            onChange={fileChangeHandler}
+          />
+          <div>{node.name}</div>
+          <div className="tree-node__progress"></div>
+        </div>
         {children.length > 0 && (
-          <Opener
+          <button
             className={`tree-node__open-children${
               openChildren ? " rotated" : ""
             }`}
             onClick={displayChildrenHandler}
-          />
+          >
+            <ChildrenOpener />
+          </button>
         )}
-        <div>{node.name}</div>
-        <div className="tree-node__progress"></div>
-        <Add onClick={openFileInputHandler} />
+        <button
+          className="tree-node__add-children"
+          onClick={openFileInputHandler}
+        >
+          <ChildrenAdder />
+        </button>
       </div>
 
       <div className={`tree-node__children${!openChildren ? " hide" : ""}`}>

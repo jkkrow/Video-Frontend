@@ -1,5 +1,5 @@
 // import FileUploader from "components/Upload/FileUploader";
-import FileTree from "components/Upload/FileTree";
+import FileTree from "components/upload/FileTree";
 import "./UploadVideoPage.css";
 
 const UploadVideoPage = () => {

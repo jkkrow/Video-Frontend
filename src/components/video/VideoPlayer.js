@@ -169,21 +169,8 @@ const VideoPlayer = ({ src, autoPlay, style }) => {
       </div>
 
       {/* Loading Spinner */}
-      <div className="vp-spinner__container" ref={loadingSpinnerRef}>
-        <div className="vp-spinner">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
+      <div className="vp-loader__container" ref={loadingSpinnerRef}>
+        <div className="vp-loader"></div>
       </div>
 
       {/* Center UI */}

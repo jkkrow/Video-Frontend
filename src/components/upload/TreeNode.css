@@ -1,14 +1,22 @@
 .tree-node {
-  width: 95%;
+  width: 98%;
+}
+
+.tree-node__body {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 5rem;
+  border-bottom: 1px dashed var(--gray);
 }
 
 .tree-node__header {
+  width: calc(100% - 3.5rem);
   display: flex;
   gap: 1rem;
-  justify-content: space-around;
+  padding: 1rem;
   align-items: center;
-  height: 5rem;
-  border-bottom: 1px solid var(--grey);
+  cursor: pointer;
 }
 
 .tree-node__title {
@@ -20,14 +28,31 @@
 }
 
 .tree-node__open-children {
-  width: 1.5rem;
-  height: 1.5rem;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: -3rem;
+  width: 3rem;
+  height: 3rem;
   transform: rotate(0);
   transition: transform 200ms ease-out;
 }
 
 .tree-node__open-children.rotated {
   transform: rotate(90deg);
+}
+
+.tree-node__open-children svg {
+  width: 50%;
+  height: 50%;
+}
+
+.tree-node__add-children {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  right: 0.5rem;
 }
 
 .tree-node__children {

@@ -1,6 +1,6 @@
 :root {
-  --video-red: #fe0900;
-  --grey: #858585;
+  --video-red: #cc131d;
+  --gray: #858585;
 }
 
 * {
@@ -20,7 +20,7 @@ html {
 
 body {
   font-size: 1.6rem;
-  background-color: rgb(25, 25, 25);
+  background-color: rgb(30, 30, 30);
   color: #fff;
 }
 
@@ -60,6 +60,8 @@ input[type="range"]:focus {
 
 button {
   cursor: pointer;
+  background-color: rgb(30, 30, 30);
+  border: none;
 }
 
 svg {

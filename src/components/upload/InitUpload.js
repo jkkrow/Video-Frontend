@@ -14,7 +14,7 @@ const InitUpload = ({ onChange }) => {
   };
 
   return (
-    <div className="init-upload">
+    <div className="init-upload" onClick={openFileInputHandler}>
       <input
         ref={fileUploaderRef}
         hidden
@@ -22,7 +22,7 @@ const InitUpload = ({ onChange }) => {
         accept=".mp4"
         onChange={fileChangeHandler}
       />
-      <div onClick={openFileInputHandler}>Start Upload</div>
+      <div>Start Upload</div>
     </div>
   );
 };

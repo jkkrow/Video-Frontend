@@ -1,0 +1,8 @@
+.init-upload {
+  width: 100%;
+  padding: 3rem;
+  border: 1px solid var(--gray);
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+}
