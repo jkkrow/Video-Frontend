@@ -7,6 +7,7 @@ import "./TreeNode.css";
 
 const TreeNode = ({ node }) => {
   const [openChildren, setOpenChildren] = useState(false);
+  const [expandBody, setExpandBody] = useState(true);
   const [children, setChildren] = useState([]);
   const fileUploaderRef = useRef();
 
@@ -26,6 +27,8 @@ const TreeNode = ({ node }) => {
   }, []);
 
   const displayChildrenHandler = () => setOpenChildren((prev) => !prev);
+
+  const expandBodyHandler = () => setExpandBody((prev) => !prev);
 
   const openFileInputHandler = () => fileUploaderRef.current.click();
 
@@ -60,25 +63,31 @@ const TreeNode = ({ node }) => {
             accept=".mp4"
             onChange={fileChangeHandler}
           />
-          <div>{node.name}</div>
+          <div className="tree-node__title" onClick={expandBodyHandler}>
+            {node.name}
+          </div>
+          {children.length > 0 && (
+            <button
+              className={`tree-node__open-children${
+                openChildren ? " rotated" : ""
+              }`}
+              onClick={displayChildrenHandler}
+            >
+              <ChildrenOpener />
+            </button>
+          )}
+          <button
+            className="tree-node__add-children"
+            onClick={openFileInputHandler}
+          >
+            <ChildrenAdder />
+          </button>
+        </div>
+
+        <div className={`tree-node__expand${!expandBody ? " hide" : ""}`}>
+          <input placeholder="Option Title" />
           <div className="tree-node__progress"></div>
         </div>
-        {children.length > 0 && (
-          <button
-            className={`tree-node__open-children${
-              openChildren ? " rotated" : ""
-            }`}
-            onClick={displayChildrenHandler}
-          >
-            <ChildrenOpener />
-          </button>
-        )}
-        <button
-          className="tree-node__add-children"
-          onClick={openFileInputHandler}
-        >
-          <ChildrenAdder />
-        </button>
       </div>
 
       <div className={`tree-node__children${!openChildren ? " hide" : ""}`}>

@@ -5,22 +5,20 @@
 .tree-node__body {
   position: relative;
   display: flex;
-  align-items: center;
-  height: 5rem;
+  flex-direction: column;
+  justify-content: center;
   border-bottom: 1px dashed var(--gray);
+  padding: 1rem;
 }
 
 .tree-node__header {
-  width: calc(100% - 3.5rem);
   display: flex;
   gap: 1rem;
-  padding: 1rem;
   align-items: center;
-  cursor: pointer;
 }
 
 .tree-node__title {
-  width: 5rem;
+  cursor: pointer;
 }
 
 .tree-node__progress {
@@ -35,6 +33,7 @@
   left: -3rem;
   width: 3rem;
   height: 3rem;
+  background: transparent;
   transform: rotate(0);
   transition: transform 200ms ease-out;
 }
@@ -49,10 +48,18 @@
 }
 
 .tree-node__add-children {
-  position: absolute;
   display: flex;
   align-items: center;
-  right: 0.5rem;
+  margin-left: auto;
+  background: transparent;
+}
+
+.tree-node__expand {
+  margin-top: 1rem;
+}
+
+.tree-node__expand.hide {
+  display: none;
 }
 
 .tree-node__children {
