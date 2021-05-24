@@ -29,7 +29,7 @@ class VideoTree {
   }
 
   append(file, parentNode) {
-    const parent = this.find(parentNode.file.name);
+    const parent = this.find(parentNode.name);
 
     if (!parent) return null;
 

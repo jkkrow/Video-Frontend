@@ -24,6 +24,18 @@ body {
   color: #fff;
 }
 
+input {
+  background-color: #424242;
+  color: #fff;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 5px;
+}
+
+input:focus {
+  outline: none;
+}
+
 input[type="range"] {
   -webkit-appearance: none;
   height: 100%;

@@ -1,8 +1,10 @@
-import { useRef } from "react";
+import { useRef, useContext } from "react";
+import { UploadContext } from "context/upload-context";
 
 import "./InitUpload.css";
 
 const InitUpload = ({ onChange }) => {
+  const { initiateUpload } = useContext(UploadContext);
   const fileUploaderRef = useRef();
 
   const openFileInputHandler = () => fileUploaderRef.current.click();
@@ -10,6 +12,7 @@ const InitUpload = ({ onChange }) => {
   const fileChangeHandler = (event) => {
     if (!event.target.files?.length) return;
 
+    initiateUpload({ name: event.target.files[0].name, layer: 1 });
     onChange(event.target.files[0]);
   };
 

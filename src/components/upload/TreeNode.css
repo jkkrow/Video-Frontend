@@ -9,6 +9,7 @@
   justify-content: center;
   border-bottom: 1px dashed var(--gray);
   padding: 1rem;
+  gap: 1rem;
 }
 
 .tree-node__header {
@@ -25,37 +26,8 @@
   width: 10rem;
 }
 
-.tree-node__open-children {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  left: -3rem;
-  width: 3rem;
-  height: 3rem;
-  background: transparent;
-  transform: rotate(0);
-  transition: transform 200ms ease-out;
-}
-
-.tree-node__open-children.rotated {
-  transform: rotate(90deg);
-}
-
-.tree-node__open-children svg {
-  width: 50%;
-  height: 50%;
-}
-
-.tree-node__add-children {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  background: transparent;
-}
-
 .tree-node__expand {
-  margin-top: 1rem;
+  
 }
 
 .tree-node__expand.hide {

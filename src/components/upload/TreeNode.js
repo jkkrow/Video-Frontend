@@ -1,14 +1,20 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 // import axios from "axios";
 
-import { ReactComponent as ChildrenOpener } from "assets/icons/right-angle.svg";
-import { ReactComponent as ChildrenAdder } from "assets/icons/plus.svg";
+import { ReactComponent as ArrowIcon } from "assets/icons/right-angle.svg";
+import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
+import IconButton from "../UI/IconButton";
+import NewNode from "./NewNode";
+import { UploadContext } from "context/upload-context";
 import "./TreeNode.css";
 
-const TreeNode = ({ node }) => {
-  const [openChildren, setOpenChildren] = useState(false);
-  const [expandBody, setExpandBody] = useState(true);
+const TreeNode = ({ currentFile, layer }) => {
+  const { appendNext } = useContext(UploadContext);
   const [children, setChildren] = useState([]);
+  const [optionTitle, setOptionTitle] = useState("");
+  const [openChildren, setOpenChildren] = useState(false);
+  const [addChild, setAddChild] = useState(false);
+  const [expandBody, setExpandBody] = useState(true);
   const fileUploaderRef = useRef();
 
   useEffect(() => {
@@ -16,8 +22,8 @@ const TreeNode = ({ node }) => {
     //   const uploadConfig = await axios.get(
     //     `${process.env.REACT_APP_SERVER_URL}/upload`
     //   );
-    //   await axios.put(uploadConfig.data.url, node.file, {
-    //     headers: { "Content-Type": node.file.type },
+    //   await axios.put(uploadConfig.data.url, currentFile, {
+    //     headers: { "Content-Type": currentFile.type },
     //     onUploadProgress: (progressEvent) => {
     //       console.log(progressEvent);
     //     },
@@ -30,22 +36,29 @@ const TreeNode = ({ node }) => {
 
   const expandBodyHandler = () => setExpandBody((prev) => !prev);
 
+  const addChildHandler = () => setAddChild(true);
+
+  const inputChangeHandler = (event) => setOptionTitle(event.target.value);
+
   const openFileInputHandler = () => fileUploaderRef.current.click();
 
   const fileChangeHandler = async (event) => {
     if (!event.target.files?.length) return;
 
-    // Filter duplicated files and Add to state
-    setChildren((prev) => {
-      const filterSet = new Set();
-      const files = [...prev, ...event.target.files];
+    // Add to state
+    setChildren((prev) => [...prev, ...event.target.files]);
 
-      return files.filter((item) => {
-        const duplicate = filterSet.has(item.name);
-        filterSet.add(item.name);
-        return !duplicate;
-      });
-    });
+    // Add to entire tree
+    const fileInfos = [...event.target.files].map((file) => ({
+      name: file.name,
+      optionTitle: "",
+      layer: layer + 1,
+    }));
+
+    appendNext(fileInfos, { name: currentFile.name, layer: layer });
+
+    // Close new node
+    setAddChild(false);
 
     // Open children nodes
     setOpenChildren(true);
@@ -64,35 +77,42 @@ const TreeNode = ({ node }) => {
             onChange={fileChangeHandler}
           />
           <div className="tree-node__title" onClick={expandBodyHandler}>
-            {node.name}
+            {currentFile.name}
           </div>
           {children.length > 0 && (
-            <button
-              className={`tree-node__open-children${
-                openChildren ? " rotated" : ""
-              }`}
+            <IconButton
+              className={`open-children${openChildren ? " rotated" : ""}`}
               onClick={displayChildrenHandler}
-            >
-              <ChildrenOpener />
-            </button>
+              Component={ArrowIcon}
+            />
           )}
-          <button
-            className="tree-node__add-children"
-            onClick={openFileInputHandler}
-          >
-            <ChildrenAdder />
-          </button>
+          <IconButton
+            className="add-child"
+            onClick={addChildHandler}
+            Component={PlusIcon}
+          />
         </div>
 
         <div className={`tree-node__expand${!expandBody ? " hide" : ""}`}>
-          <input placeholder="Option Title" />
+          {layer > 1 && (
+            <input
+              type="text"
+              placeholder="Option Title"
+              value={optionTitle}
+              onChange={inputChangeHandler}
+            />
+          )}
           <div className="tree-node__progress"></div>
         </div>
       </div>
 
+      {addChild && <NewNode onFile={openFileInputHandler} />}
+
       <div className={`tree-node__children${!openChildren ? " hide" : ""}`}>
         {children.length > 0 &&
-          children.map((file) => <TreeNode key={file.name} node={file} />)}
+          children.map((file) => (
+            <TreeNode key={file.name} currentFile={file} layer={layer + 1} />
+          ))}
       </div>
     </div>
   );
