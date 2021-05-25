@@ -12,8 +12,16 @@ const InitUpload = ({ onChange }) => {
   const fileChangeHandler = (event) => {
     if (!event.target.files?.length) return;
 
-    initiateUpload({ name: event.target.files[0].name, layer: 1 });
-    onChange(event.target.files[0]);
+    onChange({
+      file: event.target.files[0],
+      layer: 0,
+    });
+
+    initiateUpload({
+      name: event.target.files[0].name,
+      layer: 0,
+      url: URL.createObjectURL(event.target.files[0]),
+    });
   };
 
   return (

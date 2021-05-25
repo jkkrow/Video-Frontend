@@ -8,13 +8,14 @@ import NewNode from "./NewNode";
 import { UploadContext } from "context/upload-context";
 import "./TreeNode.css";
 
-const TreeNode = ({ currentFile, layer }) => {
+const TreeNode = ({ currentNode }) => {
   const { appendNext } = useContext(UploadContext);
   const [children, setChildren] = useState([]);
-  const [optionTitle, setOptionTitle] = useState("");
   const [openChildren, setOpenChildren] = useState(false);
   const [addChild, setAddChild] = useState(false);
+  const [childInput, setChildInput] = useState("");
   const [expandBody, setExpandBody] = useState(true);
+  const [optionTitle, setOptionTitle] = useState(currentNode.optionTitle);
   const fileUploaderRef = useRef();
 
   useEffect(() => {
@@ -22,8 +23,8 @@ const TreeNode = ({ currentFile, layer }) => {
     //   const uploadConfig = await axios.get(
     //     `${process.env.REACT_APP_SERVER_URL}/upload`
     //   );
-    //   await axios.put(uploadConfig.data.url, currentFile, {
-    //     headers: { "Content-Type": currentFile.type },
+    //   await axios.put(uploadConfig.data.url, currentNode.file, {
+    //     headers: { "Content-Type": currentNode.file.type },
     //     onUploadProgress: (progressEvent) => {
     //       console.log(progressEvent);
     //     },
@@ -46,16 +47,23 @@ const TreeNode = ({ currentFile, layer }) => {
     if (!event.target.files?.length) return;
 
     // Add to state
-    setChildren((prev) => [...prev, ...event.target.files]);
+    const fileObject = {
+      file: event.target.files[0],
+      optionTitle: childInput,
+      layer: currentNode.layer + 1,
+    };
+
+    setChildren((prev) => [...prev, fileObject]);
 
     // Add to entire tree
-    const fileInfos = [...event.target.files].map((file) => ({
-      name: file.name,
-      optionTitle: "",
-      layer: layer + 1,
-    }));
+    const fileInfo = {
+      name: event.target.files[0].name,
+      optionTitle: childInput,
+      layer: currentNode.layer + 1,
+      url: URL.createObjectURL(event.target.files[0]),
+    };
 
-    appendNext(fileInfos, { name: currentFile.name, layer: layer });
+    appendNext(fileInfo, currentNode);
 
     // Close new node
     setAddChild(false);
@@ -77,7 +85,7 @@ const TreeNode = ({ currentFile, layer }) => {
             onChange={fileChangeHandler}
           />
           <div className="tree-node__title" onClick={expandBodyHandler}>
-            {currentFile.name}
+            {currentNode.file.name}
           </div>
           {children.length > 0 && (
             <IconButton
@@ -86,15 +94,17 @@ const TreeNode = ({ currentFile, layer }) => {
               Component={ArrowIcon}
             />
           )}
-          <IconButton
-            className="add-child"
-            onClick={addChildHandler}
-            Component={PlusIcon}
-          />
+          {children.length < 4 && (
+            <IconButton
+              className="add-child"
+              onClick={addChildHandler}
+              Component={PlusIcon}
+            />
+          )}
         </div>
 
         <div className={`tree-node__expand${!expandBody ? " hide" : ""}`}>
-          {layer > 1 && (
+          {currentNode.layer > 0 && (
             <input
               type="text"
               placeholder="Option Title"
@@ -106,14 +116,21 @@ const TreeNode = ({ currentFile, layer }) => {
         </div>
       </div>
 
-      {addChild && <NewNode onFile={openFileInputHandler} />}
-
-      <div className={`tree-node__children${!openChildren ? " hide" : ""}`}>
-        {children.length > 0 &&
-          children.map((file) => (
-            <TreeNode key={file.name} currentFile={file} layer={layer + 1} />
+      {children.length > 0 && (
+        <div className={`tree-node__children${!openChildren ? " hide" : ""}`}>
+          {children.map((item) => (
+            <TreeNode key={item.optionTitle} currentNode={item} />
           ))}
-      </div>
+        </div>
+      )}
+
+      {addChild && (
+        <NewNode
+          onFile={openFileInputHandler}
+          onInput={setChildInput}
+          onRemove={setAddChild}
+        />
+      )}
     </div>
   );
 };

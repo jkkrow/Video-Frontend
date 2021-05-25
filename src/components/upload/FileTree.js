@@ -10,7 +10,7 @@ const FileTree = () => {
   return (
     <div className="file-tree">
       {!root && <InitUpload onChange={setRoot} />}
-      {root && <TreeNode currentFile={root} layer={1} />}
+      {root && <TreeNode currentNode={root} />}
     </div>
   );
 };

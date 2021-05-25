@@ -4,6 +4,7 @@ export const UploadContext = createContext({
   videoTree: {},
   initiateUpload: () => {},
   appendNext: () => {},
+  updateNode: () => {}
 });
 
 const UploadContextProvider = (props) => {
@@ -11,12 +12,18 @@ const UploadContextProvider = (props) => {
 
   const initiateUpload = (fileInfo) => {
     setVideoTree(
-      JSON.stringify({ root: { info: fileInfo, children: [] } }, null, 3)
+      JSON.stringify(
+        {
+          root: { info: fileInfo, children: [] },
+        },
+        null,
+        3
+      )
     );
   };
 
-  const _findNode = (node, name, layer) => {
-    let currentNode = node.root;
+  const _findNode = (tree, node) => {
+    let currentNode = tree.root;
     let queue = [];
 
     queue.push(currentNode);
@@ -24,7 +31,11 @@ const UploadContextProvider = (props) => {
     while (queue.length > 0) {
       currentNode = queue.shift();
 
-      if (currentNode.info.name === name && currentNode.info.layer === layer)
+      if (
+        currentNode.info.name === node.file.name &&
+        currentNode.info.layer === node.layer &&
+        currentNode.info.optionTitle === node.optionTitle
+      )
         return currentNode;
 
       if (currentNode.children.length)
@@ -34,18 +45,16 @@ const UploadContextProvider = (props) => {
     return null;
   };
 
-  const appendNext = (fileInfos, parent) => {
+  const appendNext = (fileInfo, parent) => {
     setVideoTree((prev) => {
       const newState = JSON.parse(prev);
 
-      const parentNode = _findNode(newState, parent.name, parent.layer);
+      const parentNode = _findNode(newState, parent);
 
       if (!parentNode) return;
 
-      fileInfos.forEach((fileInfo) => {
-        const newNode = { info: fileInfo, children: [] };
-        parentNode.children = [...parentNode.children, newNode];
-      });
+      const newNode = { info: fileInfo, children: [] };
+      parentNode.children = [...parentNode.children, newNode];
 
       return JSON.stringify(newState, null, 3);
     });
@@ -55,14 +64,21 @@ const UploadContextProvider = (props) => {
     setVideoTree((prev) => {
       const newState = JSON.parse(prev);
 
-      const targetNode = _findNode(newState, node.info.name, node.info.layer);
+      const targetNode = _findNode(newState, node);
 
       if (!targetNode) return;
     });
   };
 
   return (
-    <UploadContext.Provider value={{ videoTree, initiateUpload, appendNext }}>
+    <UploadContext.Provider
+      value={{
+        videoTree,
+        initiateUpload,
+        appendNext,
+        updateNode,
+      }}
+    >
       {props.children}
     </UploadContext.Provider>
   );
