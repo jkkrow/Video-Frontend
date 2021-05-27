@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { ReactComponent as UploadIcon } from "assets/icons/upload.svg";
 import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
-import IconButton from "../UI/IconButton";
+import IconButton from "../../UI/IconButton";
 import "./NewNode.css";
 
 const NewNode = ({ onFile, onInput, onRemove }) => {

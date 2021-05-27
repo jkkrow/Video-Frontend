@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useContext } from "react";
 
 import { ReactComponent as ArrowIcon } from "assets/icons/right-angle.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
-import IconButton from "../UI/IconButton";
+import IconButton from "../../UI/IconButton";
 import NewNode from "./NewNode";
 import { UploadContext } from "context/upload-context";
 import "./TreeNode.css";
@@ -116,20 +116,20 @@ const TreeNode = ({ currentNode }) => {
         </div>
       </div>
 
-      {children.length > 0 && (
-        <div className={`tree-node__children${!openChildren ? " hide" : ""}`}>
-          {children.map((item) => (
-            <TreeNode key={item.optionTitle} currentNode={item} />
-          ))}
-        </div>
-      )}
-
       {addChild && (
         <NewNode
           onFile={openFileInputHandler}
           onInput={setChildInput}
           onRemove={setAddChild}
         />
+      )}
+      
+      {children.length > 0 && (
+        <div className={`tree-node__children${!openChildren ? " hide" : ""}`}>
+          {children.map((item) => (
+            <TreeNode key={item.optionTitle} currentNode={item} />
+          ))}
+        </div>
       )}
     </div>
   );

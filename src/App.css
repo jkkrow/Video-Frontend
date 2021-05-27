@@ -1,6 +1,10 @@
 :root {
   --video-red: #cc131d;
-  --gray: #858585;
+  --white: #fff;
+  --light-gray: #858585;
+  --gray: #424242;
+  --dark-gray: #1e1e1e;
+  --black: #000;
 }
 
 * {
@@ -20,13 +24,13 @@ html {
 
 body {
   font-size: 1.6rem;
-  background-color: #1e1e1e;
-  color: #fff;
+  background-color: var(--dark-gray);
+  color: var(--white);
 }
 
 input {
-  background-color: #424242;
-  color: #fff;
+  background-color: var(--gray);
+  color: var(--white);
   padding: 0.5rem;
   border: none;
   border-radius: 5px;
@@ -72,15 +76,13 @@ input[type="range"]:focus {
 
 button {
   cursor: pointer;
-  background-color: rgb(30, 30, 30);
   border: none;
 }
 
 svg {
   width: 2.5rem;
   height: 2.5rem;
-  fill: #fff;
-  cursor: pointer;
+  fill: var(--white);
 }
 
 video {

@@ -4,21 +4,17 @@ export const UploadContext = createContext({
   videoTree: {},
   initiateUpload: () => {},
   appendNext: () => {},
-  updateNode: () => {}
+  updateNode: () => {},
 });
 
 const UploadContextProvider = (props) => {
-  const [videoTree, setVideoTree] = useState(null);
+  const [videoTree, setVideoTree] = useState(JSON.stringify({}));
 
   const initiateUpload = (fileInfo) => {
     setVideoTree(
-      JSON.stringify(
-        {
-          root: { info: fileInfo, children: [] },
-        },
-        null,
-        3
-      )
+      JSON.stringify({
+        root: { info: fileInfo, children: [] },
+      })
     );
   };
 
@@ -56,7 +52,7 @@ const UploadContextProvider = (props) => {
       const newNode = { info: fileInfo, children: [] };
       parentNode.children = [...parentNode.children, newNode];
 
-      return JSON.stringify(newState, null, 3);
+      return JSON.stringify(newState);
     });
   };
 

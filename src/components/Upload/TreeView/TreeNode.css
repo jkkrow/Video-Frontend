@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-bottom: 1px dashed var(--gray);
+  border-bottom: 1px dashed var(--light-gray);
   padding: 1rem;
   gap: 1rem;
 }

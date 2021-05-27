@@ -1,14 +1,12 @@
-// import FileUploader from "components/Upload/FileUploader";
-import FileTree from "components/upload/FileTree";
+import FileTree from "components/Upload/TreeView/FileTree";
+import Preview from "components/Upload/Preview/Preview";
 import "./UploadVideoPage.css";
 
 const UploadVideoPage = () => {
   return (
     <div className="upload-video-page">
-      <div className="upload-file">
-        <FileTree />
-        {/* <FileUploader /> */}
-      </div>
+      <FileTree />
+      <Preview />
     </div>
   );
 };
