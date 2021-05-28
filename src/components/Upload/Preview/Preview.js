@@ -38,10 +38,10 @@ const Preview = () => {
             onClick={togglePreviewHandler}
           >
             <PreviewIcon
-              className={`toggle-button${!activePreview ? "--active" : ""}`}
+              className={`toggle-button${!activePreview ? " active" : ""}`}
             />
             <RemoveIcon
-              className={`toggle-button${activePreview ? "--active" : ""}`}
+              className={`toggle-button${activePreview ? " active" : ""}`}
             />
           </label>
 
@@ -51,7 +51,7 @@ const Preview = () => {
 
       {currentVideo && (
         <div className={`preview__video${activePreview ? " active" : ""}`}>
-          <VideoPlayer src={currentVideo} autoPlay={false} />
+          <VideoPlayer src={currentVideo} autoPlay={false} next={nextVideos} />
         </div>
       )}
     </div>

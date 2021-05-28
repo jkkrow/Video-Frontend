@@ -1,5 +1,4 @@
 .preview {
-  
 }
 
 .preview__checkbox {
@@ -18,8 +17,8 @@
   background-color: var(--gray);
   border-radius: 50%;
   cursor: pointer;
-  z-index: 1000;
   transition: transform 200ms ease-out;
+  z-index: 1000;
 }
 
 .preview__toggle:hover {
@@ -31,11 +30,12 @@
 }
 
 .preview__toggle .toggle-button {
-  transition: transform 400ms;
   transform: scale(0);
+  transition: transform 400ms;
 }
 
-.preview__toggle .toggle-button--active {
+.preview__toggle .toggle-button.active {
+  transform: scale(1);
   transition: transform 400ms;
   transition-delay: 400ms;
 }
@@ -48,21 +48,21 @@
   height: 3.5rem;
   border-radius: 50%;
   background-color: var(--black);
-  z-index: 500;
   transition: transform 800ms ease-out;
+  z-index: 500;
 }
 
 .preview__video {
   position: absolute;
   top: 20%;
   left: 0;
-  z-index: 700;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-20%);
   transition: all 400ms;
   transition-timing-function: cubic-bezier(0.36, 0, 0.66, -0.56);
   transition-delay: 0ms;
+  z-index: 700;
 }
 
 .preview__video.active {
@@ -78,7 +78,7 @@
   transform: scale(0);
 }
 
-.preview__checkbox:checked ~ .preview__toggle .toggle-button--active {
+.preview__checkbox:checked ~ .preview__toggle .toggle-button.active {
   transform: scale(1);
 }
 
