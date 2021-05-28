@@ -33,16 +33,26 @@ const TreeNode = ({ currentNode }) => {
     // uploadToAWS();
   }, []);
 
-  const displayChildrenHandler = () => setOpenChildren((prev) => !prev);
+  const displayChildrenHandler = () => {
+    setOpenChildren((prev) => !prev);
+  };
 
-  const expandBodyHandler = () => setExpandBody((prev) => !prev);
+  const expandBodyHandler = () => {
+    setExpandBody((prev) => !prev);
+  };
 
-  const addChildHandler = () => setAddChild(true);
+  const addChildHandler = () => {
+    setAddChild(true);
+  };
 
-  const inputChangeHandler = (event) => setOptionTitle(event.target.value);
+  const inputChangeHandler = (event) => {
+    setOptionTitle(event.target.value);
+  };
 
-  const openFileInputHandler = () => fileUploaderRef.current.click();
-
+  const openFileInputHandler = () => {
+    fileUploaderRef.current.click();
+  };
+  
   const fileChangeHandler = async (event) => {
     if (!event.target.files?.length) return;
 
@@ -123,7 +133,7 @@ const TreeNode = ({ currentNode }) => {
           onRemove={setAddChild}
         />
       )}
-      
+
       {children.length > 0 && (
         <div className={`tree-node__children${!openChildren ? " hide" : ""}`}>
           {children.map((item) => (

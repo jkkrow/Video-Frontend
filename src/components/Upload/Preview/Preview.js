@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { ReactComponent as PreviewIcon } from "assets/icons/play.svg";
 import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
@@ -7,37 +7,57 @@ import { UploadContext } from "context/upload-context";
 import "./Preview.css";
 
 const Preview = () => {
-  const videoTree = JSON.parse(useContext(UploadContext).videoTree);
+  const { videoTree } = useContext(UploadContext);
   const [currentVideo, setCurrentVideo] = useState();
   const [nextVideos, setNextVideos] = useState([]);
   const [activePreview, setActivePreview] = useState(false);
 
-  const togglePreviewHandler = () => setActivePreview((prev) => !prev);
+  useEffect(() => {
+    const parsedVideoTree = JSON.parse(videoTree);
+
+    if (!parsedVideoTree.root) return;
+
+    setCurrentVideo(parsedVideoTree.root.info.url);
+    setNextVideos(parsedVideoTree.root.children);
+  }, [videoTree]);
+
+  const togglePreviewHandler = () => {
+    setActivePreview((prev) => !prev);
+  };
 
   return (
     <div className="preview">
-      <input
-        type="checkbox"
-        className="preview__checkbox"
-        id="toggle-preview"
-      />
+      {JSON.parse(videoTree).root && (
+        <>
+          <input
+            type="checkbox"
+            className="preview__checkbox"
+            id="toggle-preview"
+          />
+          <label
+            className="preview__toggle"
+            htmlFor="toggle-preview"
+            onClick={togglePreviewHandler}
+          >
+            <PreviewIcon
+              className={`toggle-button${!activePreview ? "--active" : ""}`}
+            />
+            <RemoveIcon
+              className={`toggle-button${activePreview ? "--active" : ""}`}
+            />
+          </label>
 
-      <label
-        className="preview__toggle"
-        htmlFor="toggle-preview"
-        onClick={togglePreviewHandler}
-      >
-        <PreviewIcon
-          className={`toggle-button${!activePreview ? "--active" : ""}`}
-        />
-        <RemoveIcon
-          className={`toggle-button${activePreview ? "--active" : ""}`}
-        />
-      </label>
+          <div className="preview__background" />
+        </>
+      )}
 
-      <div className="preview__background"></div>
-
-      <div className="preview__video"></div>
+      {currentVideo && (
+        <div className="preview__video--container">
+          <div className={`preview__video${activePreview ? " active" : ""}`}>
+            <VideoPlayer src={currentVideo} autoPlay={false} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

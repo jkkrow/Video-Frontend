@@ -7,7 +7,9 @@ const InitUpload = ({ onChange }) => {
   const { initiateUpload } = useContext(UploadContext);
   const fileUploaderRef = useRef();
 
-  const openFileInputHandler = () => fileUploaderRef.current.click();
+  const openFileInputHandler = () => {
+    fileUploaderRef.current.click();
+  };
 
   const fileChangeHandler = (event) => {
     if (!event.target.files?.length) return;

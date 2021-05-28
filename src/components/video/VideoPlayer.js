@@ -16,7 +16,7 @@ import { useVideoPlayerControls } from "hooks/video-player-hook";
 import "./VideoPlayer.css";
 const shaka = require("shaka-player/dist/shaka-player.ui.js");
 
-const VideoPlayer = ({ src, autoPlay, style }) => {
+const VideoPlayer = ({ src, autoPlay = true, style }) => {
   const {
     videoContainerRef,
     videoRef,

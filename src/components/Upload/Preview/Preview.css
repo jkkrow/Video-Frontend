@@ -51,8 +51,33 @@
   transition: transform 800ms ease-out;
 }
 
+.preview__video--container {
+  position: absolute;
+  display: flex;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  z-index: 700;
+}
+
+.preview__video {
+  width: 70%;
+  opacity: 0;
+  transform: translateY(-30%);
+  transition: all 400ms;
+  transition-timing-function: cubic-bezier(0.36, 0, 0.66, -0.56);
+  transition-delay: 0ms;
+}
+
+.preview__video.active {
+  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: 400ms;
+}
+
 .preview__checkbox:checked ~ .preview__background {
-  transform: scale(80);
+  transform: scale(100);
 }
 
 .preview__checkbox:checked ~ .preview__toggle .toggle-button {
@@ -61,4 +86,9 @@
 
 .preview__checkbox:checked ~ .preview__toggle .toggle-button--active {
   transform: scale(1);
+}
+
+.preview__checkbox:checked ~ .preview__video--container .preview__video {
+  opacity: 1;
+  transform: translateY(0);
 }
