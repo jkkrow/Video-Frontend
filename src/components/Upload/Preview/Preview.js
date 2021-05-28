@@ -13,12 +13,10 @@ const Preview = () => {
   const [activePreview, setActivePreview] = useState(false);
 
   useEffect(() => {
-    const parsedVideoTree = JSON.parse(videoTree);
+    if (!videoTree.root) return;
 
-    if (!parsedVideoTree.root) return;
-
-    setCurrentVideo(parsedVideoTree.root.info.url);
-    setNextVideos(parsedVideoTree.root.children);
+    setCurrentVideo(videoTree.root.info.url);
+    setNextVideos(videoTree.root.children);
   }, [videoTree]);
 
   const togglePreviewHandler = () => {
@@ -27,7 +25,7 @@ const Preview = () => {
 
   return (
     <div className="preview">
-      {JSON.parse(videoTree).root && (
+      {videoTree.root && (
         <>
           <input
             type="checkbox"
@@ -52,10 +50,8 @@ const Preview = () => {
       )}
 
       {currentVideo && (
-        <div className="preview__video--container">
-          <div className={`preview__video${activePreview ? " active" : ""}`}>
-            <VideoPlayer src={currentVideo} autoPlay={false} />
-          </div>
+        <div className={`preview__video${activePreview ? " active" : ""}`}>
+          <VideoPlayer src={currentVideo} autoPlay={false} />
         </div>
       )}
     </div>

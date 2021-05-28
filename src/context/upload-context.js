@@ -69,7 +69,7 @@ const UploadContextProvider = (props) => {
   return (
     <UploadContext.Provider
       value={{
-        videoTree,
+        videoTree: JSON.parse(videoTree),
         initiateUpload,
         appendNext,
         updateNode,
