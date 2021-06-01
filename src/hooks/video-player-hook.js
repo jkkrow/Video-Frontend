@@ -35,13 +35,10 @@ export const useVideoPlayerControls = () => {
    * ERROR HANDLER
    */
 
-  const errorHandler = useCallback(
-    (event) => {
-      // Extract the shaka.util.Error object from the event.
-      console.log("Error code", event.detail.code, "object", event.detail);
-    },
-    []
-  );
+  const errorHandler = useCallback((event) => {
+    // Extract the shaka.util.Error object from the event.
+    console.log("Error code", event.detail.code, "object", event.detail);
+  }, []);
 
   /*
    * DISPLAYING CENTER UI
@@ -274,6 +271,12 @@ export const useVideoPlayerControls = () => {
     const remainedTime = formatTime(duration - currentTime);
     timeRef.current.innerText = remainedTime;
     timeRef.current.setAttribute("datetime", remainedTime);
+
+    // Navigate to Next Video
+
+    /// Show navigation menu if certain time is reached
+
+    /// Hide controls UI & Block show controls on mouse move
   }, []);
 
   /*

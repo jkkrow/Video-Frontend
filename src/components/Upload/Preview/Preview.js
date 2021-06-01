@@ -51,7 +51,7 @@ const Preview = () => {
 
       {currentVideo && (
         <div className={`preview__video${activePreview ? " active" : ""}`}>
-          <VideoPlayer src={currentVideo} autoPlay={false} next={nextVideos} />
+          <VideoPlayer src={currentVideo} autoPlay={false} />
         </div>
       )}
     </div>

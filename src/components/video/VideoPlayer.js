@@ -121,6 +121,7 @@ const VideoPlayer = ({ src, autoPlay = true, style }) => {
               />
               <input
                 ref={volumeInputRef}
+                className="vp-controls__range--seek"
                 type="range"
                 onInput={controlVolumeByInput}
                 max="1"
@@ -170,7 +171,7 @@ const VideoPlayer = ({ src, autoPlay = true, style }) => {
 
       {/* Loading Spinner */}
       <div className="vp-loader__container" ref={loadingSpinnerRef}>
-        <div className="vp-loader"></div>
+        <div className="vp-loader" />
       </div>
 
       {/* Center UI */}
@@ -196,6 +197,9 @@ const VideoPlayer = ({ src, autoPlay = true, style }) => {
           <BackwardIcon className="hidden" />
         </div>
       </div>
+
+      {/* Next Videos Selector */}
+      <div className="vp-next-selector"></div>
     </div>
   );
 };
