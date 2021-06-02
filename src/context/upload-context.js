@@ -7,7 +7,7 @@ export const UploadContext = createContext({
   updateNode: () => {},
 });
 
-const UploadContextProvider = (props) => {
+const UploadContextProvider = ({ children }) => {
   const [videoTree, setVideoTree] = useState(JSON.stringify({}));
 
   const initiateUpload = (fileInfo) => {
@@ -75,7 +75,7 @@ const UploadContextProvider = (props) => {
         updateNode,
       }}
     >
-      {props.children}
+      {children}
     </UploadContext.Provider>
   );
 };

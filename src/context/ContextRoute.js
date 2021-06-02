@@ -1,11 +1,9 @@
 import { Route } from "react-router-dom";
 import PropTypes from "prop-types";
 
-const ContextRoute = (props) => {
-  const { Provider, Component } = props;
-
+const ContextRoute = ({ exact, path, Provider, Component }) => {
   return (
-    <Route path={props.path} exact={props.exact}>
+    <Route path={path} exact={exact}>
       <Provider>
         <Component />
       </Provider>
