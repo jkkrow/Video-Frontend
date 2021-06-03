@@ -9,14 +9,12 @@ import "./Preview.css";
 const Preview = () => {
   const { videoTree } = useContext(UploadContext);
   const [currentVideo, setCurrentVideo] = useState();
-  const [nextVideos, setNextVideos] = useState([]);
   const [activePreview, setActivePreview] = useState(false);
 
   useEffect(() => {
     if (!videoTree.root) return;
 
     setCurrentVideo(videoTree.root.info.url);
-    setNextVideos(videoTree.root.children);
   }, [videoTree]);
 
   const togglePreviewHandler = () => {

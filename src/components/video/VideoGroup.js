@@ -1,24 +1,33 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import VideoPlayer from "./VideoPlayer";
-import NextSelector from "./NextSelector";
-import "./VideoGroup.css";
+import { VideoContext } from "context/video-context";
 
-const VideoGroup = () => {
-  const [currentVideo, setCurrentVideo] = useState();
-  const [nextVideos, setNextVideos] = useState([]);
+const VideoGroup = (props) => {
+  const { currentVideo } = useContext(VideoContext);
+  const { previousVideo, next, src, autoPlay, selected } = props;
+
+  const [nextVideos, setNextVideos] = useState(next);
 
   return (
-    <div className="video-group">
-      <div className="current-video"></div>
-      <div className="next-videos">
-        {nextVideos.map((vid) => (
-          <VideoPlayer />
-        ))}
-      </div>
+    <>
+      {(currentVideo.src === src || currentVideo.src === previousVideo.src) && (
+        <VideoPlayer src={src} autoPlay={autoPlay} selected={selected} />
+      )}
 
-      <NextSelector />
-    </div>
+      {nextVideos.length > 0 &&
+        nextVideos.map((video) => (
+          // Update nextVideos when NextSelector is clicked
+          <VideoGroup
+            key={video.src}
+            previousVideo={currentVideo}
+            next={video.children}
+            src={video.src}
+            autoPlay={false}
+            selected={false}
+          />
+        ))}
+    </>
   );
 };
 

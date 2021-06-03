@@ -153,37 +153,37 @@ export const useVideoPlayerControls = () => {
     videoRef.current.volume = volumeInputRef.current.value;
   }, []);
 
-  const controlVolumeByKey = useCallback(
-    (direction) => {
-      volumeInputRef.current.blur();
+  // const controlVolumeByKey = useCallback(
+  //   (direction) => {
+  //     volumeInputRef.current.blur();
 
-      switch (direction) {
-        case "up":
-          if (videoRef.current.volume + 0.05 > 1) {
-            videoRef.current.volume = 1;
-          } else {
-            videoRef.current.volume = (videoRef.current.volume + 0.05).toFixed(
-              2
-            );
-          }
-          displayCenterUI(1);
-          break;
-        case "down":
-          if (videoRef.current.volume - 0.05 < 0) {
-            videoRef.current.volume = 0;
-          } else {
-            videoRef.current.volume = (videoRef.current.volume - 0.05).toFixed(
-              2
-            );
-          }
-          displayCenterUI(2);
-          break;
-        default:
-          break;
-      }
-    },
-    [displayCenterUI]
-  );
+  //     switch (direction) {
+  //       case "up":
+  //         if (videoRef.current.volume + 0.05 > 1) {
+  //           videoRef.current.volume = 1;
+  //         } else {
+  //           videoRef.current.volume = (videoRef.current.volume + 0.05).toFixed(
+  //             2
+  //           );
+  //         }
+  //         displayCenterUI(1);
+  //         break;
+  //       case "down":
+  //         if (videoRef.current.volume - 0.05 < 0) {
+  //           videoRef.current.volume = 0;
+  //         } else {
+  //           videoRef.current.volume = (videoRef.current.volume - 0.05).toFixed(
+  //             2
+  //           );
+  //         }
+  //         displayCenterUI(2);
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   },
+  //   [displayCenterUI]
+  // );
 
   const updateVolume = useCallback(() => {
     const video = videoRef.current;
@@ -317,27 +317,27 @@ export const useVideoPlayerControls = () => {
       (skipTo / videoRef.current.duration) * 100 + "%";
   }, []);
 
-  const skipByKey = useCallback(
-    (direction) => {
-      seekProgressRef.current.blur();
+  // const skipByKey = useCallback(
+  //   (direction) => {
+  //     seekProgressRef.current.blur();
 
-      switch (direction) {
-        case "forward":
-          videoRef.current.currentTime += 10;
-          displayCenterUI(3);
-          break;
-        case "backward":
-          videoRef.current.currentTime -= 10;
-          displayCenterUI(4);
-          break;
-        default:
-          return;
-      }
+  //     switch (direction) {
+  //       case "forward":
+  //         videoRef.current.currentTime += 10;
+  //         displayCenterUI(3);
+  //         break;
+  //       case "backward":
+  //         videoRef.current.currentTime -= 10;
+  //         displayCenterUI(4);
+  //         break;
+  //       default:
+  //         return;
+  //     }
 
-      showControls();
-    },
-    [showControls, displayCenterUI]
-  );
+  //     showControls();
+  //   },
+  //   [showControls, displayCenterUI]
+  // );
 
   /*
    * FULLSCREEN CONTROL
@@ -347,7 +347,7 @@ export const useVideoPlayerControls = () => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
-      videoContainerRef.current.requestFullscreen();
+      document.querySelector(".video-tree").requestFullscreen();
     }
   }, []);
 
@@ -361,37 +361,37 @@ export const useVideoPlayerControls = () => {
    * KEYBOARD SHORTKUTS
    */
 
-  const keyboardShortcuts = useCallback(
-    (event) => {
-      event.preventDefault();
-      const { key } = event;
+  // const keyboardShortcuts = useCallback(
+  //   (event) => {
+  //     event.preventDefault();
+  //     const { key } = event;
 
-      switch (key) {
-        case "ArrowRight":
-          // Forward 10 seconds
-          skipByKey("forward");
-          break;
-        case "ArrowLeft":
-          // Rewind 10 seconds
-          skipByKey("backward");
-          break;
-        case "ArrowUp":
-          // Volume Up
-          controlVolumeByKey("up");
-          break;
-        case "ArrowDown":
-          // Volume Down
-          controlVolumeByKey("down");
-          break;
-        case " ":
-          togglePlay();
-          break;
-        default:
-          return;
-      }
-    },
-    [skipByKey, controlVolumeByKey, togglePlay]
-  );
+  //     switch (key) {
+  //       case "ArrowRight":
+  //         // Forward 10 seconds
+  //         skipByKey("forward");
+  //         break;
+  //       case "ArrowLeft":
+  //         // Rewind 10 seconds
+  //         skipByKey("backward");
+  //         break;
+  //       case "ArrowUp":
+  //         // Volume Up
+  //         controlVolumeByKey("up");
+  //         break;
+  //       case "ArrowDown":
+  //         // Volume Down
+  //         controlVolumeByKey("down");
+  //         break;
+  //       case " ":
+  //         togglePlay();
+  //         break;
+  //       default:
+  //         return;
+  //     }
+  //   },
+  //   [skipByKey, controlVolumeByKey, togglePlay]
+  // );
 
   /*
    * INITIALIZE VIDEO
@@ -411,9 +411,9 @@ export const useVideoPlayerControls = () => {
 
     updateTime();
 
-    document.addEventListener("keyup", keyboardShortcuts);
+    // document.addEventListener("keyup", keyboardShortcuts);
     document.addEventListener("fullscreenchange", updateFullscreenIcon);
-  }, [updateTime, updateFullscreenIcon, keyboardShortcuts]);
+  }, [updateTime, updateFullscreenIcon]);
 
   return {
     videoContainerRef,
