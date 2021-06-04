@@ -1,12 +1,12 @@
 import { createContext, useState } from "react";
 
 export const VideoContext = createContext({
-  currentVideo: {},
-  updateVideo: () => {},
+  activeVideo: {},
+  updateActiveVideo: () => {},
 });
 
 const VideoContextProvider = ({ children }) => {
-  const [currentVideo, setCurrentVideo] = useState({
+  const [activeVideo, setActiveVideo] = useState({
     src: "https://storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd",
     children: [
       {
@@ -16,12 +16,14 @@ const VideoContextProvider = ({ children }) => {
     ],
   });
 
-  const updateVideo = (newVideo) => {
-    setCurrentVideo(newVideo);
+  const updateActiveVideo = (title) => {
+    setActiveVideo((prev) =>
+      prev.children.find((video) => video.info.optionTitle === title)
+    );
   };
 
   return (
-    <VideoContext.Provider value={{ currentVideo, updateVideo }}>
+    <VideoContext.Provider value={{ activeVideo, updateActiveVideo }}>
       {children}
     </VideoContext.Provider>
   );

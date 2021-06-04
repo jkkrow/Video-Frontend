@@ -1,21 +1,15 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 
 import { ReactComponent as PreviewIcon } from "assets/icons/play.svg";
 import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
-import VideoPlayer from "components/Video/VideoPlayer";
+import VideoTree from "components/Video/VideoTree";
 import { UploadContext } from "context/upload-context";
 import "./Preview.css";
 
 const Preview = () => {
   const { videoTree } = useContext(UploadContext);
-  const [currentVideo, setCurrentVideo] = useState();
+
   const [activePreview, setActivePreview] = useState(false);
-
-  useEffect(() => {
-    if (!videoTree.root) return;
-
-    setCurrentVideo(videoTree.root.info.url);
-  }, [videoTree]);
 
   const togglePreviewHandler = () => {
     setActivePreview((prev) => !prev);
@@ -47,9 +41,9 @@ const Preview = () => {
         </>
       )}
 
-      {currentVideo && (
+      {videoTree.root && (
         <div className={`preview__video${activePreview ? " active" : ""}`}>
-          <VideoPlayer src={currentVideo} autoPlay={false} />
+          <VideoTree tree={videoTree} />
         </div>
       )}
     </div>

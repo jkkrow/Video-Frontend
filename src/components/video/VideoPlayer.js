@@ -526,7 +526,7 @@ const VideoPlayer = ({ src, autoPlay, selected }) => {
         </div>
 
         <div className="vp-controls__time">
-          <time ref={timeRef}></time>
+          <time ref={timeRef} />
         </div>
 
         <div
@@ -567,9 +567,6 @@ const VideoPlayer = ({ src, autoPlay, selected }) => {
           <BackwardIcon className="hidden" />
         </div>
       </div>
-
-      {/* Next Videos Selector */}
-      <div className="vp-next-selector"></div>
     </div>
   );
 };
