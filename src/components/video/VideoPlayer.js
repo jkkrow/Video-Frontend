@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useContext } from "react";
 
 import { ReactComponent as PlayIcon } from "assets/icons/play.svg";
 import { ReactComponent as PauseIcon } from "assets/icons/pause.svg";
@@ -12,6 +12,7 @@ import { ReactComponent as ForwardIcon } from "assets/icons/forward.svg";
 import { ReactComponent as BackwardIcon } from "assets/icons/backward.svg";
 import { ReactComponent as FullscreenIcon } from "assets/icons/fullscreen.svg";
 import { ReactComponent as FullscreenExitIcon } from "assets/icons/fullscreen-exit.svg";
+import { VideoContext } from "context/video-context";
 import "./VideoPlayer.css";
 
 const shaka = require("shaka-player/dist/shaka-player.ui.js");
@@ -30,7 +31,9 @@ const formatTime = (timeInSeconds) => {
   }
 };
 
-const VideoPlayer = ({ src, autoPlay, selected }) => {
+const VideoPlayer = ({ src, next, autoPlay, active }) => {
+  const { updateActiveVideo } = useContext(VideoContext);
+
   const videoContainerRef = useRef();
   const videoRef = useRef();
   const videoControlsRef = useRef();
@@ -46,6 +49,7 @@ const VideoPlayer = ({ src, autoPlay, selected }) => {
   const currentVolumeRef = useRef();
   const volumeInputRef = useRef();
   const fullscreenButtonRef = useRef();
+  const selectorRef = useRef();
 
   /*
    * ERROR HANDLER
@@ -281,11 +285,12 @@ const VideoPlayer = ({ src, autoPlay, selected }) => {
     timeRef.current.innerText = remainedTime;
     timeRef.current.setAttribute("datetime", remainedTime);
 
-    // Navigate to Next Video
+    // Show navigation menu if certain time is reached
+    if (currentTime / duration > 0.9) {
+      selectorRef.current.classList.add("active");
 
-    /// Show navigation menu if certain time is reached
-
-    /// Hide controls UI & Block show controls on mouse move
+      // Hide controls UI & Block show controls on mouse move
+    }
   };
 
   /*
@@ -440,7 +445,7 @@ const VideoPlayer = ({ src, autoPlay, selected }) => {
       onMouseMove={showControls}
       onMouseLeave={hideControls}
       // onContextMenu={(e) => e.preventDefault()}
-      style={{ display: selected ? "" : "none" }}
+      style={{ display: active ? "" : "none" }}
     >
       <video
         ref={videoRef}
@@ -566,6 +571,18 @@ const VideoPlayer = ({ src, autoPlay, selected }) => {
           <BackwardIcon />
           <BackwardIcon className="hidden" />
         </div>
+      </div>
+
+      {/* Next Video Selector */}
+      <div className="vp-selector__container" ref={selectorRef}>
+        {next.map((video) => (
+          <div
+            className="vp-selector"
+            onClick={() => updateActiveVideo(video.info.optionTitle)}
+          >
+            {video.info.optionTitle}
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -7,15 +7,7 @@ export const VideoContext = createContext({
 });
 
 const VideoContextProvider = ({ children }) => {
-  const [activeVideo, setActiveVideo] = useState({
-    src: "https://storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd",
-    children: [
-      {
-        src: "https://storage.googleapis.com/shaka-demo-assets/bbb-dark-truths-hls/hls.m3u8",
-        children: [],
-      },
-    ],
-  });
+  const [activeVideo, setActiveVideo] = useState({});
 
   const initiateVideo = (tree) => {
     setActiveVideo(tree.root);

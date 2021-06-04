@@ -318,3 +318,22 @@
     transform: rotate(360deg);
   }
 }
+
+.vp-selector__container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6rem;
+  display: flex;
+  flex-flow: wrap;
+  gap: 1rem;
+}
+
+.vp-selector {
+  border: 1px solid var(--gray);
+  border-radius: 5px;
+  padding: 1rem;
+  color: var(--white);
+  background: rgba(0, 0, 0, 0.3);
+}

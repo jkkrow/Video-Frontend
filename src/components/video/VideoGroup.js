@@ -3,6 +3,7 @@ import { useContext } from "react";
 import VideoPlayer from "./VideoPlayer";
 import { VideoContext } from "context/video-context";
 // import ExampleVid from "assets/videos/vid_1_720p.mp4";
+// "https://storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd"
 // "https://storage.googleapis.com/shaka-demo-assets/bbb-dark-truths-hls/hls.m3u8"
 import "./VideoGroup.css";
 
@@ -15,8 +16,9 @@ const VideoGroup = ({ current, next, autoPlay, previousVideo }) => {
       <>
         <VideoPlayer
           src={current.src}
+          next={next}
           autoPlay={autoPlay}
-          selected={activeVideo.src === current.src}
+          active={activeVideo.src === current.src}
         />
 
         {next.length > 0 &&
