@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 
 import VideoPlayer from "./VideoPlayer";
 import { VideoContext } from "context/video-context";
@@ -8,8 +8,6 @@ import "./VideoGroup.css";
 
 const VideoGroup = ({ current, next, autoPlay, previousVideo }) => {
   const { activeVideo } = useContext(VideoContext);
-
-  const [nextVideos, setNextVideos] = useState(next);
 
   return (
     (activeVideo.src === current.src ||
@@ -21,15 +19,14 @@ const VideoGroup = ({ current, next, autoPlay, previousVideo }) => {
           selected={activeVideo.src === current.src}
         />
 
-        {nextVideos.length > 0 &&
-          nextVideos.map((video) => (
-            // Update nextVideos when NextSelector is clicked
+        {next.length > 0 &&
+          next.map((video) => (
             <VideoGroup
               key={video.info.src}
               current={video.info}
               next={video.children}
               autoPlay={false}
-              previousVideo={current}
+              previousVideo={current.info}
             />
           ))}
       </>
