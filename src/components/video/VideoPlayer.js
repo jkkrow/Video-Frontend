@@ -12,7 +12,7 @@ import { ReactComponent as ForwardIcon } from "assets/icons/forward.svg";
 import { ReactComponent as BackwardIcon } from "assets/icons/backward.svg";
 import { ReactComponent as FullscreenIcon } from "assets/icons/fullscreen.svg";
 import { ReactComponent as FullscreenExitIcon } from "assets/icons/fullscreen-exit.svg";
-import { VideoContext } from "context/video-context";
+import { VideoContext } from "./VideoTree";
 import "./VideoPlayer.css";
 
 const shaka = require("shaka-player/dist/shaka-player.ui.js");
@@ -438,6 +438,10 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
       .catch((err) => console.log(err));
   }, [src, videoRef]);
 
+  useEffect(() => {
+    active && videoRef.current.play();
+  }, [active]);
+
   return (
     <div
       className="vp-container"
@@ -577,6 +581,7 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
       <div className="vp-selector__container" ref={selectorRef}>
         {next.map((video) => (
           <div
+            key={video.info.optionTitle}
             className="vp-selector"
             onClick={() => updateActiveVideo(video.info.optionTitle)}
           >

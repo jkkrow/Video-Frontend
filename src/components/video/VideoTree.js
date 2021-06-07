@@ -1,31 +1,39 @@
-import { useContext, useEffect } from "react";
+import { useEffect, useState, createContext } from "react";
 
 import VideoGroup from "./VideoGroup";
-import VideoContextProvider, { VideoContext } from "context/video-context";
 import "./VideoTree.css";
 
-const VideoTree = ({ tree }) => {
-  const { initiateVideo } = useContext(VideoContext);
+export const VideoContext = createContext({
+  activeVideo: {},
+  updateActiveVideo: () => {},
+});
+
+const VideoTree = ({ tree, autoPlay = true }) => {
+  const [activeVideo, setActiveVideo] = useState(tree.root);
+
+  const updateActiveVideo = (title) => {
+    setActiveVideo((prev) =>
+      prev.children.find((video) => video.info.optionTitle === title)
+    );
+  };
 
   useEffect(() => {
-    initiateVideo(tree);
-  }, [initiateVideo, tree]);
+    setActiveVideo(tree.root);
+  }, [tree]);
 
   return (
-    <div className="video-tree">
-      <VideoGroup
-        current={tree.root.info}
-        next={tree.root.children}
-        autoPlay={true}
-      />
-    </div>
+    <VideoContext.Provider value={{ activeVideo, updateActiveVideo }}>
+      <div className="video-tree">
+        <VideoGroup
+          current={tree.root.info}
+          next={tree.root.children}
+          autoPlay={autoPlay}
+          activeVideo={activeVideo}
+          updateActiveVideo={updateActiveVideo}
+        />
+      </div>
+    </VideoContext.Provider>
   );
 };
 
-const VideoContextTree = ({ tree }) => (
-  <VideoContextProvider>
-    <VideoTree tree={tree} />
-  </VideoContextProvider>
-);
-
-export default VideoContextTree;
+export default VideoTree;

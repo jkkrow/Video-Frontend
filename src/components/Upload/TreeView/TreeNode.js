@@ -52,7 +52,7 @@ const TreeNode = ({ currentNode }) => {
   const openFileInputHandler = () => {
     fileUploaderRef.current.click();
   };
-  
+
   const fileChangeHandler = async (event) => {
     if (!event.target.files?.length) return;
 
@@ -70,7 +70,7 @@ const TreeNode = ({ currentNode }) => {
       name: event.target.files[0].name,
       optionTitle: childInput,
       layer: currentNode.layer + 1,
-      url: URL.createObjectURL(event.target.files[0]),
+      src: URL.createObjectURL(event.target.files[0]),
     };
 
     appendNext(fileInfo, currentNode);

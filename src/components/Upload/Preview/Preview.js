@@ -43,7 +43,7 @@ const Preview = () => {
 
       {videoTree.root && (
         <div className={`preview__video${activePreview ? " active" : ""}`}>
-          <VideoTree tree={videoTree} />
+          <VideoTree tree={videoTree} autoPlay={false} />
         </div>
       )}
     </div>

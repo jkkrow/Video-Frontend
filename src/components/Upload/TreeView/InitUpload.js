@@ -22,7 +22,7 @@ const InitUpload = ({ onChange }) => {
     initiateUpload({
       name: event.target.files[0].name,
       layer: 0,
-      url: URL.createObjectURL(event.target.files[0]),
+      src: URL.createObjectURL(event.target.files[0]),
     });
   };
 

@@ -7,7 +7,7 @@ export const VideoContext = createContext({
 });
 
 const VideoContextProvider = ({ children }) => {
-  const [activeVideo, setActiveVideo] = useState({});
+  const [activeVideo, setActiveVideo] = useState();
 
   const initiateVideo = (tree) => {
     setActiveVideo(tree.root);
