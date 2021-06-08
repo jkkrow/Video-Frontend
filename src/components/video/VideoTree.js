@@ -5,11 +5,13 @@ import "./VideoTree.css";
 
 export const VideoContext = createContext({
   activeVideo: {},
+  videoVolume: 0,
   updateActiveVideo: () => {},
 });
 
 const VideoTree = ({ tree, autoPlay = true }) => {
   const [activeVideo, setActiveVideo] = useState(tree.root);
+  const [videoVolume, setVideoVolume] = useState();
 
   const updateActiveVideo = (title) => {
     setActiveVideo((prev) =>
@@ -17,12 +19,18 @@ const VideoTree = ({ tree, autoPlay = true }) => {
     );
   };
 
+  const updateVideoVolume = (value) => {
+    setVideoVolume(value);
+  };
+
   useEffect(() => {
     setActiveVideo(tree.root);
   }, [tree]);
 
   return (
-    <VideoContext.Provider value={{ activeVideo, updateActiveVideo }}>
+    <VideoContext.Provider
+      value={{ activeVideo, videoVolume, updateActiveVideo, updateVideoVolume }}
+    >
       <div className="video-tree">
         <VideoGroup
           current={tree.root.info}

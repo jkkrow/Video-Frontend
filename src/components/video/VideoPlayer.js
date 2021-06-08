@@ -1,4 +1,11 @@
-import { useEffect, useRef, useContext } from "react";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useContext,
+} from "react";
 
 import { ReactComponent as PlayIcon } from "assets/icons/play.svg";
 import { ReactComponent as PauseIcon } from "assets/icons/pause.svg";
@@ -6,18 +13,12 @@ import { ReactComponent as VolumeHighIcon } from "assets/icons/volume-high.svg";
 import { ReactComponent as VolumeMiddleIcon } from "assets/icons/volume-middle.svg";
 import { ReactComponent as VolumeLowIcon } from "assets/icons/volume-low.svg";
 import { ReactComponent as VolumeMuteIcon } from "assets/icons/volume-mute.svg";
-import { ReactComponent as VolumeUpIcon } from "assets/icons/volume-up.svg";
-import { ReactComponent as VolumeDownIcon } from "assets/icons/volume-down.svg";
-import { ReactComponent as ForwardIcon } from "assets/icons/forward.svg";
-import { ReactComponent as BackwardIcon } from "assets/icons/backward.svg";
 import { ReactComponent as FullscreenIcon } from "assets/icons/fullscreen.svg";
 import { ReactComponent as FullscreenExitIcon } from "assets/icons/fullscreen-exit.svg";
 import { VideoContext } from "./VideoTree";
 import "./VideoPlayer.css";
 
 const shaka = require("shaka-player/dist/shaka-player.ui.js");
-
-let CONTROLSTIMER, BUFFERTIMER, VOLUMETIMER;
 
 const formatTime = (timeInSeconds) => {
   const result = new Date(timeInSeconds * 1000).toISOString().substr(11, 8);
@@ -34,237 +35,193 @@ const formatTime = (timeInSeconds) => {
 const VideoPlayer = ({ src, next, autoPlay, active }) => {
   const { updateActiveVideo } = useContext(VideoContext);
 
-  const videoContainerRef = useRef();
+  // vp-container
+  const [displayCursor, setDisplayCursor] = useState("default");
+
+  // vp-controls
+  const [canPlayType, setCanPlayType] = useState(true);
+  const [displayControls, setDisplayControls] = useState(true);
+
+  // playback button
+  const [playbackButton, setPlaybackButton] = useState("play");
+
+  // volume button
+  const [volumeButton, setVolumeButton] = useState("high");
+
+  // volume input
+  const [currentVolume, setCurrentVolume] = useState("100");
+  const [seekVolume, setSeekVolume] = useState(1);
+
+  // progress bar
+  const [currentProgress, setCurrentProgress] = useState("0");
+  const [bufferProgress, setBufferProgress] = useState("0");
+  const [seekProgress, setSeekProgress] = useState(0);
+  const [videoDuration, setVideoDuration] = useState(0);
+
+  // seek tooltip
+  const [seekTooltip, setSeekTooltip] = useState("00:00");
+  const [seekTooltipPosition, setSeekTooltipPosition] = useState("");
+
+  // time ui
+  const [displayTime, setdisplayTime] = useState("00:00");
+
+  // fullscreen button
+  const [fullscreenButton, setFullscreenButton] = useState("enter");
+
+  // vp-loader
+  const [displayLoader, setDisplayLoader] = useState(true);
+
+  // vp-selector
+  const [displaySelector, setDisplaySelector] = useState(false);
+
   const videoRef = useRef();
-  const videoControlsRef = useRef();
-  const loadingSpinnerRef = useRef();
-  const centerUIRef = useRef();
-  const playButtonRef = useRef();
-  const timeRef = useRef();
-  const currentProgressRef = useRef();
-  const bufferProgressRef = useRef();
-  const seekProgressRef = useRef();
-  const seekTooltipRef = useRef();
-  const volumeButtonRef = useRef();
-  const currentVolumeRef = useRef();
-  const volumeInputRef = useRef();
-  const fullscreenButtonRef = useRef();
-  const selectorRef = useRef();
+
+  const volumeData = useRef();
+  const progressSeekData = useRef();
+
+  const timer = useRef();
+
+  /*
+   * PREVENT DEFAULT
+   */
+
+  const eventPreventDefault = (event) => {
+    event.preventDefault();
+  };
 
   /*
    * ERROR HANDLER
    */
 
-  const errorHandler = (event) => {
+  const errorHandler = useCallback((event) => {
     // Extract the shaka.util.Error object from the event.
     console.log("Error code", event.detail.code, "object", event.detail);
-  };
-
-  /*
-   * DISPLAYING CENTER UI
-   */
-
-  const displayCenterUI = (index) => {
-    if (index === 0) {
-      // playback ui
-      [...centerUIRef.current.children[index].children].forEach((icon) =>
-        icon.classList.remove("hidden")
-      );
-
-      if (videoRef.current.paused) {
-        centerUIRef.current.children[index].children[0].classList.add("hidden");
-      } else {
-        centerUIRef.current.children[index].children[1].classList.add("hidden");
-      }
-    } else {
-      [...centerUIRef.current.children[index].children].forEach((icon) =>
-        icon.classList.toggle("hidden")
-      );
-    }
-
-    centerUIRef.current.children[index].animate(
-      [
-        {
-          opacity: 1,
-          transform: "scale(1)",
-        },
-        {
-          opacity: 0,
-          transform: "scale(1.3)",
-        },
-      ],
-      { duration: 800 }
-    );
-  };
+  }, []);
 
   /*
    * TOGGLE SHOWING CONTROLS
    */
 
-  const hideControls = () => {
-    if (videoRef.current.paused) {
-      return;
-    }
+  const hideControls = useCallback(() => {
+    if (videoRef.current.paused) return;
 
-    clearTimeout(CONTROLSTIMER);
-    CONTROLSTIMER = setTimeout(() => {
-      videoControlsRef.current.classList.add("hide");
-      if (!videoRef.current.paused) {
-        videoContainerRef.current.style.cursor = "none";
-      }
+    setDisplayControls(false);
+  }, []);
+
+  const showControls = useCallback(() => {
+    setDisplayControls(true);
+    setDisplayCursor("default");
+
+    if (videoRef.current.paused) return;
+
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      hideControls();
+      setDisplayCursor("none");
     }, 2000);
-  };
-
-  const showControls = () => {
-    videoControlsRef.current.classList.remove("hide");
-    videoContainerRef.current.style.cursor = "default";
-
-    hideControls();
-  };
+  }, [hideControls]);
 
   /*
    * PLAYBACK CONTROL
    */
 
-  const togglePlay = () => {
+  const togglePlay = useCallback(() => {
     if (videoRef.current.paused || videoRef.current.ended) {
       videoRef.current.play();
     } else {
       videoRef.current.pause();
     }
 
-    displayCenterUI(0);
-
     showControls();
-  };
+  }, [showControls]);
 
-  const updatePlaybackIcon = () => {
-    if (videoRef.current.ended) {
-      [...centerUIRef.current.children[0].children].forEach((icon) =>
-        icon.classList.toggle("hidden")
-      );
-    }
+  const videoPlayHandler = useCallback(() => {
+    setPlaybackButton("pause");
+  }, []);
 
-    [...playButtonRef.current.children].forEach((icon) => {
-      icon.classList.toggle("hidden");
-    });
-  };
+  const videoPauseHandler = useCallback(() => {
+    setPlaybackButton("play");
+  }, []);
 
   /*
    * LOADING CONTROL
    */
 
-  const showLoadingSpinner = () => {
-    BUFFERTIMER = setTimeout(() => {
-      loadingSpinnerRef.current.classList.remove("hidden");
+  const showLoadingSpinner = useCallback(() => {
+    timer.current = setTimeout(() => {
+      setDisplayLoader(true);
     }, 300);
-  };
+  }, []);
 
-  const hideLoadingSpinner = () => {
-    clearTimeout(BUFFERTIMER);
-    loadingSpinnerRef.current.classList.add("hidden");
-  };
+  const hideLoadingSpinner = useCallback(() => {
+    clearTimeout(timer.current);
+    setDisplayLoader(false);
+  }, []);
 
   /*
    * VOLUME CONTROL
    */
 
-  const controlVolumeByInput = () => {
-    videoRef.current.volume = volumeInputRef.current.value;
-  };
+  const controlVolumeByInput = useCallback((event) => {
+    videoRef.current.volume = event.target.value;
+    setCurrentVolume(event.target.value * 100 + "%");
+    setSeekVolume(event.target.value);
+  }, []);
 
-  // const controlVolumeByKey = (direction) => {
-  //   volumeInputRef.current.blur();
-
-  //   switch (direction) {
-  //     case "up":
-  //       if (videoRef.current.volume + 0.05 > 1) {
-  //         videoRef.current.volume = 1;
-  //       } else {
-  //         videoRef.current.volume = (videoRef.current.volume + 0.05).toFixed(2);
-  //       }
-  //       displayCenterUI(1);
-  //       break;
-  //     case "down":
-  //       if (videoRef.current.volume - 0.05 < 0) {
-  //         videoRef.current.volume = 0;
-  //       } else {
-  //         videoRef.current.volume = (videoRef.current.volume - 0.05).toFixed(2);
-  //       }
-  //       displayCenterUI(2);
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
-  const updateVolume = () => {
+  const updateVolume = useCallback(() => {
     const video = videoRef.current;
-    const volumeIcons = [...volumeButtonRef.current.children];
 
-    currentVolumeRef.current.style.width = video.volume * 100 + "%";
-    volumeInputRef.current.value = video.volume;
+    setCurrentVolume(video.volume * 100 + "%");
+    setSeekVolume(video.volume);
 
     if (video.volume === 0) {
       video.muted = true;
     } else {
       video.muted = false;
-      volumeInputRef.current.setAttribute(
-        "data-volume",
-        volumeInputRef.current.value
-      );
+      volumeData.current = video.volume;
     }
-
-    volumeIcons.forEach((icon) => {
-      icon.classList.add("hidden");
-    });
 
     if (video.muted || video.volume === 0) {
-      volumeIcons[3].classList.remove("hidden");
+      setVolumeButton("mute");
     } else if (video.volume > 0 && video.volume < 0.3) {
-      volumeIcons[2].classList.remove("hidden");
+      setVolumeButton("low");
     } else if (video.volume >= 0.3 && video.volume < 0.7) {
-      volumeIcons[1].classList.remove("hidden");
+      setVolumeButton("middle");
     } else {
-      volumeIcons[0].classList.remove("hidden");
+      setVolumeButton("high");
     }
 
-    clearTimeout(VOLUMETIMER);
-    VOLUMETIMER = setTimeout(() => {
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
       localStorage.setItem("video-volume", video.volume);
     }, 500);
-  };
+  }, []);
 
-  const toggleMute = () => {
+  const toggleMute = useCallback(() => {
     if (videoRef.current.volume !== 0) {
-      volumeInputRef.current.setAttribute(
-        "data-volume",
-        volumeInputRef.current.value
-      );
+      volumeData.current = videoRef.current.volume;
       videoRef.current.volume = 0;
-      volumeInputRef.current.value = 0;
-      currentVolumeRef.current.style.width = 0;
+      setCurrentVolume("0");
+      setSeekVolume(0);
     } else {
-      videoRef.current.volume = volumeInputRef.current.dataset.volume;
-      volumeInputRef.current.value = volumeInputRef.current.dataset.volume;
-      currentVolumeRef.current.style.width =
-        volumeInputRef.current.dataset.volume * 100 + "%";
+      videoRef.current.volume = volumeData.current;
+      setSeekVolume(volumeData.current);
+      setCurrentVolume(volumeData.current * 100 + "%");
     }
-  };
+  }, []);
 
   /*
    * TIME CONTROL
    */
 
-  const updateTime = () => {
+  const updateTime = useCallback(() => {
     const duration = videoRef.current.duration || 0;
     const currentTime = videoRef.current.currentTime || 0;
     const buffer = videoRef.current.buffered;
 
     // Progress UI
-    seekProgressRef.current.value = currentTime;
-    currentProgressRef.current.style.width =
-      (currentTime / duration) * 100 + "%";
+    setCurrentProgress((currentTime / duration) * 100 + "%");
+    setSeekProgress(currentTime);
 
     // Buffer UI
     if (duration > 0) {
@@ -273,8 +230,9 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
           buffer.start(buffer.length - 1 - i) === 0 ||
           buffer.start(buffer.length - 1 - i) < videoRef.current.currentTime
         ) {
-          bufferProgressRef.current.style.width =
-            (buffer.end(buffer.length - 1 - i) / duration) * 100 + "%";
+          setBufferProgress(
+            (buffer.end(buffer.length - 1 - i) / duration) * 100 + "%"
+          );
           break;
         }
       }
@@ -282,27 +240,26 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
 
     // Time UI
     const remainedTime = formatTime(duration - currentTime);
-    timeRef.current.innerText = remainedTime;
-    timeRef.current.setAttribute("datetime", remainedTime);
+    setdisplayTime(remainedTime);
 
     // Show navigation menu if certain time is reached
     if (currentTime / duration > 0.9) {
-      selectorRef.current.classList.add("active");
+      setDisplaySelector(true);
 
       // Hide controls UI & Block show controls on mouse move
     }
-  };
+  }, []);
 
   /*
    * SKIP CONTROL
    */
 
-  const updateSeekTooltip = (event) => {
+  const updateSeekTooltip = useCallback((event) => {
     const skipTo =
       (event.nativeEvent.offsetX / event.target.clientWidth) *
       parseInt(event.target.getAttribute("max"), 10);
 
-    seekProgressRef.current.setAttribute("data-seek", skipTo);
+    progressSeekData.current = skipTo;
 
     let newTime;
     if (skipTo > videoRef.current.duration) {
@@ -313,115 +270,112 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
       newTime = formatTime(skipTo);
     }
 
-    seekTooltipRef.current.textContent = newTime;
+    setSeekTooltip(newTime);
 
     const rect = videoRef.current.getBoundingClientRect();
 
-    seekTooltipRef.current.style.left = `${event.pageX - rect.left}px`;
-  };
+    setSeekTooltipPosition(`${event.pageX - rect.left}px`);
+  }, []);
 
-  const skipByInput = (event) => {
-    const skipTo = event.target.dataset.seek
-      ? event.target.dataset.seek
+  const skipByInput = useCallback((event) => {
+    const skipTo = progressSeekData.current
+      ? progressSeekData.current
       : event.target.value;
 
     videoRef.current.currentTime = skipTo;
-    seekProgressRef.current.value = skipTo;
-    currentProgressRef.current.style.width =
-      (skipTo / videoRef.current.duration) * 100 + "%";
-  };
-
-  // const skipByKey = (direction) => {
-  //   seekProgressRef.current.blur();
-
-  //   switch (direction) {
-  //     case "forward":
-  //       videoRef.current.currentTime += 10;
-  //       displayCenterUI(3);
-  //       break;
-  //     case "backward":
-  //       videoRef.current.currentTime -= 10;
-  //       displayCenterUI(4);
-  //       break;
-  //     default:
-  //       return;
-  //   }
-
-  //   showControls();
-  // };
+    setCurrentProgress((skipTo / videoRef.current.duration) * 100 + "%");
+    setSeekProgress(skipTo);
+  }, []);
 
   /*
    * FULLSCREEN CONTROL
    */
 
-  const toggleFullscreen = () => {
+  const toggleFullscreen = useCallback(() => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
       document.querySelector(".video-tree").requestFullscreen();
     }
-  };
+  }, []);
 
-  const updateFullscreenIcon = () => {
-    [...fullscreenButtonRef.current.children].forEach((icon) =>
-      icon.classList.toggle("hidden")
-    );
-  };
+  const updateFullscreenIcon = useCallback(() => {
+    if (document.fullscreenElement) {
+      setFullscreenButton("exit");
+    } else {
+      setFullscreenButton("enter");
+    }
+  }, []);
 
   /*
    * KEYBOARD SHORTKUTS
    */
 
-  // const keyboardShortcuts = (event) => {
-  //   event.preventDefault();
-  //   const { key } = event;
+  // const keyboardShortcuts = useCallback(
+  //   (event) => {
+  //     const { key } = event;
 
-  //   switch (key) {
-  //     case "ArrowRight":
-  //       // Forward 10 seconds
-  //       skipByKey("forward");
-  //       break;
-  //     case "ArrowLeft":
-  //       // Rewind 10 seconds
-  //       skipByKey("backward");
-  //       break;
-  //     case "ArrowUp":
-  //       // Volume Up
-  //       controlVolumeByKey("up");
-  //       break;
-  //     case "ArrowDown":
-  //       // Volume Down
-  //       controlVolumeByKey("down");
-  //       break;
-  //     case " ":
-  //       togglePlay();
-  //       break;
-  //     default:
-  //       return;
-  //   }
-  // };
+  //     switch (key) {
+  //       case "ArrowRight":
+  //         // Forward 10 seconds
+  //         videoRef.current.currentTime += 10;
+  //         break;
+  //       case "ArrowLeft":
+  //         // Rewind 10 seconds
+  //         videoRef.current.currentTime -= 10;
+  //         break;
+  //       case "ArrowUp":
+  //         // Volume Up
+  //         if (videoRef.current.volume + 0.05 > 1) {
+  //           videoRef.current.volume = 1;
+  //         } else {
+  //           videoRef.current.volume = (videoRef.current.volume + 0.05).toFixed(
+  //             2
+  //           );
+  //         }
+  //         break;
+  //       case "ArrowDown":
+  //         // Volume Down
+  //         if (videoRef.current.volume - 0.05 < 0) {
+  //           videoRef.current.volume = 0;
+  //         } else {
+  //           videoRef.current.volume = (videoRef.current.volume - 0.05).toFixed(
+  //             2
+  //           );
+  //         }
+  //         break;
+  //       case " ":
+  //         togglePlay();
+  //         break;
+  //       default:
+  //         return;
+  //     }
+  //   },
+  //   [togglePlay]
+  // );
 
   /*
    * INITIALIZE VIDEO
    */
 
-  const initializeVideo = () => {
+  const initializeVideo = useCallback(() => {
     if (!videoRef.current.canPlayType) {
       videoRef.current.controls = true;
-      videoControlsRef.current.classList.add("hidden");
+      setCanPlayType(false);
     }
 
-    videoRef.current.volume = localStorage.getItem("video-volume");
+    videoRef.current.volume = localStorage.getItem("video-volume") || 1;
+    setCurrentVolume(
+      localStorage.getItem("video-volume") * 100 + "%" || "100%"
+    );
 
-    const videoDuration = videoRef.current.duration;
-    seekProgressRef.current.setAttribute("max", videoDuration);
-    currentProgressRef.current.setAttribute("max", videoDuration);
+    setVideoDuration(videoRef.current.duration);
 
     updateTime();
 
     // document.addEventListener("keyup", keyboardShortcuts);
     document.addEventListener("fullscreenchange", updateFullscreenIcon);
-  };
+  }, [updateTime, updateFullscreenIcon]);
 
   useEffect(() => {
     // If src type is Blob
@@ -438,26 +392,25 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
       .catch((err) => console.log(err));
   }, [src, videoRef]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     active && videoRef.current.play();
   }, [active]);
 
   return (
     <div
       className="vp-container"
-      ref={videoContainerRef}
       onMouseMove={showControls}
       onMouseLeave={hideControls}
-      // onContextMenu={(e) => e.preventDefault()}
-      style={{ display: active ? "" : "none" }}
+      // onContextMenu={eventPreventDefault}
+      style={{ display: active ? "" : "none", cursor: displayCursor }}
     >
       <video
         ref={videoRef}
         autoPlay={autoPlay}
         onLoadedMetadata={initializeVideo}
         onClick={togglePlay}
-        onPlay={updatePlaybackIcon}
-        onPause={updatePlaybackIcon}
+        onPlay={videoPlayHandler}
+        onPause={videoPauseHandler}
         onVolumeChange={updateVolume}
         onTimeUpdate={updateTime}
         onDoubleClick={toggleFullscreen}
@@ -466,44 +419,40 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
         onError={errorHandler}
       />
 
-      <div className="vp-controls" ref={videoControlsRef}>
+      <div
+        className={`vp-controls${!canPlayType ? " hidden" : ""}${
+          !displayControls ? " hide" : ""
+        }`}
+      >
         <div className="vp-controls__playback">
-          <div
-            className="vp-controls__btn"
-            ref={playButtonRef}
-            onClick={togglePlay}
-          >
-            <PlayIcon />
-            <PauseIcon className="hidden" />
+          <div className="vp-controls__btn" onClick={togglePlay}>
+            {playbackButton === "play" && <PlayIcon />}
+            {playbackButton === "pause" && <PauseIcon />}
           </div>
         </div>
 
         <div className="vp-controls__volume">
-          <div
-            className="vp-controls__btn"
-            ref={volumeButtonRef}
-            onClick={toggleMute}
-          >
-            <VolumeHighIcon />
-            <VolumeMiddleIcon className="hidden" />
-            <VolumeLowIcon className="hidden" />
-            <VolumeMuteIcon className="hidden" />
+          <div className="vp-controls__btn" onClick={toggleMute}>
+            {volumeButton === "high" && <VolumeHighIcon />}
+            {volumeButton === "middle" && <VolumeMiddleIcon />}
+            {volumeButton === "low" && <VolumeLowIcon />}
+            {volumeButton === "mute" && <VolumeMuteIcon />}
           </div>
           <div className="vp-controls__range--outer">
             <div className="vp-controls__range--inner">
               <div className="vp-controls__range--background" />
               <div
                 className="vp-controls__range--current"
-                ref={currentVolumeRef}
+                style={{ width: currentVolume }}
               />
               <input
                 className="vp-controls__range--seek"
-                ref={volumeInputRef}
                 type="range"
-                onInput={controlVolumeByInput}
+                value={seekVolume}
                 max="1"
                 step="0.05"
-                onKeyDown={(e) => e.preventDefault()}
+                onInput={controlVolumeByInput}
+                onKeyDown={eventPreventDefault}
               />
             </div>
           </div>
@@ -511,74 +460,51 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
 
         <div className="vp-controls__progress">
           <div className="vp-controls__range--background" />
-          <div className="vp-controls__range--buffer" ref={bufferProgressRef} />
+          <div
+            className="vp-controls__range--buffer"
+            style={{ width: bufferProgress }}
+          />
           <div
             className="vp-controls__range--current"
-            ref={currentProgressRef}
+            style={{ width: currentProgress }}
           />
           <input
             className="vp-controls__range--seek"
-            ref={seekProgressRef}
-            defaultValue="0"
-            step="0.1"
             type="range"
+            step="0.1"
+            max={videoDuration}
+            value={seekProgress}
             onMouseMove={updateSeekTooltip}
             onInput={skipByInput}
-            onKeyDown={(e) => e.preventDefault()}
+            onKeyDown={eventPreventDefault}
           />
           <span
             className="vp-controls__range--seek-tooltip"
-            ref={seekTooltipRef}
+            style={{ left: seekTooltipPosition }}
           >
-            00:00
+            {seekTooltip}
           </span>
         </div>
 
         <div className="vp-controls__time">
-          <time ref={timeRef} />
+          <time dateTime={displayTime}>{displayTime}</time>
         </div>
 
-        <div
-          className="vp-controls__btn"
-          ref={fullscreenButtonRef}
-          onClick={toggleFullscreen}
-        >
-          <FullscreenIcon />
-          <FullscreenExitIcon className="hidden" />
+        <div className="vp-controls__btn" onClick={toggleFullscreen}>
+          {fullscreenButton === "enter" && <FullscreenIcon />}
+          {fullscreenButton === "exit" && <FullscreenExitIcon />}
         </div>
       </div>
 
-      {/* Loading Spinner */}
-      <div className="vp-loader__container" ref={loadingSpinnerRef}>
+      {/* Loader */}
+      <div className={`vp-loader__container${!displayLoader ? " hidden" : ""}`}>
         <div className="vp-loader" />
       </div>
 
-      {/* Center UI */}
-      <div className="vp-center-ui" ref={centerUIRef}>
-        <div>
-          <PlayIcon />
-          <PauseIcon className="hidden" />
-        </div>
-        <div>
-          <VolumeUpIcon />
-          <VolumeUpIcon className="hidden" />
-        </div>
-        <div>
-          <VolumeDownIcon />
-          <VolumeDownIcon className="hidden" />
-        </div>
-        <div>
-          <ForwardIcon />
-          <ForwardIcon className="hidden" />
-        </div>
-        <div>
-          <BackwardIcon />
-          <BackwardIcon className="hidden" />
-        </div>
-      </div>
-
-      {/* Next Video Selector */}
-      <div className="vp-selector__container" ref={selectorRef}>
+      {/* Selector */}
+      <div
+        className={`vp-selector__container${displaySelector ? " active" : ""}`}
+      >
         {next.map((video) => (
           <div
             key={video.info.optionTitle}
