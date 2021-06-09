@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useContext } from "react";
 
 import { ReactComponent as ArrowIcon } from "assets/icons/right-angle.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
-import IconButton from "../../UI/IconButton";
+import IconButton from "components/UI/IconButton";
 import NewNode from "./NewNode";
 import { UploadContext } from "context/upload-context";
 import "./TreeNode.css";
