@@ -41,6 +41,7 @@
   transform: scale(1);
   transition: all 200ms ease-out;
   z-index: 5;
+  fill: var(--white);
 }
 
 .vp-controls__btn:hover {
@@ -207,115 +208,31 @@
   margin: 0 0.5rem;
 }
 
-.vp-controls svg {
-  fill: var(--white);
-}
-
-.vp-center-ui div {
-  pointer-events: none;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-left: -3rem;
-  margin-top: -3rem;
-  width: 6rem;
-  height: 6rem;
-  border-radius: 100px;
-  background-color: rgba(0, 0, 0, 0.6);
-  color: var(--white);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-}
-
-.vp-center-ui svg {
-  width: 3.5rem;
-  height: 3.5rem;
-  cursor: pointer;
-}
-
 .vp-loader__container {
   position: absolute;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 50;
 }
 
 .vp-loader {
-  position: relative;
-  width: 5rem;
-  height: 5rem;
+  width: 4rem;
+  height: 4rem;
   border-radius: 50%;
-  background: var(--video-red);
-  background: -moz-linear-gradient(
-    left,
-    var(--video-red) 10%,
-    rgba(255, 0, 0, 0) 42%
-  );
-  background: -webkit-linear-gradient(
-    left,
-    var(--video-red) 10%,
-    rgba(255, 0, 0, 0) 42%
-  );
-  background: -o-linear-gradient(
-    left,
-    var(--video-red) 10%,
-    rgba(255, 0, 0, 0) 42%
-  );
-  background: -ms-linear-gradient(
-    left,
-    var(--video-red) 10%,
-    rgba(255, 0, 0, 0) 42%
-  );
-  background: linear-gradient(
-    to right,
-    var(--video-red) 10%,
-    rgba(255, 0, 0, 0) 42%
-  );
-  -webkit-animation: loading 1s infinite linear;
-  animation: loading 1s infinite linear;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
+  box-shadow: 2px 2px 0 0 var(--video-red);
+  transform-origin: 2rem;
+  animation: vp-loader 1s linear infinite;
 }
 
-.vp-loader::before {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 50%;
-  background: var(--video-red);
-  border-radius: 100% 0 0 0;
-  content: "";
-}
-
-.vp-loader::after {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  width: 75%;
-  height: 75%;
-  background: black;
-  border-radius: 50%;
-  margin: auto;
-  content: "";
-}
-
-@keyframes loading {
+@keyframes vp-loader {
   0% {
-    -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
   100% {
-    -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }

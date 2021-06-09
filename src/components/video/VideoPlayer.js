@@ -33,7 +33,7 @@ const formatTime = (timeInSeconds) => {
 };
 
 const VideoPlayer = ({ src, next, autoPlay, active }) => {
-  const { updateActiveVideo } = useContext(VideoContext);
+  const { videoTreeRef, updateActiveVideo } = useContext(VideoContext);
 
   // vp-container
   const [displayCursor, setDisplayCursor] = useState("default");
@@ -79,7 +79,9 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
   const volumeData = useRef();
   const progressSeekData = useRef();
 
-  const timer = useRef();
+  const controlsTimer = useRef();
+  const volumeTimer = useRef();
+  const loaderTimer = useRef();
 
   /*
    * PREVENT DEFAULT
@@ -114,8 +116,8 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
 
     if (videoRef.current.paused) return;
 
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => {
+    clearTimeout(controlsTimer.current);
+    controlsTimer.current = setTimeout(() => {
       hideControls();
       setDisplayCursor("none");
     }, 2000);
@@ -148,13 +150,13 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
    */
 
   const showLoadingSpinner = useCallback(() => {
-    timer.current = setTimeout(() => {
+    loaderTimer.current = setTimeout(() => {
       setDisplayLoader(true);
     }, 300);
   }, []);
 
   const hideLoadingSpinner = useCallback(() => {
-    clearTimeout(timer.current);
+    clearTimeout(loaderTimer.current);
     setDisplayLoader(false);
   }, []);
 
@@ -191,8 +193,8 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
       setVolumeButton("high");
     }
 
-    clearTimeout(timer.current);
-    timer.current = setTimeout(() => {
+    clearTimeout(volumeTimer.current);
+    volumeTimer.current = setTimeout(() => {
       localStorage.setItem("video-volume", video.volume);
     }, 500);
   }, []);
@@ -295,9 +297,9 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
-      document.querySelector(".video-tree").requestFullscreen();
+      videoTreeRef.current.requestFullscreen();
     }
-  }, []);
+  }, [videoTreeRef]);
 
   const updateFullscreenIcon = useCallback(() => {
     if (document.fullscreenElement) {
@@ -419,6 +421,8 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
         onError={errorHandler}
       />
 
+      {/* Controls */}
+
       <div
         className={`vp-controls${!canPlayType ? " hidden" : ""}${
           !displayControls ? " hide" : ""
@@ -497,11 +501,13 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
       </div>
 
       {/* Loader */}
+
       <div className={`vp-loader__container${!displayLoader ? " hidden" : ""}`}>
         <div className="vp-loader" />
       </div>
 
       {/* Selector */}
+
       <div
         className={`vp-selector__container${displaySelector ? " active" : ""}`}
       >
