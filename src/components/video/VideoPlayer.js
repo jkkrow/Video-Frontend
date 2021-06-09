@@ -33,7 +33,8 @@ const formatTime = (timeInSeconds) => {
 };
 
 const VideoPlayer = ({ src, next, autoPlay, active }) => {
-  const { videoTreeRef, updateActiveVideo } = useContext(VideoContext);
+  const { videoTreeRef, videoVolume, updateActiveVideo, updateVideoVolume } =
+    useContext(VideoContext);
 
   // vp-container
   const [displayCursor, setDisplayCursor] = useState("default");
@@ -104,13 +105,13 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
    * TOGGLE SHOWING CONTROLS
    */
 
-  const hideControls = useCallback(() => {
+  const hideControlsHandler = useCallback(() => {
     if (videoRef.current.paused) return;
 
     setDisplayControls(false);
   }, []);
 
-  const showControls = useCallback(() => {
+  const showControlsHandler = useCallback(() => {
     setDisplayControls(true);
     setDisplayCursor("default");
 
@@ -118,24 +119,24 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
 
     clearTimeout(controlsTimer.current);
     controlsTimer.current = setTimeout(() => {
-      hideControls();
+      hideControlsHandler();
       setDisplayCursor("none");
     }, 2000);
-  }, [hideControls]);
+  }, [hideControlsHandler]);
 
   /*
    * PLAYBACK CONTROL
    */
 
-  const togglePlay = useCallback(() => {
+  const togglePlayHandler = useCallback(() => {
     if (videoRef.current.paused || videoRef.current.ended) {
       videoRef.current.play();
     } else {
       videoRef.current.pause();
     }
 
-    showControls();
-  }, [showControls]);
+    showControlsHandler();
+  }, [showControlsHandler]);
 
   const videoPlayHandler = useCallback(() => {
     setPlaybackButton("pause");
@@ -149,13 +150,13 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
    * LOADING CONTROL
    */
 
-  const showLoadingSpinner = useCallback(() => {
+  const showLoaderHandler = useCallback(() => {
     loaderTimer.current = setTimeout(() => {
       setDisplayLoader(true);
     }, 300);
   }, []);
 
-  const hideLoadingSpinner = useCallback(() => {
+  const hideLoaderHandler = useCallback(() => {
     clearTimeout(loaderTimer.current);
     setDisplayLoader(false);
   }, []);
@@ -164,13 +165,13 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
    * VOLUME CONTROL
    */
 
-  const controlVolumeByInput = useCallback((event) => {
+  const volumeInputChangeHandler = useCallback((event) => {
     videoRef.current.volume = event.target.value;
     setCurrentVolume(event.target.value * 100 + "%");
     setSeekVolume(event.target.value);
   }, []);
 
-  const updateVolume = useCallback(() => {
+  const volumeChangeHandler = useCallback(() => {
     const video = videoRef.current;
 
     setCurrentVolume(video.volume * 100 + "%");
@@ -193,13 +194,17 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
       setVolumeButton("high");
     }
 
-    clearTimeout(volumeTimer.current);
-    volumeTimer.current = setTimeout(() => {
-      localStorage.setItem("video-volume", video.volume);
-    }, 500);
-  }, []);
+    if (active) {
+      updateVideoVolume(video.volume);
 
-  const toggleMute = useCallback(() => {
+      clearTimeout(volumeTimer.current);
+      volumeTimer.current = setTimeout(() => {
+        localStorage.setItem("video-volume", video.volume);
+      }, 500);
+    }
+  }, [active, updateVideoVolume]);
+
+  const toggleMuteHandler = useCallback(() => {
     if (videoRef.current.volume !== 0) {
       volumeData.current = videoRef.current.volume;
       videoRef.current.volume = 0;
@@ -216,7 +221,7 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
    * TIME CONTROL
    */
 
-  const updateTime = useCallback(() => {
+  const timeChangeHandler = useCallback(() => {
     const duration = videoRef.current.duration || 0;
     const currentTime = videoRef.current.currentTime || 0;
     const buffer = videoRef.current.buffered;
@@ -256,7 +261,7 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
    * SKIP CONTROL
    */
 
-  const updateSeekTooltip = useCallback((event) => {
+  const seekMouseMoveHandler = useCallback((event) => {
     const skipTo =
       (event.nativeEvent.offsetX / event.target.clientWidth) *
       parseInt(event.target.getAttribute("max"), 10);
@@ -279,7 +284,7 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
     setSeekTooltipPosition(`${event.pageX - rect.left}px`);
   }, []);
 
-  const skipByInput = useCallback((event) => {
+  const seekChangeHandler = useCallback((event) => {
     const skipTo = progressSeekData.current
       ? progressSeekData.current
       : event.target.value;
@@ -293,7 +298,7 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
    * FULLSCREEN CONTROL
    */
 
-  const toggleFullscreen = useCallback(() => {
+  const toggleFullscreenHandler = useCallback(() => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
@@ -301,7 +306,7 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
     }
   }, [videoTreeRef]);
 
-  const updateFullscreenIcon = useCallback(() => {
+  const fullscreenChangeHandler = useCallback(() => {
     if (document.fullscreenElement) {
       setFullscreenButton("exit");
     } else {
@@ -347,20 +352,20 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
   //         }
   //         break;
   //       case " ":
-  //         togglePlay();
+  //         togglePlayHandler();
   //         break;
   //       default:
   //         return;
   //     }
   //   },
-  //   [togglePlay]
+  //   [togglePlayHandler]
   // );
 
   /*
    * INITIALIZE VIDEO
    */
 
-  const initializeVideo = useCallback(() => {
+  const videoLoadHandler = useCallback(() => {
     if (!videoRef.current.canPlayType) {
       videoRef.current.controls = true;
       setCanPlayType(false);
@@ -373,11 +378,23 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
 
     setVideoDuration(videoRef.current.duration);
 
-    updateTime();
+    timeChangeHandler();
 
     // document.addEventListener("keyup", keyboardShortcuts);
-    document.addEventListener("fullscreenchange", updateFullscreenIcon);
-  }, [updateTime, updateFullscreenIcon]);
+    document.addEventListener("fullscreenchange", fullscreenChangeHandler);
+  }, [timeChangeHandler, fullscreenChangeHandler]);
+
+  /*
+   * USEEFFECT
+   */
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(controlsTimer.current);
+      clearTimeout(volumeTimer.current);
+      clearTimeout(loaderTimer.current);
+    };
+  }, []);
 
   useEffect(() => {
     // If src type is Blob
@@ -394,30 +411,40 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
       .catch((err) => console.log(err));
   }, [src, videoRef]);
 
+  useEffect(() => {
+    if (!active) {
+      videoRef.current.volume = videoVolume;
+    }
+  }, [active, videoVolume]);
+
   useLayoutEffect(() => {
     active && videoRef.current.play();
   }, [active]);
 
+  /*
+   * RENDER
+   */
+
   return (
     <div
       className="vp-container"
-      onMouseMove={showControls}
-      onMouseLeave={hideControls}
+      onMouseMove={showControlsHandler}
+      onMouseLeave={hideControlsHandler}
       // onContextMenu={eventPreventDefault}
       style={{ display: active ? "" : "none", cursor: displayCursor }}
     >
       <video
         ref={videoRef}
         autoPlay={autoPlay}
-        onLoadedMetadata={initializeVideo}
-        onClick={togglePlay}
+        onLoadedMetadata={videoLoadHandler}
+        onClick={togglePlayHandler}
         onPlay={videoPlayHandler}
         onPause={videoPauseHandler}
-        onVolumeChange={updateVolume}
-        onTimeUpdate={updateTime}
-        onDoubleClick={toggleFullscreen}
-        onWaiting={showLoadingSpinner}
-        onCanPlay={hideLoadingSpinner}
+        onVolumeChange={volumeChangeHandler}
+        onTimeUpdate={timeChangeHandler}
+        onDoubleClick={toggleFullscreenHandler}
+        onWaiting={showLoaderHandler}
+        onCanPlay={hideLoaderHandler}
         onError={errorHandler}
       />
 
@@ -429,14 +456,14 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
         }`}
       >
         <div className="vp-controls__playback">
-          <div className="vp-controls__btn" onClick={togglePlay}>
+          <div className="vp-controls__btn" onClick={togglePlayHandler}>
             {playbackButton === "play" && <PlayIcon />}
             {playbackButton === "pause" && <PauseIcon />}
           </div>
         </div>
 
         <div className="vp-controls__volume">
-          <div className="vp-controls__btn" onClick={toggleMute}>
+          <div className="vp-controls__btn" onClick={toggleMuteHandler}>
             {volumeButton === "high" && <VolumeHighIcon />}
             {volumeButton === "middle" && <VolumeMiddleIcon />}
             {volumeButton === "low" && <VolumeLowIcon />}
@@ -455,7 +482,7 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
                 value={seekVolume}
                 max="1"
                 step="0.05"
-                onInput={controlVolumeByInput}
+                onChange={volumeInputChangeHandler}
                 onKeyDown={eventPreventDefault}
               />
             </div>
@@ -478,8 +505,8 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
             step="0.1"
             max={videoDuration}
             value={seekProgress}
-            onMouseMove={updateSeekTooltip}
-            onInput={skipByInput}
+            onMouseMove={seekMouseMoveHandler}
+            onChange={seekChangeHandler}
             onKeyDown={eventPreventDefault}
           />
           <span
@@ -494,7 +521,7 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
           <time dateTime={displayTime}>{displayTime}</time>
         </div>
 
-        <div className="vp-controls__btn" onClick={toggleFullscreen}>
+        <div className="vp-controls__btn" onClick={toggleFullscreenHandler}>
           {fullscreenButton === "enter" && <FullscreenIcon />}
           {fullscreenButton === "exit" && <FullscreenExitIcon />}
         </div>

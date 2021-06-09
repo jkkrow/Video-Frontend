@@ -7,7 +7,7 @@ export const VideoContext = createContext();
 
 const VideoTree = ({ tree, autoPlay = true }) => {
   const [activeVideo, setActiveVideo] = useState(tree.root);
-  const [videoVolume, setVideoVolume] = useState();
+  const [videoVolume, setVideoVolume] = useState(1);
 
   const videoTreeRef = useRef();
 
