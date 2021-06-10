@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { ReactComponent as UploadIcon } from "assets/icons/upload.svg";
-import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
 import IconButton from "../../UI/IconButton";
 import "./NewNode.css";
 
@@ -37,19 +35,12 @@ const NewNode = ({ onFile, onInput, onRemove }) => {
           onChange={inputChangeHandler}
         />
         <IconButton
-          className={`file-upload${
-            optionTitle.length === 0 ? " disabled" : ""
-          }`}
+          className={`upload${optionTitle.length === 0 ? " disabled" : ""}`}
           onClick={onFile}
           disabled={!optionTitle.length}
-          Component={UploadIcon}
         />
       </form>
-      <IconButton
-        className="remove"
-        onClick={removeHandler}
-        Component={RemoveIcon}
-      />
+      <IconButton className="remove" onClick={removeHandler} />
     </div>
   );
 };

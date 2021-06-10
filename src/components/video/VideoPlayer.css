@@ -242,12 +242,12 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 10rem;
   display: flex;
   flex-flow: wrap;
   justify-content: center;
   align-items: center;
   gap: 1rem;
+  padding: 2rem;
   opacity: 0;
   visibility: hidden;
   transform: translateY(20%);
@@ -260,11 +260,16 @@
   transform: translateY(0);
 }
 
+.vp-selector__container.high {
+  transform: translateY(-3rem);
+}
+
 .vp-selector {
-  border: 1px solid var(--gray);
+  width: 40%;
   border-radius: 5px;
   padding: 0.5rem;
   color: var(--white);
   background: rgba(0, 0, 0, 0.8);
+  text-align: center;
   cursor: pointer;
 }

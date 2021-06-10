@@ -5,12 +5,20 @@
   width: 3rem;
   height: 3rem;
   background: transparent;
-  transform: rotate(0);
+  transform: rotate(0) scale(1);
   transition: transform 200ms ease-out;
+}
+
+.icon-button:hover {
+  transform: scale(1.5);
 }
 
 .icon-button.rotated {
   transform: rotate(90deg);
+}
+
+.icon-button.rotated:hover {
+  transform: rotate(90deg) scale(1.5);
 }
 
 .icon-button.disabled > svg {
@@ -18,27 +26,33 @@
   cursor: not-allowed;
 }
 
-.icon-button.open-children {
-  position: absolute;
-  left: -3rem;
+.icon-button.disabled:hover {
+  transform: scale(1);
 }
 
-.icon-button.open-children svg {
+.icon-button.left-angle,
+.icon-button.right-angle,
+.icon-button.double-left-angle {
+}
+
+.icon-button.left-angle svg,
+.icon-button.right-angle svg,
+.icon-button.double-left-angle svg {
   width: 40%;
   height: 40%;
 }
 
-.icon-button.add-child {
+.icon-button.plus {
   padding: 0.8rem;
   margin-left: auto;
 }
 
-.icon-button.file-upload {
-  width: 2.5rem;
-  height: 2.5rem;
+.icon-button.upload {
+  width: 2rem;
+  height: 2rem;
 }
 
-.icon-button.file-upload svg {
+.icon-button.upload svg {
   width: 100%;
   height: 100%;
 }

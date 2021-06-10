@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect, useContext } from "react";
 // import axios from "axios";
 
-import { ReactComponent as ArrowIcon } from "assets/icons/right-angle.svg";
-import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
 import IconButton from "components/UI/IconButton";
 import NewNode from "./NewNode";
 import { UploadContext } from "context/upload-context";
@@ -99,17 +97,13 @@ const TreeNode = ({ currentNode }) => {
           </div>
           {children.length > 0 && (
             <IconButton
-              className={`open-children${openChildren ? " rotated" : ""}`}
+              className={`right-angle${openChildren ? " rotated" : ""}`}
               onClick={displayChildrenHandler}
-              Component={ArrowIcon}
+              style={{ position: "absolute", left: "-3rem" }}
             />
           )}
           {children.length < 4 && (
-            <IconButton
-              className="add-child"
-              onClick={addChildHandler}
-              Component={PlusIcon}
-            />
+            <IconButton className="plus" onClick={addChildHandler} />
           )}
         </div>
 

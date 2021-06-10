@@ -226,11 +226,10 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
     const currentTime = videoRef.current.currentTime || 0;
     const buffer = videoRef.current.buffered;
 
-    // Progress UI
+    // Progress
     setCurrentProgress((currentTime / duration) * 100 + "%");
     setSeekProgress(currentTime);
 
-    // Buffer UI
     if (duration > 0) {
       for (let i = 0; i < buffer.length; i++) {
         if (
@@ -245,15 +244,15 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
       }
     }
 
-    // Time UI
+    // Time
     const remainedTime = formatTime(duration - currentTime);
     setdisplayTime(remainedTime);
 
-    // Show navigation menu if certain time is reached
+    // Selector
     if (currentTime / duration > 0.9) {
       setDisplaySelector(true);
-
-      // Hide controls UI & Block show controls on mouse move
+    } else {
+      setDisplaySelector(false);
     }
   }, []);
 
@@ -285,9 +284,7 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
   }, []);
 
   const seekChangeHandler = useCallback((event) => {
-    const skipTo = progressSeekData.current
-      ? progressSeekData.current
-      : event.target.value;
+    const skipTo = progressSeekData.current || event.target.value;
 
     videoRef.current.currentTime = skipTo;
     setCurrentProgress((skipTo / videoRef.current.duration) * 100 + "%");
@@ -318,7 +315,7 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
    * KEYBOARD SHORTKUTS
    */
 
-  // const keyboardShortcuts = useCallback(
+  // const keyEventHandler = useCallback(
   //   (event) => {
   //     const { key } = event;
 
@@ -380,7 +377,7 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
 
     timeChangeHandler();
 
-    // document.addEventListener("keyup", keyboardShortcuts);
+    // document.addEventListener("keyup", keyEventHandler);
     document.addEventListener("fullscreenchange", fullscreenChangeHandler);
   }, [timeChangeHandler, fullscreenChangeHandler]);
 
@@ -414,11 +411,20 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
   useEffect(() => {
     if (!active) {
       videoRef.current.volume = videoVolume;
+      setDisplayControls(false);
     }
   }, [active, videoVolume]);
 
   useLayoutEffect(() => {
-    active && videoRef.current.play();
+    if (active) {
+      videoRef.current.play();
+      setDisplayCursor("none");
+    }
+
+    if (!active) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.pause();
+    }
   }, [active]);
 
   /*
@@ -536,16 +542,18 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
       {/* Selector */}
 
       <div
-        className={`vp-selector__container${displaySelector ? " active" : ""}`}
+        className={`vp-selector__container${displaySelector ? " active" : ""}${
+          displayControls ? " high" : ""
+        }`}
       >
         {next.map((video) => (
-          <div
+          <button
             key={video.info.optionTitle}
             className="vp-selector"
             onClick={() => updateActiveVideo(video.info.optionTitle)}
           >
             {video.info.optionTitle}
-          </div>
+          </button>
         ))}
       </div>
     </div>
