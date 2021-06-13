@@ -281,3 +281,15 @@
   background: rgba(0, 0, 0);
   transform: scale(1.2);
 }
+
+.vp-navigation {
+  position: absolute;
+  bottom: -5rem;
+  left: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  height: 5rem;
+  transform: translate(-50%, 0);
+}

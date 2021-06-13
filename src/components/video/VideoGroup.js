@@ -8,29 +8,29 @@ import "./VideoGroup.css";
 // "https://storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd"
 // "https://storage.googleapis.com/shaka-demo-assets/bbb-dark-truths-hls/hls.m3u8"
 
-const VideoGroup = ({ current, next, autoPlay, previousVideo }) => {
+const VideoGroup = ({ currentVideo, autoPlay, previousVideo }) => {
   const { activeVideo } = useContext(VideoContext);
 
   return (
     <>
-      {(activeVideo.info.src === current?.src ||
-        activeVideo.info.src === previousVideo?.src) && (
+      {(activeVideo.info.src === currentVideo?.info.src ||
+        activeVideo.info.src === previousVideo?.info.src) && (
         <VideoPlayer
-          src={current?.src}
-          next={next}
+          src={currentVideo?.info.src}
+          next={currentVideo.children}
           autoPlay={autoPlay}
-          active={activeVideo.info.src === current?.src}
+          active={activeVideo.info.src === currentVideo?.info.src}
+          previousVideo={previousVideo}
         />
       )}
 
-      {next.length > 0 &&
-        next.map((video) => (
+      {currentVideo.children.length > 0 &&
+        currentVideo.children.map((video) => (
           <VideoGroup
             key={video.info.src}
-            current={video.info}
-            next={video.children}
+            currentVideo={video}
             autoPlay={false}
-            previousVideo={current}
+            previousVideo={currentVideo}
           />
         ))}
     </>

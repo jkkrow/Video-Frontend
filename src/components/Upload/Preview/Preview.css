@@ -77,14 +77,6 @@
   transition-delay: 400ms;
 }
 
-.preview__video__navigation {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  height: 5rem;
-}
-
 .preview__checkbox:checked ~ .preview__background {
   transform: scale(200);
 }

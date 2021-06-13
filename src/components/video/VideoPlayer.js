@@ -15,6 +15,7 @@ import { ReactComponent as VolumeLowIcon } from "assets/icons/volume-low.svg";
 import { ReactComponent as VolumeMuteIcon } from "assets/icons/volume-mute.svg";
 import { ReactComponent as FullscreenIcon } from "assets/icons/fullscreen.svg";
 import { ReactComponent as FullscreenExitIcon } from "assets/icons/fullscreen-exit.svg";
+import IconButton from "components/UI/IconButton";
 import { VideoContext } from "./VideoTree";
 import "./VideoPlayer.css";
 
@@ -32,9 +33,16 @@ const formatTime = (timeInSeconds) => {
   }
 };
 
-const VideoPlayer = ({ src, next, autoPlay, active }) => {
-  const { videoTreeRef, videoVolume, updateActiveVideo, updateVideoVolume } =
-    useContext(VideoContext);
+const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
+  const {
+    tree,
+    activeVideo,
+    videoTreeRef,
+    videoVolume,
+    editMode,
+    updateActiveVideo,
+    updateVideoVolume,
+  } = useContext(VideoContext);
 
   // vp-container
   const [displayCursor, setDisplayCursor] = useState("default");
@@ -90,9 +98,9 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
    * PREVENT DEFAULT
    */
 
-  const eventPreventDefault = (event) => {
+  const eventPreventDefault = useCallback((event) => {
     event.preventDefault();
-  };
+  }, []);
 
   /*
    * ERROR HANDLER
@@ -251,7 +259,7 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
     setdisplayTime(remainedTime);
 
     // Selector
-    if (currentTime / duration > 0.9) {
+    if (currentTime / duration >= 0.9) {
       setDisplaySelector(true);
     } else {
       setDisplaySelector(false);
@@ -317,11 +325,14 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
    * EXTRA HANDLER
    */
 
-  const videoFocusHandler = (event) => {
-    if (!active) return;
+  const videoFocusHandler = useCallback(
+    (event) => {
+      if (!active) return;
 
-    event.target.focus();
-  };
+      event.target.focus();
+    },
+    [active]
+  );
 
   /*
    * KEYBOARD SHORTKUTS
@@ -408,6 +419,23 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
 
     document.addEventListener("fullscreenchange", fullscreenChangeHandler);
   }, [timeChangeHandler, fullscreenChangeHandler]);
+
+  /*
+   * NAVIGATION
+   */
+
+  const restartVideoTree = useCallback(() => {
+    updateActiveVideo(tree.root);
+  }, [tree.root, updateActiveVideo]);
+
+  const navigateToPreviousVideo = useCallback(() => {
+    updateActiveVideo(previousVideo);
+  }, [updateActiveVideo, previousVideo]);
+
+  const navigateToSelectorTimeline = useCallback(() => {
+    videoRef.current.currentTime = videoRef.current.duration * 0.9;
+    videoRef.current.play();
+  }, []);
 
   /*
    * USEEFFECT
@@ -598,12 +626,34 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
           <button
             key={video.info.optionTitle}
             className="vp-selector"
-            onClick={() => updateActiveVideo(video.info.optionTitle)}
+            onClick={() => updateActiveVideo(video)}
           >
             {video.info.optionTitle}
           </button>
         ))}
       </div>
+
+      {/* Navigation ( Edit Mode ) */}
+      {editMode && (
+        <div className="vp-navigation">
+          {activeVideo !== tree.root && (
+            <IconButton
+              className="double-left-angle"
+              onClick={restartVideoTree}
+            />
+          )}
+          {activeVideo !== tree.root && (
+            <IconButton
+              className="left-angle"
+              onClick={navigateToPreviousVideo}
+            />
+          )}
+          <IconButton
+            className="right-angle"
+            onClick={navigateToSelectorTimeline}
+          />
+        </div>
+      )}
     </div>
   );
 };

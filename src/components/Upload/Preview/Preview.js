@@ -3,7 +3,6 @@ import { useContext, useState } from "react";
 import { ReactComponent as PreviewIcon } from "assets/icons/play.svg";
 import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
 import VideoTree from "components/Video/VideoTree";
-import IconButton from "components/UI/IconButton";
 import { UploadContext } from "context/upload-context";
 import "./Preview.css";
 
@@ -45,12 +44,7 @@ const Preview = () => {
       {videoTree.root && (
         <div className="preview__video__container">
           <div className={`preview__video${activePreview ? " active" : ""}`}>
-            <VideoTree tree={videoTree} autoPlay={false} />
-            <div className="preview__video__navigation">
-              <IconButton className="double-left-angle" />
-              <IconButton className="left-angle" />
-              <IconButton className="right-angle" />
-            </div>
+            <VideoTree tree={videoTree} autoPlay={false} editMode={true} />
           </div>
         </div>
       )}
