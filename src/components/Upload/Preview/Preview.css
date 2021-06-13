@@ -86,7 +86,7 @@
 }
 
 .preview__checkbox:checked ~ .preview__background {
-  transform: scale(150);
+  transform: scale(200);
 }
 
 .preview__checkbox:checked ~ .preview__toggle .toggle-button {

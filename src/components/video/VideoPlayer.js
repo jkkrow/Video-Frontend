@@ -76,6 +76,8 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
   const [displaySelector, setDisplaySelector] = useState(false);
 
   const videoRef = useRef();
+  const videoContainerRef = useRef();
+  const videoSelectorRef = useRef();
 
   const volumeData = useRef();
   const progressSeekData = useRef();
@@ -312,51 +314,85 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
   }, []);
 
   /*
+   * EXTRA HANDLER
+   */
+
+  const videoFocusHandler = (event) => {
+    if (!active) return;
+
+    event.target.focus();
+  };
+
+  /*
    * KEYBOARD SHORTKUTS
    */
 
-  // const keyEventHandler = useCallback(
-  //   (event) => {
-  //     const { key } = event;
+  const keyEventHandler = useCallback(
+    (event) => {
+      const { key } = event;
 
-  //     switch (key) {
-  //       case "ArrowRight":
-  //         // Forward 10 seconds
-  //         videoRef.current.currentTime += 10;
-  //         break;
-  //       case "ArrowLeft":
-  //         // Rewind 10 seconds
-  //         videoRef.current.currentTime -= 10;
-  //         break;
-  //       case "ArrowUp":
-  //         // Volume Up
-  //         if (videoRef.current.volume + 0.05 > 1) {
-  //           videoRef.current.volume = 1;
-  //         } else {
-  //           videoRef.current.volume = (videoRef.current.volume + 0.05).toFixed(
-  //             2
-  //           );
-  //         }
-  //         break;
-  //       case "ArrowDown":
-  //         // Volume Down
-  //         if (videoRef.current.volume - 0.05 < 0) {
-  //           videoRef.current.volume = 0;
-  //         } else {
-  //           videoRef.current.volume = (videoRef.current.volume - 0.05).toFixed(
-  //             2
-  //           );
-  //         }
-  //         break;
-  //       case " ":
-  //         togglePlayHandler();
-  //         break;
-  //       default:
-  //         return;
-  //     }
-  //   },
-  //   [togglePlayHandler]
-  // );
+      switch (key) {
+        case "ArrowRight":
+          // Forward 10 seconds
+          videoRef.current.currentTime += 10;
+          break;
+        case "ArrowLeft":
+          // Rewind 10 seconds
+          videoRef.current.currentTime -= 10;
+          break;
+        case "ArrowUp":
+          // Volume Up
+          if (videoRef.current.volume + 0.05 > 1) {
+            videoRef.current.volume = 1;
+          } else {
+            videoRef.current.volume = (videoRef.current.volume + 0.05).toFixed(
+              2
+            );
+          }
+          break;
+        case "ArrowDown":
+          // Volume Down
+          if (videoRef.current.volume - 0.05 < 0) {
+            videoRef.current.volume = 0;
+          } else {
+            videoRef.current.volume = (videoRef.current.volume - 0.05).toFixed(
+              2
+            );
+          }
+          break;
+        case " ":
+          togglePlayHandler();
+          break;
+
+        case "1":
+          if (
+            !displaySelector ||
+            videoSelectorRef.current.children.length === 0
+          )
+            return;
+          videoSelectorRef.current.children[0].click();
+          break;
+        case "2":
+          if (!displaySelector || videoSelectorRef.current.children.length <= 1)
+            return;
+          videoSelectorRef.current.children[1].click();
+          break;
+        case "3":
+          if (!displaySelector || videoSelectorRef.current.children.length <= 2)
+            return;
+          videoSelectorRef.current.children[2].click();
+          break;
+        case "4":
+          if (!displaySelector || videoSelectorRef.current.children.length <= 3)
+            return;
+          videoSelectorRef.current.children[3].click();
+          break;
+        default:
+          return;
+      }
+    },
+    [displaySelector, togglePlayHandler]
+  );
 
   /*
    * INITIALIZE VIDEO
@@ -377,7 +413,6 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
 
     timeChangeHandler();
 
-    // document.addEventListener("keyup", keyEventHandler);
     document.addEventListener("fullscreenchange", fullscreenChangeHandler);
   }, [timeChangeHandler, fullscreenChangeHandler]);
 
@@ -415,6 +450,21 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
     }
   }, [active, videoVolume]);
 
+  useEffect(() => {
+    if (active) {
+      videoContainerRef.current.focus();
+    }
+
+    if (!active) {
+      videoContainerRef.current.blur();
+    }
+  }, [active]);
+
+  useEffect(() => {
+    if (displaySelector) {
+    }
+  }, [displaySelector]);
+
   useLayoutEffect(() => {
     if (active) {
       videoRef.current.play();
@@ -434,10 +484,14 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
   return (
     <div
       className="vp-container"
+      ref={videoContainerRef}
+      style={{ display: active ? "" : "none", cursor: displayCursor }}
+      tabIndex={-1}
       onMouseMove={showControlsHandler}
       onMouseLeave={hideControlsHandler}
+      onBlur={videoFocusHandler}
+      onKeyDown={keyEventHandler}
       // onContextMenu={eventPreventDefault}
-      style={{ display: active ? "" : "none", cursor: displayCursor }}
     >
       <video
         ref={videoRef}
@@ -545,8 +599,9 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
         className={`vp-selector__container${displaySelector ? " active" : ""}${
           displayControls ? " high" : ""
         }`}
+        ref={videoSelectorRef}
       >
-        {next.map((video) => (
+        {next.map((video, index) => (
           <button
             key={video.info.optionTitle}
             className="vp-selector"
