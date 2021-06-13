@@ -365,27 +365,20 @@ const VideoPlayer = ({ src, next, autoPlay, active }) => {
           break;
 
         case "1":
-          if (
-            !displaySelector ||
-            videoSelectorRef.current.children.length === 0
-          )
-            return;
-          videoSelectorRef.current.children[0].click();
+          if (!displaySelector) return;
+          videoSelectorRef.current.children[0]?.click();
           break;
         case "2":
-          if (!displaySelector || videoSelectorRef.current.children.length <= 1)
-            return;
-          videoSelectorRef.current.children[1].click();
+          if (!displaySelector) return;
+          videoSelectorRef.current.children[1]?.click();
           break;
         case "3":
-          if (!displaySelector || videoSelectorRef.current.children.length <= 2)
-            return;
-          videoSelectorRef.current.children[2].click();
+          if (!displaySelector) return;
+          videoSelectorRef.current.children[2]?.click();
           break;
         case "4":
-          if (!displaySelector || videoSelectorRef.current.children.length <= 3)
-            return;
-          videoSelectorRef.current.children[3].click();
+          if (!displaySelector) return;
+          videoSelectorRef.current.children[3]?.click();
           break;
         default:
           return;
