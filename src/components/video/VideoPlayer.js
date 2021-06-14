@@ -622,7 +622,7 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
         }`}
         ref={videoSelectorRef}
       >
-        {next.map((video, index) => (
+        {next.map((video) => (
           <button
             key={video.info.optionTitle}
             className="vp-selector"

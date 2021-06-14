@@ -27,7 +27,7 @@ const VideoGroup = ({ currentVideo, autoPlay, previousVideo }) => {
       {currentVideo.children.length > 0 &&
         currentVideo.children.map((video) => (
           <VideoGroup
-            key={video.info.src}
+            key={`${video.info.layer}:${video.info.src}-${video.info.optionTitle}`}
             currentVideo={video}
             autoPlay={false}
             previousVideo={currentVideo}

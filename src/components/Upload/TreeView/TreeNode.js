@@ -8,12 +8,14 @@ import "./TreeNode.css";
 
 const TreeNode = ({ currentNode }) => {
   const { appendNext } = useContext(UploadContext);
+
   const [children, setChildren] = useState([]);
   const [openChildren, setOpenChildren] = useState(false);
   const [addChild, setAddChild] = useState(false);
   const [childInput, setChildInput] = useState("");
   const [expandBody, setExpandBody] = useState(true);
   const [optionTitle, setOptionTitle] = useState(currentNode.optionTitle);
+
   const fileUploaderRef = useRef();
 
   useEffect(() => {
@@ -131,7 +133,10 @@ const TreeNode = ({ currentNode }) => {
       {children.length > 0 && (
         <div className={`tree-node__children${!openChildren ? " hide" : ""}`}>
           {children.map((item) => (
-            <TreeNode key={item.optionTitle} currentNode={item} />
+            <TreeNode
+              key={`${item.layer}:${item.file.name}-${item.optionTitle}`}
+              currentNode={item}
+            />
           ))}
         </div>
       )}

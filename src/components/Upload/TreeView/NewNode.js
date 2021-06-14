@@ -5,6 +5,7 @@ import "./NewNode.css";
 
 const NewNode = ({ onFile, onInput, onRemove }) => {
   const [optionTitle, setOptionTitle] = useState("");
+  
   const inputRef = useRef();
 
   useEffect(() => {
