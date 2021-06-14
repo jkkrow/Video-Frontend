@@ -537,19 +537,19 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
         }`}
       >
         <div className="vp-controls__playback">
-          <div className="vp-controls__btn" onClick={togglePlayHandler}>
+          <button className="vp-controls__btn" onClick={togglePlayHandler}>
             {playbackButton === "play" && <PlayIcon />}
             {playbackButton === "pause" && <PauseIcon />}
-          </div>
+          </button>
         </div>
 
         <div className="vp-controls__volume">
-          <div className="vp-controls__btn" onClick={toggleMuteHandler}>
+          <button className="vp-controls__btn" onClick={toggleMuteHandler}>
             {volumeButton === "high" && <VolumeHighIcon />}
             {volumeButton === "middle" && <VolumeMiddleIcon />}
             {volumeButton === "low" && <VolumeLowIcon />}
             {volumeButton === "mute" && <VolumeMuteIcon />}
-          </div>
+          </button>
           <div className="vp-controls__range--outer">
             <div className="vp-controls__range--inner">
               <div className="vp-controls__range--background" />
@@ -598,13 +598,18 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
           </span>
         </div>
 
-        <div className="vp-controls__time">
-          <time dateTime={displayTime}>{displayTime}</time>
-        </div>
+        <time className="vp-controls__time" dateTime={displayTime}>
+          {displayTime}
+        </time>
 
-        <div className="vp-controls__btn" onClick={toggleFullscreenHandler}>
-          {fullscreenButton === "enter" && <FullscreenIcon />}
-          {fullscreenButton === "exit" && <FullscreenExitIcon />}
+        <div
+          className="vp-controls__fullscreen"
+          onClick={toggleFullscreenHandler}
+        >
+          <button className="vp-controls__btn">
+            {fullscreenButton === "enter" && <FullscreenIcon />}
+            {fullscreenButton === "exit" && <FullscreenExitIcon />}
+          </button>
         </div>
       </div>
 
