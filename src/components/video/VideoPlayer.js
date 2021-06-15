@@ -550,8 +550,8 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
             {volumeButton === "low" && <VolumeLowIcon />}
             {volumeButton === "mute" && <VolumeMuteIcon />}
           </button>
-          <div className="vp-controls__range--outer">
-            <div className="vp-controls__range--inner">
+          <div className="vp-controls__volume-range--outer">
+            <div className="vp-controls__volume-range--inner">
               <div className="vp-controls__range--background" />
               <div
                 className="vp-controls__range--current"
