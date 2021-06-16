@@ -1,11 +1,6 @@
 import { createContext, useState } from "react";
 
-export const UploadContext = createContext({
-  videoTree: {},
-  initiateUpload: () => {},
-  appendNext: () => {},
-  updateNode: () => {},
-});
+export const UploadContext = createContext();
 
 const UploadContextProvider = ({ children }) => {
   const [videoTree, setVideoTree] = useState(JSON.stringify({}));

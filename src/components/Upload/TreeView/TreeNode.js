@@ -5,9 +5,10 @@ import IconButton from "components/UI/IconButton";
 import NewNode from "./NewNode";
 import { UploadContext } from "context/upload-context";
 import "./TreeNode.css";
+import axios from "axios";
 
 const TreeNode = ({ currentNode }) => {
-  const { appendNext } = useContext(UploadContext);
+  const { videoTree, appendNext } = useContext(UploadContext);
 
   const [children, setChildren] = useState([]);
   const [openChildren, setOpenChildren] = useState(false);
@@ -16,22 +17,11 @@ const TreeNode = ({ currentNode }) => {
   const [expandBody, setExpandBody] = useState(true);
   const [optionTitle, setOptionTitle] = useState(currentNode.optionTitle);
 
-  const fileUploaderRef = useRef();
+  const [uploadId, setUploadId] = useState("");
+  const [progressArray, setProgressArray] = useState([]);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
-  useEffect(() => {
-    // const uploadToAWS = async () => {
-    //   const uploadConfig = await axios.get(
-    //     `${process.env.REACT_APP_SERVER_URL}/upload`
-    //   );
-    //   await axios.put(uploadConfig.data.url, currentNode.file, {
-    //     headers: { "Content-Type": currentNode.file.type },
-    //     onUploadProgress: (progressEvent) => {
-    //       console.log(progressEvent);
-    //     },
-    //   });
-    // };
-    // uploadToAWS();
-  }, []);
+  const fileUploaderRef = useRef();
 
   const displayChildrenHandler = () => {
     setOpenChildren((prev) => !prev);
@@ -81,6 +71,134 @@ const TreeNode = ({ currentNode }) => {
     // Open children nodes
     setOpenChildren(true);
   };
+
+  const initiateUpload = async (data) => {
+    const params = {
+      videoTitle: videoTree.root.info.name,
+      fileName: currentNode.file.name,
+      fileType: currentNode.file.type,
+    };
+
+    const response = await axios.get(
+      `${process.env.REACT_APP_SERVER_URL}/initiate-upload`,
+      { params }
+    );
+
+    const { uploadId } = response.data;
+
+    setUploadId(uploadId);
+  };
+
+  const uploadMultipartFile = async () => {
+    try {
+      const fileSize = currentNode.file.size;
+      const CHUNK_SIZE = 10000000; // 10MB
+      const CHUNKS_COUNT = Math.floor(fileSize / CHUNK_SIZE) + 1;
+      const promisesArray = [];
+
+      let start, end, blob;
+
+      for (let index = 1; index < CHUNKS_COUNT + 1; index++) {
+        start = (index - 1) * CHUNK_SIZE;
+        end = index * CHUNK_SIZE;
+        blob =
+          index < CHUNKS_COUNT
+            ? currentNode.file.slice(start, end)
+            : currentNode.file.slice(start);
+
+        // Get presigned URL for each part
+        const getUploadUrlResponse = await axios.get(
+          `${process.env.REACT_APP_SERVER_URL}/get-upload-url`,
+          {
+            params: {
+              fileName: currentNode.file.name,
+              partNumber: index,
+              uploadId,
+            },
+          }
+        );
+
+        // Upload Progress Handler
+        const uploadProgressHandler = async (progressEvent, blob, index) => {
+          if (progressEvent.loaded >= progressEvent.total) return;
+
+          const currentProgress =
+            Math.round(progressEvent.loaded * 100) / progressEvent.total;
+
+          setProgressArray((prevArray) => {
+            prevArray[index - 1] = currentProgress;
+            const sum = prevArray.reduce((acc, cur) => acc + cur);
+            setUploadProgress(Math.round(sum / CHUNKS_COUNT));
+
+            return prevArray;
+          });
+        };
+
+        const { presignedUrl } = getUploadUrlResponse.data;
+        console.log(
+          `Presigned URL ${index}: ${presignedUrl} filetype ${currentNode.file.type}`
+        );
+
+        // Send part to AWS Server
+        const uploadResponse = axios.put(presignedUrl, blob, {
+          onUploadProgress: (e) =>
+            uploadProgressHandler(e, CHUNKS_COUNT, index),
+          headers: {
+            "Content-Type": currentNode.file.type,
+          },
+        });
+        promisesArray.push(uploadResponse);
+      }
+
+      const resolvedArray = await Promise.all(promisesArray);
+      console.log(resolvedArray, " resolvedArray");
+
+      const uploadPartsArray = [];
+      resolvedArray.forEach((resolvedPromise, index) => {
+        uploadPartsArray.push({
+          ETag: resolvedPromise.headers.etag,
+          partNumber: index + 1,
+        });
+      });
+
+      // Complete Multipart Upload in backend server
+      const completeUploadResponse = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/complete-upload`,
+        {
+          params: {
+            fileName: currentNode.file.name,
+            parts: uploadPartsArray,
+            uploadId,
+          },
+        }
+      );
+
+      setUploadProgress(100);
+      // setUploadSuccess(1)
+      // setSubmitStatus(oldArray => [...oldArray, fileattach])
+
+      // put a delay in here for 2 seconds
+      // also clear down uploadProgerss
+      console.log(completeUploadResponse.data, " upload response complete");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    // const uploadToAWS = async () => {
+    //   const uploadConfig = await axios.get(
+    //     `${process.env.REACT_APP_SERVER_URL}/upload`
+    //   );
+    //   await axios.put(uploadConfig.data.url, currentNode.file, {
+    //     headers: { "Content-Type": currentNode.file.type },
+    //     onUploadProgress: (progressEvent) => {
+    //       console.log(progressEvent);
+    //     },
+    //   });
+    // };
+    // uploadToAWS();
+  }, []);
 
   return (
     <div className="tree-node">
