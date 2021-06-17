@@ -72,133 +72,136 @@ const TreeNode = ({ currentNode }) => {
     setOpenChildren(true);
   };
 
-  const initiateUpload = async (data) => {
-    const params = {
-      videoTitle: videoTree.root.info.name,
-      fileName: currentNode.file.name,
-      fileType: currentNode.file.type,
+  useEffect(() => {
+    const initiateUpload = async () => {
+      const params = {
+        videoTitle: videoTree.root.info.name,
+        fileName: currentNode.file.name,
+        fileType: currentNode.file.type,
+      };
+
+      const response = await axios.get(
+        `${process.env.REACT_APP_SERVER_URL}/upload/initiate-upload`,
+        { params }
+      );
+
+      const { uploadId } = response.data;
+
+      setUploadId(uploadId);
     };
+    initiateUpload();
+  }, [currentNode.file, videoTree.root]);
 
-    const response = await axios.get(
-      `${process.env.REACT_APP_SERVER_URL}/initiate-upload`,
-      { params }
-    );
+  useEffect(() => {
+    if (!uploadId) return;
 
-    const { uploadId } = response.data;
+    const uploadMultipartFile = async () => {
+      console.log(uploadId);
+      try {
+        const fileSize = currentNode.file.size;
+        const CHUNK_SIZE = 10000000; // 10MB
+        const CHUNKS_COUNT = Math.floor(fileSize / CHUNK_SIZE) + 1;
+        const promisesArray = [];
 
-    setUploadId(uploadId);
-  };
+        let start, end, blob;
 
-  const uploadMultipartFile = async () => {
-    try {
-      const fileSize = currentNode.file.size;
-      const CHUNK_SIZE = 10000000; // 10MB
-      const CHUNKS_COUNT = Math.floor(fileSize / CHUNK_SIZE) + 1;
-      const promisesArray = [];
+        for (let index = 1; index < CHUNKS_COUNT + 1; index++) {
+          start = (index - 1) * CHUNK_SIZE;
+          end = index * CHUNK_SIZE;
+          blob =
+            index < CHUNKS_COUNT
+              ? currentNode.file.slice(start, end)
+              : currentNode.file.slice(start);
 
-      let start, end, blob;
+          // Get presigned URL for each part
+          const getUploadUrlResponse = await axios.get(
+            `${process.env.REACT_APP_SERVER_URL}/upload/get-upload-url`,
+            {
+              params: {
+                videoTitle: videoTree.root.info.name,
+                fileName: currentNode.file.name,
+                partNumber: index,
+                uploadId,
+              },
+            }
+          );
 
-      for (let index = 1; index < CHUNKS_COUNT + 1; index++) {
-        start = (index - 1) * CHUNK_SIZE;
-        end = index * CHUNK_SIZE;
-        blob =
-          index < CHUNKS_COUNT
-            ? currentNode.file.slice(start, end)
-            : currentNode.file.slice(start);
+          // Upload Progress Handler
+          const uploadProgressHandler = async (progressEvent, blob, index) => {
+            if (progressEvent.loaded >= progressEvent.total) return;
 
-        // Get presigned URL for each part
-        const getUploadUrlResponse = await axios.get(
-          `${process.env.REACT_APP_SERVER_URL}/get-upload-url`,
+            const currentProgress =
+              Math.round(progressEvent.loaded * 100) / progressEvent.total;
+
+            console.log("CURRENT: " + currentProgress);
+
+            setProgressArray((prevArray) => {
+              prevArray[index - 1] = currentProgress;
+              const sum = prevArray.reduce((acc, cur) => acc + cur);
+
+              setUploadProgress(Math.round(sum / CHUNKS_COUNT));
+
+              console.log("TOTAL: " + Math.round(sum / CHUNKS_COUNT));
+
+              return prevArray;
+            });
+          };
+
+          const { presignedUrl } = getUploadUrlResponse.data;
+          console.log(
+            `Presigned URL ${index}: ${presignedUrl} filetype ${currentNode.file.type}`
+          );
+
+          // Send part to AWS Server
+          const uploadResponse = axios.put(presignedUrl, blob, {
+            onUploadProgress: (e) =>
+              uploadProgressHandler(e, CHUNKS_COUNT, index),
+            headers: {
+              "Content-Type": currentNode.file.type,
+            },
+          });
+          promisesArray.push(uploadResponse);
+        }
+
+        const resolvedArray = await Promise.all(promisesArray);
+        console.log(resolvedArray, " resolvedArray");
+
+        const uploadPartsArray = [];
+        resolvedArray.forEach((resolvedPromise, index) => {
+          uploadPartsArray.push({
+            ETag: resolvedPromise.headers.etag,
+            PartNumber: index + 1,
+          });
+        });
+
+        console.log(uploadPartsArray);
+
+        // Complete Multipart Upload in backend server
+        const completeUploadResponse = await axios.post(
+          `${process.env.REACT_APP_SERVER_URL}/upload/complete-upload`,
           {
             params: {
+              videoTitle: videoTree.root.info.name,
               fileName: currentNode.file.name,
-              partNumber: index,
+              parts: uploadPartsArray,
               uploadId,
             },
           }
         );
 
-        // Upload Progress Handler
-        const uploadProgressHandler = async (progressEvent, blob, index) => {
-          if (progressEvent.loaded >= progressEvent.total) return;
+        setUploadProgress(100);
+        // setUploadSuccess(1)
+        // setSubmitStatus(oldArray => [...oldArray, fileattach])
 
-          const currentProgress =
-            Math.round(progressEvent.loaded * 100) / progressEvent.total;
-
-          setProgressArray((prevArray) => {
-            prevArray[index - 1] = currentProgress;
-            const sum = prevArray.reduce((acc, cur) => acc + cur);
-            setUploadProgress(Math.round(sum / CHUNKS_COUNT));
-
-            return prevArray;
-          });
-        };
-
-        const { presignedUrl } = getUploadUrlResponse.data;
-        console.log(
-          `Presigned URL ${index}: ${presignedUrl} filetype ${currentNode.file.type}`
-        );
-
-        // Send part to AWS Server
-        const uploadResponse = axios.put(presignedUrl, blob, {
-          onUploadProgress: (e) =>
-            uploadProgressHandler(e, CHUNKS_COUNT, index),
-          headers: {
-            "Content-Type": currentNode.file.type,
-          },
-        });
-        promisesArray.push(uploadResponse);
+        // put a delay in here for 2 seconds
+        // also clear down uploadProgerss
+        console.log(completeUploadResponse.data, " upload response complete");
+      } catch (err) {
+        console.log(err);
       }
-
-      const resolvedArray = await Promise.all(promisesArray);
-      console.log(resolvedArray, " resolvedArray");
-
-      const uploadPartsArray = [];
-      resolvedArray.forEach((resolvedPromise, index) => {
-        uploadPartsArray.push({
-          ETag: resolvedPromise.headers.etag,
-          partNumber: index + 1,
-        });
-      });
-
-      // Complete Multipart Upload in backend server
-      const completeUploadResponse = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/complete-upload`,
-        {
-          params: {
-            fileName: currentNode.file.name,
-            parts: uploadPartsArray,
-            uploadId,
-          },
-        }
-      );
-
-      setUploadProgress(100);
-      // setUploadSuccess(1)
-      // setSubmitStatus(oldArray => [...oldArray, fileattach])
-
-      // put a delay in here for 2 seconds
-      // also clear down uploadProgerss
-      console.log(completeUploadResponse.data, " upload response complete");
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    // const uploadToAWS = async () => {
-    //   const uploadConfig = await axios.get(
-    //     `${process.env.REACT_APP_SERVER_URL}/upload`
-    //   );
-    //   await axios.put(uploadConfig.data.url, currentNode.file, {
-    //     headers: { "Content-Type": currentNode.file.type },
-    //     onUploadProgress: (progressEvent) => {
-    //       console.log(progressEvent);
-    //     },
-    //   });
-    // };
-    // uploadToAWS();
-  }, []);
+    };
+    uploadMultipartFile();
+  }, [currentNode.file, videoTree.root, uploadId]);
 
   return (
     <div className="tree-node">
