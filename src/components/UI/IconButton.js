@@ -4,6 +4,7 @@ import { ReactComponent as DoubleLeftAngle } from "assets/icons/double-left-angl
 import { ReactComponent as Plus } from "assets/icons/plus.svg";
 import { ReactComponent as Upload } from "assets/icons/upload.svg";
 import { ReactComponent as Remove } from "assets/icons/remove.svg";
+import { ReactComponent as Search } from "assets/icons/search.svg";
 import "./IconButton.css";
 
 const IconButton = ({ className, onClick, disabled, style }) => {
@@ -27,6 +28,9 @@ const IconButton = ({ className, onClick, disabled, style }) => {
       break;
     case "remove":
       Component = <Remove />;
+      break;
+    case "search":
+      Component = <Search />;
       break;
 
     default:

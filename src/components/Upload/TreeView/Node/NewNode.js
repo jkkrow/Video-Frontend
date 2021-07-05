@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import IconButton from "../../UI/IconButton";
+import IconButton from "components/UI/IconButton";
 import "./NewNode.css";
 
 const NewNode = ({ onFile, onInput, onRemove }) => {

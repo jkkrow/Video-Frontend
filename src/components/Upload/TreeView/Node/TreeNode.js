@@ -18,8 +18,8 @@ const TreeNode = ({ currentNode }) => {
   const [optionTitle, setOptionTitle] = useState(currentNode.optionTitle);
 
   const [uploadId, setUploadId] = useState("");
-  const [progressArray, setProgressArray] = useState([]);
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadProgress, setUploadProgress] = useState("0%");
+  const setProgressArray = useState([])[1];
 
   const fileUploaderRef = useRef();
 
@@ -43,7 +43,7 @@ const TreeNode = ({ currentNode }) => {
     fileUploaderRef.current.click();
   };
 
-  const fileChangeHandler = async (event) => {
+  const fileChangeHandler = (event) => {
     if (!event.target.files?.length) return;
 
     // Add to state
@@ -72,8 +72,27 @@ const TreeNode = ({ currentNode }) => {
     setOpenChildren(true);
   };
 
+  const cancelFileUpload = async () => {
+    const params = {
+      videoTitle: videoTree.root.info.name,
+      fileName: currentNode.file.name,
+      uploadId,
+    };
+
+    const response = await axios.delete(
+      `${process.env.REACT_APP_SERVER_URL}/upload/cancel-upload`,
+      { params }
+    );
+
+    console.log(response.data);
+
+    setUploadId("");
+    setProgressArray([]);
+    setUploadProgress("0%");
+  };
+
   useEffect(() => {
-    const initiateUpload = async () => {
+    const MultipartUploadToS3 = async () => {
       const params = {
         videoTitle: videoTree.root.info.name,
         fileName: currentNode.file.name,
@@ -88,14 +107,7 @@ const TreeNode = ({ currentNode }) => {
       const { uploadId } = response.data;
 
       setUploadId(uploadId);
-    };
-    initiateUpload();
-  }, [currentNode.file, videoTree.root]);
 
-  useEffect(() => {
-    if (!uploadId) return;
-
-    const uploadMultipartFile = async () => {
       console.log(uploadId);
       try {
         const fileSize = currentNode.file.size;
@@ -139,7 +151,7 @@ const TreeNode = ({ currentNode }) => {
               prevArray[index - 1] = currentProgress;
               const sum = prevArray.reduce((acc, cur) => acc + cur);
 
-              setUploadProgress(Math.round(sum / CHUNKS_COUNT));
+              setUploadProgress(`${Math.round(sum / CHUNKS_COUNT)}%`);
 
               console.log("TOTAL: " + Math.round(sum / CHUNKS_COUNT));
 
@@ -189,19 +201,14 @@ const TreeNode = ({ currentNode }) => {
           }
         );
 
-        setUploadProgress(100);
-        // setUploadSuccess(1)
-        // setSubmitStatus(oldArray => [...oldArray, fileattach])
-
-        // put a delay in here for 2 seconds
-        // also clear down uploadProgerss
+        setUploadProgress("100%");
         console.log(completeUploadResponse.data, " upload response complete");
       } catch (err) {
         console.log(err);
       }
     };
-    uploadMultipartFile();
-  }, [currentNode.file, videoTree.root, uploadId]);
+    MultipartUploadToS3();
+  }, [currentNode.file, videoTree.root, setProgressArray]);
 
   return (
     <div className="tree-node">
@@ -215,9 +222,11 @@ const TreeNode = ({ currentNode }) => {
             accept=".mp4"
             onChange={fileChangeHandler}
           />
+
           <div className="tree-node__title" onClick={expandBodyHandler}>
             {currentNode.file.name}
           </div>
+
           {children.length > 0 && (
             <IconButton
               className={`right-angle${openChildren ? " rotated" : ""}`}
@@ -239,7 +248,23 @@ const TreeNode = ({ currentNode }) => {
               onChange={inputChangeHandler}
             />
           )}
-          <div className="tree-node__progress"></div>
+
+          <div className="tree-node__progress">
+            {uploadProgress !== "100%" ? (
+              <>
+                <div className="tree-node__progress--background" />
+                <div
+                  className="tree-node__progress--current"
+                  style={{ width: uploadProgress }}
+                />
+                <div className="tree-node__progress--cancel">
+                  <IconButton className="remove" onClick={cancelFileUpload} />
+                </div>
+              </>
+            ) : (
+              <div>Uploaded</div>
+            )}
+          </div>
         </div>
       </div>
 

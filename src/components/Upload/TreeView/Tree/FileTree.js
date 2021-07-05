@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import TreeNode from "./TreeNode";
-import InitUpload from "./InitUpload";
+import TreeNode from "../Node/TreeNode";
+import InitUpload from "../Node/InitUpload";
 import "./FileTree.css";
 
 const FileTree = () => {

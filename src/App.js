@@ -1,24 +1,31 @@
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
-import ContextRoute from "context/ContextRoute";
-import VideoPage from "pages/VideoPage";
-import UploadVideoPage from "pages/UploadVideoPage";
+import Header from "components/Layout/Header";
+import VideoPage from "pages/Video/VideoPage";
+import UploadVideoPage from "pages/Upload/UploadVideoPage";
 import UploadContextProvider from "context/upload-context";
 import "./App.css";
 
 const App = () => {
+  const routes = (
+    <Switch>
+      <Route exact path="/" component={VideoPage} />
+
+      <Route exact path="/upload">
+        <UploadContextProvider>
+          <UploadVideoPage />
+        </UploadContextProvider>
+      </Route>
+
+      <Redirect to="/" />
+    </Switch>
+  );
+
   return (
     <BrowserRouter>
-      <Switch>
-        <Route exact path="/" component={VideoPage} />
-        <ContextRoute
-          exact
-          path="/upload"
-          Provider={UploadContextProvider}
-          Component={UploadVideoPage}
-        />
-        <Redirect to="/" />
-      </Switch>
+      <Header />
+      <main>{routes}</main>
+      <footer></footer>
     </BrowserRouter>
   );
 };

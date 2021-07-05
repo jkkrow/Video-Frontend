@@ -14,7 +14,7 @@
   right: 5rem;
   width: 4.5rem;
   height: 4.5rem;
-  background-color: var(--gray);
+  background-color: var(--bg-secondary);
   border-radius: 50%;
   cursor: pointer;
   transition: transform 200ms ease-out;
@@ -47,7 +47,7 @@
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
-  background-color: var(--black);
+  background-color: var(--bg-primary);
   transition: transform 800ms ease-out;
   z-index: 500;
 }

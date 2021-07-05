@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { v1 as uuidv1 } from "uuid";
 
 export const UploadContext = createContext();
 
@@ -8,7 +9,11 @@ const UploadContextProvider = ({ children }) => {
   const initiateUpload = (fileInfo) => {
     setVideoTree(
       JSON.stringify({
-        root: { info: fileInfo, children: [] },
+        root: {
+          id: uuidv1(),
+          info: fileInfo,
+          children: [],
+        },
       })
     );
   };

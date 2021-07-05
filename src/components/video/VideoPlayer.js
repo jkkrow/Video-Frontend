@@ -16,6 +16,7 @@ import { ReactComponent as VolumeMuteIcon } from "assets/icons/volume-mute.svg";
 import { ReactComponent as FullscreenIcon } from "assets/icons/fullscreen.svg";
 import { ReactComponent as FullscreenExitIcon } from "assets/icons/fullscreen-exit.svg";
 import IconButton from "components/UI/IconButton";
+import Loader from "components/UI/Loader";
 import { VideoContext } from "./VideoTree";
 import "./VideoPlayer.css";
 
@@ -615,9 +616,7 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
 
       {/* Loader */}
 
-      <div className={`vp-loader__container${!displayLoader ? " hidden" : ""}`}>
-        <div className="vp-loader" />
-      </div>
+      <Loader display={displayLoader} />
 
       {/* Selector */}
 

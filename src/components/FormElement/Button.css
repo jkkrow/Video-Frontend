@@ -1,0 +1,32 @@
+.button {
+  font: inherit;
+  padding: 0.7rem 1.8rem;
+  border: 2px solid var(--text-secondary);
+  border-radius: 4px;
+  background-color: var(--bg-dark);
+  color: var(--text-reverse);
+  margin: 0.5rem;
+  text-decoration: none;
+  display: inline-block;
+  transition: 200ms;
+}
+
+
+.button:hover {
+  filter: brightness(1.2);
+}
+
+.button:active {
+  filter: brightness(1.5);
+}
+
+
+.button:disabled,
+.button:hover:disabled,
+.button:active:disabled {
+  background: #ccc;
+  color: #979797;
+  border-color: #ccc;
+  cursor: not-allowed;
+  filter: none;
+}

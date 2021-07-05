@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-bottom: 1px dashed var(--light-gray);
+  border-bottom: 1px dashed var(--text-secondary);
   padding: 1rem;
   gap: 1rem;
 }
@@ -19,6 +19,9 @@
 }
 
 .tree-node__title {
+  text-overflow: ellipsis;
+  word-break: normal;
+  overflow: hidden;
   cursor: pointer;
 }
 
@@ -27,11 +30,33 @@
 }
 
 .tree-node__expand {
-  
+  padding: 1rem 0;
 }
 
 .tree-node__expand.hide {
   display: none;
+}
+
+.tree-node__progress {
+  position: relative;
+  width: 40%;
+  height: 3rem;
+}
+
+.tree-node__progress--background,
+.tree-node__progress--current {
+  position: absolute;
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 50px;
+}
+
+.tree-node__progress--background {
+  background-color: var(--bg-secondary);
+}
+
+.tree-node__progress--current {
+  background-color: var(--video-red);
 }
 
 .tree-node__children {

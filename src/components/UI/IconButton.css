@@ -10,7 +10,7 @@
 }
 
 .icon-button:hover {
-  transform: scale(1.5);
+  transform: scale(1.3);
 }
 
 .icon-button.rotated {
@@ -22,7 +22,7 @@
 }
 
 .icon-button.disabled > svg {
-  fill: var(--gray);
+  fill: var(--text-secondary);
   cursor: not-allowed;
 }
 
