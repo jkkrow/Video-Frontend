@@ -17,7 +17,7 @@ import { ReactComponent as FullscreenIcon } from "assets/icons/fullscreen.svg";
 import { ReactComponent as FullscreenExitIcon } from "assets/icons/fullscreen-exit.svg";
 import IconButton from "components/UI/IconButton";
 import Loader from "components/UI/Loader";
-import { VideoContext } from "./VideoTree";
+import { VideoContext } from "context/video-context";
 import "./VideoPlayer.css";
 
 const shaka = require("shaka-player/dist/shaka-player.ui.js");

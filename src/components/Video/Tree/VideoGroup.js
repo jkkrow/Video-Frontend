@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
-import VideoPlayer from "./VideoPlayer";
-import { VideoContext } from "./VideoTree";
+import VideoPlayer from "../Player/VideoPlayer";
+import { VideoContext } from "context/video-context";
 import "./VideoGroup.css";
 
 // import ExampleVid from "assets/videos/vid_1_720p.mp4";

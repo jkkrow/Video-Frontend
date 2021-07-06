@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 
 import { ReactComponent as PreviewIcon } from "assets/icons/play.svg";
 import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
-import VideoTree from "components/Video/VideoTree";
+import VideoTree from "components/Video/Tree/VideoTree";
 import { UploadContext } from "context/upload-context";
 import "./Preview.css";
 
