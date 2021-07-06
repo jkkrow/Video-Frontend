@@ -1,12 +1,14 @@
-import { createContext, useState } from "react";
+import { createContext, useCallback, useState } from "react";
 import { v1 as uuidv1 } from "uuid";
+
+import { findNode } from "util/findNode";
 
 export const UploadContext = createContext();
 
 const UploadContextProvider = ({ children }) => {
   const [videoTree, setVideoTree] = useState(JSON.stringify({}));
 
-  const initiateUpload = (fileInfo) => {
+  const initiateUpload = useCallback((fileInfo) => {
     setVideoTree(
       JSON.stringify({
         root: {
@@ -16,36 +18,13 @@ const UploadContextProvider = ({ children }) => {
         },
       })
     );
-  };
+  }, []);
 
-  const _findNode = (tree, node) => {
-    let currentNode = tree.root;
-    let queue = [];
-
-    queue.push(currentNode);
-
-    while (queue.length > 0) {
-      currentNode = queue.shift();
-
-      if (
-        currentNode.info.name === node.file.name &&
-        currentNode.info.layer === node.layer &&
-        currentNode.info.optionTitle === node.optionTitle
-      )
-        return currentNode;
-
-      if (currentNode.children.length)
-        currentNode.children.forEach((child) => queue.push(child));
-    }
-
-    return null;
-  };
-
-  const appendNext = (fileInfo, parent) => {
+  const appendNext = useCallback((fileInfo, parent) => {
     setVideoTree((prev) => {
       const newState = JSON.parse(prev);
 
-      const parentNode = _findNode(newState, parent);
+      const parentNode = findNode(newState, parent);
 
       if (!parentNode) return;
 
@@ -54,17 +33,17 @@ const UploadContextProvider = ({ children }) => {
 
       return JSON.stringify(newState);
     });
-  };
+  }, []);
 
-  const updateNode = (node) => {
+  const updateNode = useCallback((node) => {
     setVideoTree((prev) => {
       const newState = JSON.parse(prev);
 
-      const targetNode = _findNode(newState, node);
+      const targetNode = findNode(newState, node);
 
       if (!targetNode) return;
     });
-  };
+  }, []);
 
   return (
     <UploadContext.Provider
