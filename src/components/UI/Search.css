@@ -1,0 +1,31 @@
+.search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.search__bar {
+  transform-origin: right;
+}
+
+.search__bar input {
+  width: 30rem;
+}
+
+.search-bar-enter {
+  transform: scaleX(0);
+}
+
+.search-bar-enter-active {
+  transform: scaleX(1);
+  transition: all 200ms ease-out;
+}
+
+.search-bar-exit {
+  transform: scaleX(1);
+}
+
+.search-bar-exit-active {
+  transform: scaleX(0);
+  transition: all 200ms ease-out;
+}

@@ -6,11 +6,11 @@
   height: 3rem;
   background: transparent;
   transform: rotate(0) scale(1);
-  transition: transform 200ms ease-out;
+  transition: all 200ms ease-out;
 }
 
 .icon-button:hover {
-  transform: scale(1.3);
+  opacity: 0.7;
 }
 
 .icon-button.rotated {
@@ -18,7 +18,7 @@
 }
 
 .icon-button.rotated:hover {
-  transform: rotate(90deg) scale(1.5);
+  transform: rotate(90deg);
 }
 
 .icon-button.disabled > svg {
@@ -27,11 +27,11 @@
 }
 
 .icon-button.inversed > svg {
-  fill: var(--text-inversed);
+  fill: var(--bg-inversed);
 }
 
 .icon-button.disabled:hover {
-  transform: scale(1);
+  opacity: 1;
 }
 
 .icon-button.left-angle,

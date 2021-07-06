@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 
-import IconButton from "components/UI/IconButton";
+import Search from "components/UI/Search";
 import { AuthContext } from "context/auth-context";
 import "./Header.css";
 
@@ -10,13 +10,11 @@ const Header = () => {
 
   return (
     <header className="header">
-      <NavLink exact to="#" className="header__logo">
+      <NavLink exact to="/" className="header__logo">
         Logo
       </NavLink>
 
-      <div className="header__search">
-        <IconButton className="search" />
-      </div>
+      <Search />
 
       {token ? (
         <div>Profile</div>

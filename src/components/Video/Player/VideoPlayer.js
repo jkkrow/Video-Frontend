@@ -323,19 +323,6 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
   }, []);
 
   /*
-   * EXTRA HANDLER
-   */
-
-  const videoFocusHandler = useCallback(
-    (event) => {
-      if (!active) return;
-
-      event.target.focus();
-    },
-    [active]
-  );
-
-  /*
    * KEYBOARD SHORTKUTS
    */
 
@@ -511,7 +498,6 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
       tabIndex={-1}
       onMouseMove={showControlsHandler}
       onMouseLeave={hideControlsHandler}
-      onBlur={videoFocusHandler}
       onKeyDown={keyEventHandler}
       // onContextMenu={eventPreventDefault}
     >
@@ -642,18 +628,18 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
         <div className="vp-navigation">
           {activeVideo !== tree.root && (
             <IconButton
-              className="double-left-angle"
+              className="double-left-angle inversed"
               onClick={restartVideoTree}
             />
           )}
           {activeVideo !== tree.root && (
             <IconButton
-              className="left-angle"
+              className="left-angle inversed"
               onClick={navigateToPreviousVideo}
             />
           )}
           <IconButton
-            className="right-angle"
+            className="right-angle inversed"
             onClick={navigateToSelectorTimeline}
           />
         </div>

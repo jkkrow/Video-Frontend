@@ -225,7 +225,7 @@ const TreeNode = ({ currentNode }) => {
 
           {children.length > 0 && (
             <IconButton
-              className={`right-angle inversed${
+              className={`right-angle${
                 openChildren ? " rotated" : ""
               }`}
               onClick={displayChildrenHandler}

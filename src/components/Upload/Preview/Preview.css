@@ -54,7 +54,7 @@
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
-  background-color: var(--bg-primary);
+  background-color: var(--bg-inversed);
   transition: transform 800ms ease-out;
   z-index: 500;
 }

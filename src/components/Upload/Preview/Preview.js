@@ -24,7 +24,7 @@ const Preview = () => {
 
   return (
     <>
-      {isBigScreen && (
+      {isBigScreen && videoTree.root && (
         <div className="preview--big-screen">
           <VideoTree tree={videoTree} autoPlay={false} editMode={true} />
         </div>

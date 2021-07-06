@@ -4,7 +4,8 @@
   flex-direction: column;
   justify-content: center;
   border-radius: 4px;
-  background-color: black;
+  background-color: var(--bg-inversed);
+  color: var(--text-inversed);
   outline: none;
 }
 
@@ -246,17 +247,16 @@
   width: 40%;
   border-radius: 5px;
   padding: 0.5rem;
-  color: var(--text-primary);
-  background: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: var(--text-inversed);
   text-align: center;
   cursor: pointer;
-  transform: scale(1);
-  transition: all 200ms ease-out;
+  opacity: 0.8;
+  transition: opacity 200ms ease-out;
 }
 
 .vp-selector:hover {
-  background: rgba(0, 0, 0);
-  transform: scale(1.2);
+  opacity: 1;
 }
 
 .vp-navigation {

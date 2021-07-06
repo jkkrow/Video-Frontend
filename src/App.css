@@ -1,10 +1,10 @@
 :root {
-  --bg-primary: #000000;
-  --bg-secondary: #424242;
-  --bg-inversed: #ffffff;
-  --text-primary: #ffffff;
-  --text-secondary: #858585;
-  --text-inversed: #000000;
+  --text-primary: #000000;
+  --text-secondary: #424242;
+  --text-inversed: #ffffff;
+  --bg-primary: #ffffff;
+  --bg-secondary: #858585;
+  --bg-inversed: #000000;
   --video-red: #cc131d;
 }
 
@@ -38,8 +38,8 @@ a {
 }
 
 input {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
+  background-color: var(--text-secondary);
+  color: var(--text-inversed);
   padding: 1rem;
   border: none;
   border-radius: 5px;
@@ -57,7 +57,7 @@ button {
 svg {
   width: 2.5rem;
   height: 2.5rem;
-  fill: var(--text-primary);
+  fill: var(--bg-primary);
 }
 
 video {
