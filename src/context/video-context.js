@@ -1,12 +1,12 @@
-import { useState, useRef, createContext, useCallback } from "react";
+import { useState, createContext, useCallback } from "react";
 
 export const VideoContext = createContext();
 
-const VideoContextProvider = ({ tree, editMode, children }) => {
+const VideoContextProvider = ({ info, children }) => {
+  const { tree, editMode, videoTreeRef } = info;
+
   const [activeVideo, setActiveVideo] = useState(tree.root);
   const [videoVolume, setVideoVolume] = useState(1);
-
-  const videoTreeRef = useRef();
 
   const updateActiveVideo = useCallback((video) => {
     setActiveVideo(video);
@@ -20,10 +20,10 @@ const VideoContextProvider = ({ tree, editMode, children }) => {
     <VideoContext.Provider
       value={{
         tree,
-        activeVideo,
-        videoTreeRef,
-        videoVolume,
         editMode,
+        videoTreeRef,
+        activeVideo,
+        videoVolume,
         updateActiveVideo,
         updateVideoVolume,
       }}

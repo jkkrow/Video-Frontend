@@ -8,11 +8,7 @@ const VideoTree = ({ tree, autoPlay = true, editMode = false }) => {
   const videoTreeRef = useRef();
 
   return (
-    <VideoContextProvider
-      tree={tree}
-      editMode={editMode}
-      videoTreeRef={videoTreeRef}
-    >
+    <VideoContextProvider info={{ tree, editMode, videoTreeRef }}>
       <div className="video-tree" ref={videoTreeRef}>
         <VideoGroup currentVideo={tree.root} autoPlay={autoPlay} />
       </div>
