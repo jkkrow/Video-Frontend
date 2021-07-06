@@ -26,6 +26,10 @@
   cursor: not-allowed;
 }
 
+.icon-button.inversed > svg {
+  fill: var(--text-inversed);
+}
+
 .icon-button.disabled:hover {
   transform: scale(1);
 }

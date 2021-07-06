@@ -1,4 +1,5 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useMediaQuery } from "react-responsive";
 
 import { ReactComponent as PreviewIcon } from "assets/icons/play.svg";
 import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
@@ -11,17 +12,29 @@ const Preview = () => {
 
   const [activePreview, setActivePreview] = useState(false);
 
+  const isBigScreen = useMediaQuery({ query: "(min-width: 1000px)" });
+
   const togglePreviewHandler = () => {
     setActivePreview((prev) => !prev);
   };
 
+  useEffect(() => {
+    setActivePreview(false);
+  }, [isBigScreen]);
+
   return (
-    <div className="preview">
-      {videoTree.root && (
-        <>
+    <>
+      {isBigScreen && (
+        <div className="preview--big-screen">
+          <VideoTree tree={videoTree} autoPlay={false} editMode={true} />
+        </div>
+      )}
+
+      {!isBigScreen && videoTree.root && (
+        <div className="preview--small-screen">
           <input
-            type="checkbox"
             className="preview__checkbox"
+            type="checkbox"
             id="toggle-preview"
           />
           <label
@@ -38,17 +51,15 @@ const Preview = () => {
           </label>
 
           <div className="preview__background" />
-        </>
-      )}
 
-      {videoTree.root && (
-        <div className="preview__video__container">
-          <div className={`preview__video${activePreview ? " active" : ""}`}>
-            <VideoTree tree={videoTree} autoPlay={false} editMode={true} />
+          <div className="preview__video__container">
+            <div className={`preview__video${activePreview ? " active" : ""}`}>
+              <VideoTree tree={videoTree} autoPlay={false} editMode={true} />
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

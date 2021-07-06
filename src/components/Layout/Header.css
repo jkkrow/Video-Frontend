@@ -12,6 +12,7 @@
   font-weight: 600;
   text-align: center;
   background-image: linear-gradient(var(--bg-primary), transparent);
+  z-index: 100;
 }
 
 .header__logo {

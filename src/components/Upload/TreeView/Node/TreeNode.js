@@ -223,17 +223,19 @@ const TreeNode = ({ currentNode }) => {
             onChange={fileChangeHandler}
           />
 
+          {children.length > 0 && (
+            <IconButton
+              className={`right-angle inversed${
+                openChildren ? " rotated" : ""
+              }`}
+              onClick={displayChildrenHandler}
+            />
+          )}
+
           <div className="tree-node__title" onClick={expandBodyHandler}>
             {currentNode.file.name}
           </div>
 
-          {children.length > 0 && (
-            <IconButton
-              className={`right-angle${openChildren ? " rotated" : ""}`}
-              onClick={displayChildrenHandler}
-              style={{ position: "absolute", left: "-3rem" }}
-            />
-          )}
           {children.length < 4 && (
             <IconButton className="plus" onClick={addChildHandler} />
           )}
@@ -242,6 +244,7 @@ const TreeNode = ({ currentNode }) => {
         <div className={`tree-node__expand${!expandBody ? " hide" : ""}`}>
           {currentNode.layer > 0 && (
             <input
+              className="tree-node__option-title"
               type="text"
               placeholder="Option Title"
               value={optionTitle}
@@ -252,11 +255,15 @@ const TreeNode = ({ currentNode }) => {
           <div className="tree-node__progress">
             {uploadProgress !== "100%" ? (
               <>
-                <div className="tree-node__progress--background" />
-                <div
-                  className="tree-node__progress--current"
-                  style={{ width: uploadProgress }}
-                />
+                <div className="tree-node__progress__bar">
+                  <div className="tree-node__progress__bar--background" />
+                  <div
+                    className="tree-node__progress__bar--current"
+                    style={{ width: uploadProgress }}
+                  />
+                </div>
+                <div>{uploadProgress}</div>
+
                 <div className="tree-node__progress--cancel">
                   <IconButton className="remove" onClick={cancelFileUpload} />
                 </div>

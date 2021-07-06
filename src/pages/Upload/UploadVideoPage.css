@@ -1,6 +1,6 @@
 .upload-video-page {
   display: flex;
   justify-content: center;
-  align-items: center;
   padding: 5rem;
+  gap: 5rem;
 }
