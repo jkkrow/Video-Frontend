@@ -55,9 +55,11 @@ button {
 }
 
 svg {
+  display: block;
+  margin: auto;
   width: 2.5rem;
   height: 2.5rem;
-  fill: var(--bg-primary);
+  fill: var(--text-primary);
 }
 
 video {

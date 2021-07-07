@@ -7,17 +7,21 @@ const AuthContextProvider = ({ children }) => {
     JSON.parse(localStorage.getItem("user"))?.token || ""
   );
   const [userData, setUserData] = useState(
-    JSON.parse(localStorage.getItem("user")) || {}
+    JSON.parse(localStorage.getItem("user"))?.userData || {}
   );
 
-  const loginHandler = useCallback(() => {
-    setToken();
-    setUserData();
+  const loginHandler = useCallback((token, userData) => {
+    setToken(token);
+    setUserData(userData);
+
+    localStorage.setItem("user", JSON.stringify({ token, userData }));
   }, []);
 
   const logoutHandler = useCallback(() => {
-    setToken();
-    setUserData();
+    setToken("");
+    setUserData({});
+
+    localStorage.removeItem("user");
   }, []);
 
   return (

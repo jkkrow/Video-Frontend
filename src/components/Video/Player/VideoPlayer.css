@@ -34,6 +34,10 @@
   -webkit-backface-visibility: hidden;
 }
 
+.vp-controls svg {
+  fill: var(--text-inversed);
+}
+
 .vp-controls__btn {
   position: relative;
   display: flex;

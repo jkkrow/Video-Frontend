@@ -11,6 +11,10 @@ const Search = () => {
     setDisplaySearchBar((prev) => !prev);
   };
 
+  const hideSearchBarHandler = () => {
+    setDisplaySearchBar(false);
+  };
+
   const searchHandler = (event) => {
     event.preventDefault();
 
@@ -19,6 +23,9 @@ const Search = () => {
 
   return (
     <div className="search">
+      {!displaySearchBar && (
+        <IconButton className="search" onClick={toggleSearchBarHandler} />
+      )}
       <CSSTransition
         classNames="search-bar"
         in={displaySearchBar}
@@ -27,13 +34,13 @@ const Search = () => {
         unmountOnExit
       >
         <form onSubmit={searchHandler} className="search__bar">
-          <input autoFocus={true} placeholder="Search Videos!" />
+          <input
+            autoFocus={true}
+            placeholder="Search Videos!"
+            onBlur={hideSearchBarHandler}
+          />
         </form>
       </CSSTransition>
-      <IconButton
-        className="search inversed"
-        onClick={toggleSearchBarHandler}
-      />
     </div>
   );
 };

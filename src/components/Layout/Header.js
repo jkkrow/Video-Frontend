@@ -6,7 +6,7 @@ import { AuthContext } from "context/auth-context";
 import "./Header.css";
 
 const Header = () => {
-  const { token } = useContext(AuthContext);
+  const { token, userData, logoutHandler } = useContext(AuthContext);
 
   return (
     <header className="header">
@@ -17,10 +17,10 @@ const Header = () => {
       <Search />
 
       {token ? (
-        <div>Profile</div>
+        <div onClick={logoutHandler}>{userData.name}</div>
       ) : (
-        <NavLink exact to="#">
-          SIGN UP
+        <NavLink exact to="/login">
+          SIGN IN
         </NavLink>
       )}
     </header>

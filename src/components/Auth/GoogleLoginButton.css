@@ -1,0 +1,12 @@
+.google-login-button {
+  /* position: relative; */
+}
+
+.google-login-button svg {
+  width: initial;
+  height: initial;
+}
+
+.google-login-button span {
+  color: var(--text-primary);
+}

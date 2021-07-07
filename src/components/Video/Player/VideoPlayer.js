@@ -628,18 +628,18 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
         <div className="vp-navigation">
           {activeVideo !== tree.root && (
             <IconButton
-              className="double-left-angle inversed"
+              className="double-left-angle"
               onClick={restartVideoTree}
             />
           )}
           {activeVideo !== tree.root && (
             <IconButton
-              className="left-angle inversed"
+              className="left-angle"
               onClick={navigateToPreviousVideo}
             />
           )}
           <IconButton
-            className="right-angle inversed"
+            className="right-angle"
             onClick={navigateToSelectorTimeline}
           />
         </div>

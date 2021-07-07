@@ -1,25 +1,52 @@
+import { useContext } from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import Header from "components/Layout/Header";
 import VideoPage from "pages/Video/VideoPage";
+import LoginPage from "pages/Auth/LoginPage";
 import UploadVideoPage from "pages/Upload/UploadVideoPage";
 import UploadContextProvider from "context/upload-context";
+import { AuthContext } from "context/auth-context";
 import "./App.css";
 
 const App = () => {
-  const routes = (
-    <Switch>
-      <Route exact path="/" component={VideoPage} />
+  const { token } = useContext(AuthContext);
 
-      <Route exact path="/upload">
-        <UploadContextProvider>
-          <UploadVideoPage />
-        </UploadContextProvider>
-      </Route>
+  let routes;
 
-      <Redirect to="/" />
-    </Switch>
-  );
+  if (token) {
+    routes = (
+      <Switch>
+        <Route exact path="/" component={VideoPage} />
+
+        <Route exact path="/upload">
+          <UploadContextProvider>
+            <UploadVideoPage />
+          </UploadContextProvider>
+        </Route>
+
+        <Redirect exact to="/" />
+      </Switch>
+    );
+  } else {
+    routes = (
+      <Switch>
+        <Route exact path="/" component={VideoPage} />
+
+        {/* Only available in Development */}
+        <Route exact path="/upload">
+          <UploadContextProvider>
+            <UploadVideoPage />
+          </UploadContextProvider>
+        </Route>
+        {/* /> */}
+
+        <Route exact path="/login" component={LoginPage} />
+
+        <Redirect exact to="/login" />
+      </Switch>
+    );
+  }
 
   return (
     <BrowserRouter>

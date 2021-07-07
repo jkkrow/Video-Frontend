@@ -3,6 +3,10 @@
   margin-top: 0.5rem;
 }
 
+.tree-node svg {
+  fill: var(--text-inversed);
+}
+
 .tree-node__body {
   position: relative;
   display: flex;
