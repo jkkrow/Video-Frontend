@@ -1,4 +1,4 @@
-import { useState, createContext, useCallback } from "react";
+import { useState, createContext, useCallback, useEffect } from "react";
 
 export const VideoContext = createContext();
 
@@ -7,6 +7,10 @@ const VideoContextProvider = ({ info, children }) => {
 
   const [activeVideo, setActiveVideo] = useState(tree.root);
   const [videoVolume, setVideoVolume] = useState(1);
+
+  useEffect(() => {
+    setActiveVideo(tree.root);
+  }, [tree]);
 
   const updateActiveVideo = useCallback((video) => {
     setActiveVideo(video);

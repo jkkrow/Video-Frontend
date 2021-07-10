@@ -1,11 +1,10 @@
 :root {
-  --text-primary: #000000;
-  --text-secondary: #424242;
-  --text-inversed: #ffffff;
-  --bg-primary: #ffffff;
-  --bg-secondary: #858585;
-  --bg-inversed: #000000;
-  --video-red: #cc131d;
+  --theme-primary: #ffffff;
+  --theme-secondary: #858585;
+  --theme-tertiary: #424242;
+  --theme-inversed: #000000;
+  --accent-primary: #cc131d;
+  --accent-secondary: #6d0400;
 }
 
 * {
@@ -24,8 +23,8 @@ html {
 
 body {
   font-size: 1.6rem;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background-color: var(--theme-primary);
+  color: var(--theme-inversed);
 }
 
 main {
@@ -33,13 +32,13 @@ main {
 }
 
 a {
-  color: var(--text-primary);
+  color: var(--theme-inversed);
   text-decoration: none;
 }
 
 input {
-  background-color: var(--text-secondary);
-  color: var(--text-inversed);
+  background-color: var(--theme-tertiary);
+  color: var(--theme-primary);
   padding: 1rem;
   border: none;
   border-radius: 5px;
@@ -59,7 +58,7 @@ svg {
   margin: auto;
   width: 2.5rem;
   height: 2.5rem;
-  fill: var(--text-primary);
+  fill: var(--theme-inversed);
 }
 
 video {

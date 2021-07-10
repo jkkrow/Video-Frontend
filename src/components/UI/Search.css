@@ -18,23 +18,19 @@
 /* CSS Transition */
 
 .search-bar-enter {
-  opacity: 0;
   transform: scaleX(0);
 }
 
 .search-bar-enter-active {
-  opacity: 1;
   transform: scaleX(1);
   transition: all 200ms ease-out;
 }
 
 .search-bar-exit {
-  opacity: 1;
   transform: scaleX(1);
 }
 
 .search-bar-exit-active {
-  opacity: 0;
   transform: scaleX(0);
   transition: all 200ms ease-out;
 }

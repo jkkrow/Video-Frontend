@@ -8,5 +8,5 @@
 }
 
 .google-login-button span {
-  color: var(--text-primary);
+  color: var(--theme-inversed);
 }

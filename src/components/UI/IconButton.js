@@ -7,7 +7,7 @@ import { ReactComponent as Remove } from "assets/icons/remove.svg";
 import { ReactComponent as Search } from "assets/icons/search.svg";
 import "./IconButton.css";
 
-const IconButton = ({ className, onClick, disabled, style }) => {
+const IconButton = ({ className, onClick, disabled, style, dataTooltip }) => {
   let Component;
 
   switch (className.split(" ")[0]) {
@@ -39,10 +39,11 @@ const IconButton = ({ className, onClick, disabled, style }) => {
 
   return (
     <button
-      className={`icon-button ${className}`}
+      className={`icon-button ${className}${dataTooltip ? " tooltip" : ""}`}
       onClick={onClick}
       disabled={disabled}
       style={style}
+      data-tooltip={dataTooltip}
     >
       {Component}
     </button>

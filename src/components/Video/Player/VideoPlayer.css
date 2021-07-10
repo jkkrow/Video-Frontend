@@ -4,8 +4,8 @@
   flex-direction: column;
   justify-content: center;
   border-radius: 4px;
-  background-color: var(--bg-inversed);
-  color: var(--text-inversed);
+  background-color: var(--theme-inversed);
+  color: var(--theme-primary);
   outline: none;
 }
 
@@ -35,7 +35,7 @@
 }
 
 .vp-controls svg {
-  fill: var(--text-inversed);
+  fill: var(--theme-primary);
 }
 
 .vp-controls__btn {
@@ -51,7 +51,7 @@
   transform: scale(1);
   transition: all 200ms ease-out;
   z-index: 5;
-  fill: var(--text-primary);
+  fill: var(--theme-inversed);
 }
 
 .vp-controls__btn:hover {
@@ -98,15 +98,15 @@
 
 .vp-controls__range--background {
   width: 100%;
-  background-color: var(--bg-secondary);
+  background-color: var(--theme-secondary);
 }
 
 .vp-controls__range--buffer {
-  background-color: rgb(254, 9, 0, 0.4);
+  background-color: var(--accent-secondary);
 }
 
 .vp-controls__range--current {
-  background: var(--video-red);
+  background: var(--accent-primary);
 }
 
 .vp-controls__range--seek {
@@ -131,7 +131,7 @@
   -webkit-appearance: none;
   height: 1rem;
   width: 1rem;
-  background: var(--video-red);
+  background: var(--accent-primary);
   border: none;
   border-radius: 50px;
   cursor: pointer;
@@ -141,7 +141,7 @@
 
 .vp-controls__range--seek::-moz-range-thumb {
   -moz-appearance: none;
-  background: var(--video-red);
+  background: var(--accent-primary);
   border: none;
   transform: scale(0);
   transition: transform 200ms ease-out;
@@ -171,7 +171,6 @@
   margin-left: -11rem;
   font-size: 1.2rem;
   padding: 0.3rem;
-  content: attr(data-title);
   font-weight: bold;
   background-color: rgba(0, 0, 0, 0.8);
   opacity: 0;
@@ -252,25 +251,28 @@
   border-radius: 5px;
   padding: 0.5rem;
   background-color: rgba(0, 0, 0, 0.8);
-  color: var(--text-inversed);
+  color: var(--theme-primary);
   text-align: center;
   cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 200ms ease-out;
+  transition: all 200ms ease-out;
 }
 
 .vp-selector:hover {
-  opacity: 1;
+  background-color: rgb(0, 0, 0);
 }
 
 .vp-navigation {
   position: absolute;
-  bottom: -5rem;
-  left: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
-  height: 5rem;
+  bottom: -4rem;
+  left: 50%;
+  border-radius: 5px;
+  background-color: var(--theme-inversed);
   transform: translate(-50%, 0);
+}
+
+.vp-navigation svg {
+  fill: var(--theme-primary);
 }

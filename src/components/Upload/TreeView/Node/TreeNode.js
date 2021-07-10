@@ -225,9 +225,7 @@ const TreeNode = ({ currentNode }) => {
 
           {children.length > 0 && (
             <IconButton
-              className={`right-angle${
-                openChildren ? " rotated" : ""
-              }`}
+              className={`right-angle${openChildren ? " rotated" : ""}`}
               onClick={displayChildrenHandler}
             />
           )}
@@ -237,7 +235,11 @@ const TreeNode = ({ currentNode }) => {
           </div>
 
           {children.length < 4 && (
-            <IconButton className="plus" onClick={addChildHandler} />
+            <IconButton
+              className="plus"
+              onClick={addChildHandler}
+              dataTooltip="ADD VIDEO"
+            />
           )}
         </div>
 
