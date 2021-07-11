@@ -43,6 +43,7 @@
   transform: scaleX(0);
   transform-origin: left;
   transition: all 200ms ease-out;
+  z-index: 1;
 }
 
 .icon-button.rotated {
