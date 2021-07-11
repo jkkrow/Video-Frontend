@@ -61,8 +61,6 @@ const UploadContextProvider = ({ children }) => {
     };
   }, [videoTree]);
 
-  console.log(JSON.parse(videoTree).root);
-
   return (
     <UploadContext.Provider
       value={{

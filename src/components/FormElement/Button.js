@@ -1,4 +1,4 @@
-import Loader from "components/UI/Loader";
+import Loader from "components/UI/Loader/LoadingSpinner";
 import "./Button.css";
 
 const Button = ({ type, onClick, loading, disabled, children }) => {

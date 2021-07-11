@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import axios from "axios";
 
-import Loader from "components/UI/Loader";
+import Loader from "components/UI/Loader/LoadingSpinner";
 import { AuthContext } from "context/auth-context";
 import GoogleLoginButton from "components/Auth/GoogleLoginButton";
 import "./LoginPage.css";

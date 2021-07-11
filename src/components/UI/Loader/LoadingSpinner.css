@@ -1,4 +1,4 @@
-.loader__container {
+.loading-spinner__container {
   position: absolute;
   top: 0;
   left: 0;
@@ -11,16 +11,16 @@
   z-index: 200;
 }
 
-.loader {
+.loading-spinner {
   width: 4rem;
   height: 4rem;
   border-radius: 50%;
   box-shadow: 2px 2px 0 0 var(--accent-primary);
   transform-origin: 2rem;
-  animation: loader 1s linear infinite;
+  animation: loading-spinner 1s linear infinite;
 }
 
-@keyframes loader {
+@keyframes loading-spinner {
   0% {
     transform: rotate(0deg);
   }

@@ -1,0 +1,11 @@
+.video-list-page {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(24rem, 30rem));
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.video-item {
+  height: 30rem;
+}

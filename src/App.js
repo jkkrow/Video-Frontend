@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import Header from "components/Layout/Header";
-import VideoPage from "pages/Video/VideoPage";
+import VideoListPage from "pages/Video/VideoListPage";
 import LoginPage from "pages/Auth/LoginPage";
 import UploadVideoPage from "pages/Upload/UploadVideoPage";
 import UploadContextProvider from "context/upload-context";
@@ -17,7 +17,7 @@ const App = () => {
   if (token) {
     routes = (
       <Switch>
-        <Route exact path="/" component={VideoPage} />
+        <Route exact path="/" component={VideoListPage} />
 
         <Route exact path="/upload">
           <UploadContextProvider>
@@ -31,7 +31,7 @@ const App = () => {
   } else {
     routes = (
       <Switch>
-        <Route exact path="/" component={VideoPage} />
+        <Route exact path="/" component={VideoListPage} />
 
         {/* Only available in Development */}
         <Route exact path="/upload">
