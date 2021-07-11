@@ -32,7 +32,6 @@ main {
 }
 
 a {
-  color: var(--theme-inversed);
   text-decoration: none;
 }
 

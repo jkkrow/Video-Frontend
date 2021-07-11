@@ -5,6 +5,7 @@ import "./InitUpload.css";
 
 const InitUpload = ({ onChange }) => {
   const { initiateUpload } = useContext(UploadContext);
+  
   const fileUploaderRef = useRef();
 
   const openFileInputHandler = () => {

@@ -1,4 +1,5 @@
-import { createContext, useCallback, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
+import { Prompt } from "react-router-dom";
 import { v1 as uuidv1 } from "uuid";
 
 import { findNode } from "util/findNode";
@@ -28,7 +29,7 @@ const UploadContextProvider = ({ children }) => {
 
       if (!parentNode) return;
 
-      const newNode = { info: fileInfo, children: [] };
+      const newNode = { id: uuidv1(), info: fileInfo, children: [] };
       parentNode.children = [...parentNode.children, newNode];
 
       return JSON.stringify(newState);
@@ -45,6 +46,23 @@ const UploadContextProvider = ({ children }) => {
     });
   }, []);
 
+  useEffect(() => {
+    if (!JSON.parse(videoTree).root) return;
+
+    const beforeunloadHandler = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", beforeunloadHandler);
+
+    return () => {
+      window.removeEventListener("beforeunload", beforeunloadHandler);
+    };
+  }, [videoTree]);
+
+  console.log(JSON.parse(videoTree).root);
+
   return (
     <UploadContext.Provider
       value={{
@@ -54,6 +72,10 @@ const UploadContextProvider = ({ children }) => {
         updateNode,
       }}
     >
+      <Prompt
+        when={!!JSON.parse(videoTree).root}
+        message="Are you sure you want to leave? Your upload progress will be lost!"
+      />
       {children}
     </UploadContext.Provider>
   );

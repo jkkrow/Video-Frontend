@@ -1,8 +1,11 @@
 .init-upload {
   width: 100%;
   padding: 3rem;
-  border: 1px solid var(--theme-secondary);
-  border-radius: 10px;
   text-align: center;
   cursor: pointer;
+  font-weight: 500;
+  border-radius: 10px;
+  color: var(--theme-primary);
+  background-color: var(--theme-inversed);
+  box-shadow: 0 5px 10px var(--theme-inversed);
 }

@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 
+import Logo from "components/UI/Logo";
 import Search from "components/UI/Search";
 import { AuthContext } from "context/auth-context";
 import "./Header.css";
@@ -11,7 +12,7 @@ const Header = () => {
   return (
     <header className="header">
       <NavLink exact to="/" className="header__logo">
-        Logo
+        <Logo />
       </NavLink>
 
       <Search />
