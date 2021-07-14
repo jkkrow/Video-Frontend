@@ -20,6 +20,19 @@
   animation: loading-spinner 1s linear infinite;
 }
 
+.loading-spinner.small {
+  width: 2rem;
+  height: 2rem;
+  box-shadow: 1px 1px 0 0 var(--accent-primary);
+  transform-origin: 1rem;
+}
+
+.loading-spinner.big {
+  width: 6rem;
+  height: 6rem;
+  transform-origin: 3rem;
+}
+
 @keyframes loading-spinner {
   0% {
     transform: rotate(0deg);

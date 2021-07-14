@@ -1,5 +1,11 @@
 .login-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  width: 50%;
+  margin: auto;
+  padding: 3rem;
+  gap: 1rem;
+}
+
+.login-page input {
+  width: 100%;
 }

@@ -1,31 +1,25 @@
 .button {
-  font: inherit;
-  padding: 0.7rem 1.8rem;
-  border-radius: 4px;
-  background-color: var(--bg-dark);
-  color: var(--text-reverse);
-  margin: 0.5rem;
-  text-decoration: none;
-  display: inline-block;
-  transition: 200ms;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 1.8rem;
+  border-radius: 5px;
+  color: var(--theme-primary);
+  font-weight: 500;
+  background-color: var(--theme-inversed);
+  overflow: hidden;
+  transition: opacity 200ms ease-out;
 }
-
 
 .button:hover {
-  filter: brightness(1.2);
+  opacity: 0.7;
 }
-
-.button:active {
-  filter: brightness(1.5);
-}
-
 
 .button:disabled,
 .button:hover:disabled,
 .button:active:disabled {
-  background: #ccc;
-  color: #979797;
-  border-color: #ccc;
+  background-color: var(--theme-tertiary);
+  color: var(--theme-secondary);
   cursor: not-allowed;
-  filter: none;
+  opacity: 1;
 }

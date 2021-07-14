@@ -1,12 +1,8 @@
 .google-login-button {
-  /* position: relative; */
+  gap: 1rem;
 }
 
 .google-login-button svg {
-  width: initial;
-  height: initial;
-}
-
-.google-login-button span {
-  color: var(--theme-inversed);
+  width: 1.5rem;
+  height: 1.5rem;
 }

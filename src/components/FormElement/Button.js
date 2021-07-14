@@ -1,17 +1,17 @@
-import Loader from "components/UI/Loader/LoadingSpinner";
+import LoadingSpinner from "components/UI/Loader/LoadingSpinner";
 import "./Button.css";
 
-const Button = ({ type, onClick, loading, disabled, children }) => {
+const Button = ({ className, type, onClick, loading, disabled, children }) => {
   return (
     <button
-      className="button"
+      className={`button ${className}`}
       type={type}
       onClick={onClick}
       disabled={disabled || loading}
-      style={{ position: loading ? "relative" : "" }}
+      style={{ position: true ? "relative" : "" }}
     >
       {children}
-      <Loader dispaly={loading} />
+      <LoadingSpinner display={loading} size="small" />
     </button>
   );
 };

@@ -1,0 +1,9 @@
+.input__container {
+}
+
+.input {
+  background-color: rgb(238, 238, 238);
+  color: var(--theme-inversed);
+  padding: 1rem;
+  border-radius: 5px;
+}

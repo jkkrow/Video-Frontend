@@ -1,4 +1,7 @@
 import { GoogleLogin } from "react-google-login";
+
+import { ReactComponent as GoogleIcon } from "assets/icons/google.svg";
+import Button from "components/FormElement/Button";
 import "./GoogleLoginButton.css";
 
 const GoogleLoginButton = ({ onLogin }) => {
@@ -7,16 +10,23 @@ const GoogleLoginButton = ({ onLogin }) => {
   };
 
   return (
-    <div className="google-login-button">
-      <GoogleLogin
-        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-        buttonText="Sign in with Google"
-        prompt="select_account"
-        cookiePolicy={"single_host_origin"}
-        onSuccess={onLogin}
-        onFailure={errorHandler}
-      />
-    </div>
+    <GoogleLogin
+      clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+      prompt="select_account"
+      cookiePolicy={"single_host_origin"}
+      onSuccess={onLogin}
+      onFailure={errorHandler}
+      render={(renderProps) => (
+        <Button
+          className="google-login-button"
+          onClick={renderProps.onClick}
+          disabled={renderProps.disabled}
+        >
+          <GoogleIcon />
+          <p>Sign in with Google</p>
+        </Button>
+      )}
+    />
   );
 };
 

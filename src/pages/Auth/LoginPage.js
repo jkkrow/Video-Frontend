@@ -3,6 +3,9 @@ import axios from "axios";
 
 import Loader from "components/UI/Loader/LoadingSpinner";
 import { AuthContext } from "context/auth-context";
+import Card from "components/UI/Card";
+import Input from "components/FormElement/Input";
+import Button from "components/FormElement/Button";
 import GoogleLoginButton from "components/Auth/GoogleLoginButton";
 import "./LoginPage.css";
 
@@ -24,10 +27,13 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-page">
+    <Card className="login-page">
       <Loader display={loadingStatus} />
+      <Input placeholder="Email *" />
+      <Input placeholder="Password *" />
+      <Button>SIGN IN</Button>
       <GoogleLoginButton onLogin={googleLoginHandler} />
-    </div>
+    </Card>
   );
 };
 
