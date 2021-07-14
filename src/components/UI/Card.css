@@ -1,5 +1,6 @@
 .card {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   box-shadow: 0 3px 5px var(--theme-inversed);

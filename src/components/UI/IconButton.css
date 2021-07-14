@@ -50,10 +50,6 @@
   transform: rotate(90deg);
 }
 
-.icon-button.rotated:hover {
-  transform: rotate(90deg);
-}
-
 .icon-button.disabled > svg {
   fill: var(--theme-tertiary);
   cursor: not-allowed;
