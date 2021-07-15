@@ -7,7 +7,7 @@ import Button from "components/FormElement/Button";
 import GoogleLoginButton from "components/Auth/GoogleLoginButton";
 import { useForm } from "hooks/form-hook";
 import { VALIDATOR_EMAIL, VALIDATOR_REQUIRE } from "util/validators";
-import { googleLogin } from "store/actions/auth";
+import { login, googleLogin } from "store/actions/auth";
 import "./LoginPage.css";
 
 const LoginPage = () => {
@@ -24,7 +24,10 @@ const LoginPage = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    console.log(formState);
+
+    dispatch(
+      login(formState.inputs.email.value, formState.inputs.password.value)
+    );
   };
 
   return (
