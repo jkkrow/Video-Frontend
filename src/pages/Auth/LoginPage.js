@@ -36,7 +36,7 @@ const LoginPage = () => {
           formElement
           placeholder="Email *"
           validators={[VALIDATOR_EMAIL()]}
-          onChange={inputHandler}
+          onForm={inputHandler}
         />
         <Input
           id="password"
@@ -44,7 +44,7 @@ const LoginPage = () => {
           formElement
           placeholder="Password *"
           validators={[VALIDATOR_REQUIRE()]}
-          onChange={inputHandler}
+          onForm={inputHandler}
         />
         <Button disabled={!formState.isValid}>SIGN IN</Button>
       </form>

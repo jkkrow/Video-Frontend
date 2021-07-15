@@ -2,6 +2,7 @@ import { useState } from "react";
 import { CSSTransition } from "react-transition-group";
 
 import IconButton from "components/UI/IconButton";
+import Input from "components/FormElement/Input";
 import "./Search.css";
 
 const Search = () => {
@@ -34,7 +35,7 @@ const Search = () => {
         unmountOnExit
       >
         <form onSubmit={searchHandler} className="search__bar">
-          <input
+          <Input
             autoFocus={true}
             placeholder="Search Videos!"
             onBlur={hideSearchBarHandler}

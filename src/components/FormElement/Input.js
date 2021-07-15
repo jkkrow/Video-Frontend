@@ -38,6 +38,8 @@ const Input = ({
   autoFocus,
   rows,
   onChange,
+  onBlur,
+  onForm,
 }) => {
   const [inputState, dispatch] = useReducer(inputReducer, {
     value: initialValue || "",
@@ -47,9 +49,9 @@ const Input = ({
 
   useEffect(() => {
     if (formElement) {
-      onChange(id, inputState.value, inputState.isValid);
+      onForm(id, inputState.value, inputState.isValid);
     }
-  }, [formElement, onChange, id, inputState]);
+  }, [formElement, onForm, id, inputState]);
 
   const inputChangeHandler = (event) => {
     formElement
@@ -76,8 +78,8 @@ const Input = ({
         placeholder={placeholder}
         autoFocus={autoFocus}
         value={inputState.value}
-        onChange={inputChangeHandler}
-        onBlur={inputBlurHandler}
+        onChange={onChange || inputChangeHandler}
+        onBlur={onBlur || inputBlurHandler}
       />
     ) : (
       <input
@@ -86,8 +88,8 @@ const Input = ({
         placeholder={placeholder}
         autoFocus={autoFocus}
         value={inputState.value}
-        onChange={inputChangeHandler}
-        onBlur={inputBlurHandler}
+        onChange={onChange || inputChangeHandler}
+        onBlur={onBlur || inputBlurHandler}
       />
     );
 
