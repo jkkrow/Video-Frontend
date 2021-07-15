@@ -2,7 +2,7 @@
 .input__container textarea {
   display: block;
   padding: 1rem;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 5px;
   color: var(--theme-inversed);
   background-color: #eeeeee;
