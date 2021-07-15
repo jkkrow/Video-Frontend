@@ -6,22 +6,22 @@ import { findNode } from "util/tree";
 const uploadSlice = createSlice({
   name: "upload",
   initialState: {
-    videoTree: {},
+    uploadTree: {},
+    previewTree: {},
   },
   reducers: {
     initiateUpload: (state, { payload }) => {
-      state.videoTree = {
+      state.uploadTree = {
         root: {
           id: uuidv1(),
           info: payload,
           children: [],
         },
       };
-      console.log(state);
     },
 
     appendChild: (state, { payload }) => {
-      const targetNode = findNode(state.videoTree, payload.location);
+      const targetNode = findNode(state.uploadTree, payload.location);
 
       if (!targetNode) return;
 

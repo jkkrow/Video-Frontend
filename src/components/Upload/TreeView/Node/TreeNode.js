@@ -9,7 +9,7 @@ import "./TreeNode.css";
 
 const TreeNode = ({ currentNode }) => {
   const dispatch = useDispatch();
-  const { videoTree } = useSelector((state) => state.upload);
+  const { uploadTree } = useSelector((state) => state.upload);
 
   const [children, setChildren] = useState([]);
   const [openChildren, setOpenChildren] = useState(false);
@@ -65,7 +65,6 @@ const TreeNode = ({ currentNode }) => {
     };
 
     dispatch(appendChild(fileInfo, currentNode));
-    console.log(currentNode);
 
     // Close new node
     setAddChild(false);
@@ -76,7 +75,7 @@ const TreeNode = ({ currentNode }) => {
 
   const cancelFileUpload = async () => {
     const params = {
-      videoTitle: videoTree.root.info.name,
+      videoTitle: uploadTree.root.info.name,
       fileName: currentNode.file.name,
       uploadId,
     };
@@ -96,7 +95,7 @@ const TreeNode = ({ currentNode }) => {
   useEffect(() => {
     const MultipartUploadToS3 = async () => {
       const params = {
-        videoTitle: videoTree.root.info.name,
+        videoTitle: uploadTree.root.info.name,
         fileName: currentNode.file.name,
         fileType: currentNode.file.type,
       };
@@ -132,7 +131,7 @@ const TreeNode = ({ currentNode }) => {
             `${process.env.REACT_APP_SERVER_URL}/upload/get-upload-url`,
             {
               params: {
-                videoTitle: videoTree.root.info.name,
+                videoTitle: uploadTree.root.info.name,
                 fileName: currentNode.file.name,
                 partNumber: index,
                 uploadId,
@@ -195,7 +194,7 @@ const TreeNode = ({ currentNode }) => {
           `${process.env.REACT_APP_SERVER_URL}/upload/complete-upload`,
           {
             params: {
-              videoTitle: videoTree.root.info.name,
+              videoTitle: uploadTree.root.info.name,
               fileName: currentNode.file.name,
               parts: uploadPartsArray,
               uploadId,
@@ -210,7 +209,7 @@ const TreeNode = ({ currentNode }) => {
       }
     };
     MultipartUploadToS3();
-  }, [currentNode.file, videoTree.root, setProgressArray]);
+  }, [currentNode.file, uploadTree.root, setProgressArray]);
 
   return (
     <div className="tree-node">

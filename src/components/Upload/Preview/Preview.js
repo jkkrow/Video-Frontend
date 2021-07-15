@@ -8,7 +8,7 @@ import VideoTree from "components/Video/Tree/VideoTree";
 import "./Preview.css";
 
 const Preview = () => {
-  const { videoTree } = useSelector((state) => state.upload);
+  const { uploadTree } = useSelector((state) => state.upload);
 
   const [activePreview, setActivePreview] = useState(false);
 
@@ -24,13 +24,13 @@ const Preview = () => {
 
   return (
     <>
-      {isBigScreen && videoTree.root && (
+      {isBigScreen && uploadTree.root && (
         <div className="preview--big-screen">
-          <VideoTree tree={videoTree} autoPlay={false} editMode={true} />
+          <VideoTree tree={uploadTree} autoPlay={false} editMode={true} />
         </div>
       )}
 
-      {!isBigScreen && videoTree.root && (
+      {!isBigScreen && uploadTree.root && (
         <div className="preview--small-screen">
           <input
             className="preview__checkbox"
@@ -54,7 +54,7 @@ const Preview = () => {
 
           <div className="preview__video__container">
             <div className={`preview__video${activePreview ? " active" : ""}`}>
-              <VideoTree tree={videoTree} autoPlay={false} editMode={true} />
+              <VideoTree tree={uploadTree} autoPlay={false} editMode={true} />
             </div>
           </div>
         </div>
