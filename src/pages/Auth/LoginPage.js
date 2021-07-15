@@ -1,34 +1,24 @@
-import { useState, useContext } from "react";
-import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
 
-import Loader from "components/UI/Loader/LoadingSpinner";
-import { AuthContext } from "context/auth-context";
+import LoadingSpinner from "components/UI/Loader/LoadingSpinner";
 import Card from "components/UI/Card";
 import Input from "components/FormElement/Input";
 import Button from "components/FormElement/Button";
 import GoogleLoginButton from "components/Auth/GoogleLoginButton";
+import { googleLogin } from "store/actions/auth";
 import "./LoginPage.css";
 
 const LoginPage = () => {
-  const { loginHandler } = useContext(AuthContext);
+  const { loading } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
-  const [loadingStatus, setLoadingStatus] = useState(false);
-
-  const googleLoginHandler = async (googleData) => {
-    setLoadingStatus(true);
-
-    const { data } = await axios.post(
-      `${process.env.REACT_APP_SERVER_URL}/auth/google-login`,
-      { tokenId: googleData.tokenId }
-    );
-
-    setLoadingStatus(false);
-    loginHandler(data.token, data.userData);
+  const googleLoginHandler = (googleData) => {
+    dispatch(googleLogin(googleData));
   };
 
   return (
     <Card className="login-page">
-      <Loader display={loadingStatus} />
+      <LoadingSpinner on={loading} />
       <Input placeholder="Email *" />
       <Input placeholder="Password *" />
       <Button>SIGN IN</Button>

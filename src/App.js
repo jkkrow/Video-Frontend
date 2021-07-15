@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useSelector } from "react-redux";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import Header from "components/Layout/Header";
@@ -6,11 +6,10 @@ import VideoListPage from "pages/Video/VideoListPage";
 import LoginPage from "pages/Auth/LoginPage";
 import UploadVideoPage from "pages/Upload/UploadVideoPage";
 import UploadContextProvider from "context/upload-context";
-import { AuthContext } from "context/auth-context";
 import "./App.css";
 
 const App = () => {
-  const { token } = useContext(AuthContext);
+  const { token } = useSelector((state) => state.auth);
 
   let routes;
 

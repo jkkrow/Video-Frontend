@@ -11,7 +11,7 @@ const Button = ({ className, type, onClick, loading, disabled, children }) => {
       style={{ position: true ? "relative" : "" }}
     >
       {children}
-      <LoadingSpinner display={loading} size="small" />
+      <LoadingSpinner on={loading} size="small" />
     </button>
   );
 };

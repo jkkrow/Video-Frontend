@@ -16,7 +16,7 @@ import { ReactComponent as VolumeMuteIcon } from "assets/icons/volume-mute.svg";
 import { ReactComponent as FullscreenIcon } from "assets/icons/fullscreen.svg";
 import { ReactComponent as FullscreenExitIcon } from "assets/icons/fullscreen-exit.svg";
 import IconButton from "components/UI/IconButton";
-import Loader from "components/UI/Loader/LoadingSpinner";
+import LoadingSpinner from "components/UI/Loader/LoadingSpinner";
 import { VideoContext } from "context/video-context";
 import "./VideoPlayer.css";
 
@@ -602,7 +602,7 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
 
       {/* Loader */}
 
-      <Loader display={displayLoader} />
+      <LoadingSpinner on={displayLoader} />
 
       {/* Selector */}
 

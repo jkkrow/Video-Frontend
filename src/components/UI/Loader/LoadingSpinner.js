@@ -1,7 +1,7 @@
 import "./LoadingSpinner.css";
 
-const LoadingSpinner = ({ display, size }) =>
-  display ? (
+const LoadingSpinner = ({ on, size }) =>
+  on ? (
     <div className="loading-spinner__container">
       <div
         className={`loading-spinner${size === "small" ? " small" : ""}${

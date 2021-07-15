@@ -1,13 +1,18 @@
-import { useContext } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 
 import Logo from "components/UI/Logo";
 import Search from "components/UI/Search";
-import { AuthContext } from "context/auth-context";
+import { logout } from "store/actions/auth";
 import "./Header.css";
 
 const Header = () => {
-  const { token, userData, logoutHandler } = useContext(AuthContext);
+  const dispatch = useDispatch();
+  const { token, userData } = useSelector((state) => state.auth);
+
+  const logoutHandler = () => {
+    dispatch(logout());
+  };
 
   return (
     <header className="header">
