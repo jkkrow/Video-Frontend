@@ -1,9 +1,26 @@
-.input__container {
+.input__container input,
+.input__container textarea {
+  display: block;
+  padding: 1rem;
+  border: none;
+  border-radius: 5px;
+  color: var(--theme-inversed);
+  background-color: #eeeeee;
 }
 
-.input {
-  background-color: rgb(238, 238, 238);
-  color: var(--theme-inversed);
-  padding: 1rem;
-  border-radius: 5px;
+.input__container label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.input__container.invalid label,
+.input__container.invalid p {
+  color: red;
+}
+
+.input__container.invalid input,
+.input__container.invalid textarea {
+  border: 1px solid red;
+  background-color: #ffd1d1;
 }

@@ -1,22 +1,104 @@
+import { useEffect, useReducer } from "react";
+
+import { validate } from "util/validators";
 import "./Input.css";
 
-const Input = ({ className, type, label, placeholder }) => {
+const inputReducer = (state, action) => {
+  switch (action.type) {
+    case "CHANGE":
+      return {
+        ...state,
+        value: action.value,
+      };
+
+    case "FORM_CHANGE":
+      return {
+        ...state,
+        value: action.value,
+        isValid: validate(action.value, action.validators),
+      };
+    case "FORM_BLUR":
+      return {
+        ...state,
+        isBlured: true,
+      };
+    default:
+      return state;
+  }
+};
+
+const Input = ({
+  formElement,
+  id,
+  type,
+  label,
+  placeholder,
+  initialValue,
+  validators,
+  autoFocus,
+  rows,
+  onChange,
+}) => {
+  const [inputState, dispatch] = useReducer(inputReducer, {
+    value: initialValue || "",
+    isValid: formElement ? false : true,
+    isBlured: false,
+  });
+
+  useEffect(() => {
+    if (formElement) {
+      onChange(id, inputState.value, inputState.isValid);
+    }
+  }, [formElement, onChange, id, inputState]);
+
+  const inputChangeHandler = (event) => {
+    formElement
+      ? dispatch({
+          type: "FORM_CHANGE",
+          value: event.target.value,
+          validators: validators,
+        })
+      : dispatch({
+          type: "CHANGE",
+          value: event.target.value,
+        });
+  };
+
+  const inputBlurHandler = () => {
+    dispatch({ type: "FORM_BLUR" });
+  };
+
   const element =
     type === "textarea" ? (
-      <textarea className={`input ${className}`} placeholder={placeholder} />
+      <textarea
+        id={id}
+        rows={rows || 5}
+        placeholder={placeholder}
+        autoFocus={autoFocus}
+        value={inputState.value}
+        onChange={inputChangeHandler}
+        onBlur={inputBlurHandler}
+      />
     ) : (
       <input
-        className={`input ${className}`}
+        id={id}
         type={type}
         placeholder={placeholder}
+        autoFocus={autoFocus}
+        value={inputState.value}
+        onChange={inputChangeHandler}
+        onBlur={inputBlurHandler}
       />
     );
 
   return (
-    <div className="input__container">
-      <label>
-        {label} {element}
-      </label>
+    <div
+      className={`input__container${
+        inputState.isBlured && !inputState.isValid ? " invalid" : ""
+      }`}
+    >
+      <label htmlFor={id}>{label}</label>
+      {element}
     </div>
   );
 };

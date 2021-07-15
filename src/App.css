@@ -35,18 +35,6 @@ a {
   text-decoration: none;
 }
 
-input {
-  background-color: var(--theme-tertiary);
-  color: var(--theme-primary);
-  padding: 1rem;
-  border: none;
-  border-radius: 5px;
-}
-
-input:focus {
-  outline: none;
-}
-
 button {
   cursor: pointer;
   border: none;

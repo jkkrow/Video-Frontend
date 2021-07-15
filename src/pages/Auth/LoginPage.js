@@ -5,23 +5,49 @@ import Card from "components/UI/Card";
 import Input from "components/FormElement/Input";
 import Button from "components/FormElement/Button";
 import GoogleLoginButton from "components/Auth/GoogleLoginButton";
+import { useForm } from "hooks/form-hook";
+import { VALIDATOR_EMAIL, VALIDATOR_REQUIRE } from "util/validators";
 import { googleLogin } from "store/actions/auth";
 import "./LoginPage.css";
 
 const LoginPage = () => {
-  const { loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.auth);
+  const { formState, inputHandler } = useForm({
+    email: { value: "", isValid: false },
+    password: { value: "", isValid: false },
+  });
 
   const googleLoginHandler = (googleData) => {
     dispatch(googleLogin(googleData));
   };
 
+  const submitHandler = (event) => {
+    event.preventDefault();
+    console.log(formState);
+  };
+
   return (
     <Card className="login-page">
       <LoadingSpinner on={loading} />
-      <Input placeholder="Email *" />
-      <Input placeholder="Password *" />
-      <Button>SIGN IN</Button>
+      <form onSubmit={submitHandler}>
+        <Input
+          id="email"
+          formElement
+          placeholder="Email *"
+          validators={[VALIDATOR_EMAIL()]}
+          onChange={inputHandler}
+        />
+        <Input
+          id="password"
+          type="password"
+          formElement
+          placeholder="Password *"
+          validators={[VALIDATOR_REQUIRE()]}
+          onChange={inputHandler}
+        />
+        <Button disabled={!formState.isValid}>SIGN IN</Button>
+      </form>
       <GoogleLoginButton onLogin={googleLoginHandler} />
     </Card>
   );

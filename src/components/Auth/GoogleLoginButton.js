@@ -23,7 +23,7 @@ const GoogleLoginButton = ({ onLogin }) => {
           disabled={renderProps.disabled}
         >
           <GoogleIcon />
-          <p>Sign in with Google</p>
+          <p>GOOGLE SIGN IN</p>
         </Button>
       )}
     />

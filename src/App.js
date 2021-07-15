@@ -27,8 +27,8 @@ const App = () => {
         {/* Only available in Development */}
         <Route exact path="/upload" component={UploadVideoPage} />
         {/* /> */}
-        <Route exact path="/login" component={LoginPage} />
-        <Redirect exact to="/login" />
+        <Route exact path="/auth" component={LoginPage} />
+        <Redirect exact to="/auth" />
       </Switch>
     );
   }
