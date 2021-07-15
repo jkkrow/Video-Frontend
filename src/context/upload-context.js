@@ -2,7 +2,7 @@ import { createContext, useCallback, useEffect, useState } from "react";
 import { Prompt } from "react-router-dom";
 import { v1 as uuidv1 } from "uuid";
 
-import { findNode } from "util/findNode";
+import { findNode } from "util/tree";
 
 export const UploadContext = createContext();
 

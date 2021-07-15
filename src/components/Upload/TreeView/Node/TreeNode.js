@@ -1,14 +1,15 @@
-import { useState, useRef, useEffect, useContext } from "react";
-// import axios from "axios";
+import { useState, useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 
 import IconButton from "components/UI/IconButton";
 import NewNode from "./NewNode";
-import { UploadContext } from "context/upload-context";
+import { appendChild } from "store/actions/upload";
 import "./TreeNode.css";
-import axios from "axios";
 
 const TreeNode = ({ currentNode }) => {
-  const { videoTree, appendNext } = useContext(UploadContext);
+  const dispatch = useDispatch();
+  const { videoTree } = useSelector((state) => state.upload);
 
   const [children, setChildren] = useState([]);
   const [openChildren, setOpenChildren] = useState(false);
@@ -63,7 +64,8 @@ const TreeNode = ({ currentNode }) => {
       src: URL.createObjectURL(event.target.files[0]),
     };
 
-    appendNext(fileInfo, currentNode);
+    dispatch(appendChild(fileInfo, currentNode));
+    console.log(currentNode);
 
     // Close new node
     setAddChild(false);

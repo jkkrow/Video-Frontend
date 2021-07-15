@@ -5,7 +5,6 @@ import Header from "components/Layout/Header";
 import VideoListPage from "pages/Video/VideoListPage";
 import LoginPage from "pages/Auth/LoginPage";
 import UploadVideoPage from "pages/Upload/UploadVideoPage";
-import UploadContextProvider from "context/upload-context";
 import "./App.css";
 
 const App = () => {
@@ -17,13 +16,7 @@ const App = () => {
     routes = (
       <Switch>
         <Route exact path="/" component={VideoListPage} />
-
-        <Route exact path="/upload">
-          <UploadContextProvider>
-            <UploadVideoPage />
-          </UploadContextProvider>
-        </Route>
-
+        <Route exact path="/upload" component={UploadVideoPage} />
         <Redirect exact to="/" />
       </Switch>
     );
@@ -31,17 +24,10 @@ const App = () => {
     routes = (
       <Switch>
         <Route exact path="/" component={VideoListPage} />
-
         {/* Only available in Development */}
-        <Route exact path="/upload">
-          <UploadContextProvider>
-            <UploadVideoPage />
-          </UploadContextProvider>
-        </Route>
+        <Route exact path="/upload" component={UploadVideoPage} />
         {/* /> */}
-
         <Route exact path="/login" component={LoginPage} />
-
         <Redirect exact to="/login" />
       </Switch>
     );

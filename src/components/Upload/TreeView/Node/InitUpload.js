@@ -1,11 +1,12 @@
-import { useRef, useContext } from "react";
-import { UploadContext } from "context/upload-context";
+import { useRef } from "react";
+import { useDispatch } from "react-redux";
 
+import { initiateUpload } from "store/actions/upload";
 import "./InitUpload.css";
 
 const InitUpload = ({ onChange }) => {
-  const { initiateUpload } = useContext(UploadContext);
-  
+  const dispatch = useDispatch();
+
   const fileUploaderRef = useRef();
 
   const openFileInputHandler = () => {
@@ -20,11 +21,13 @@ const InitUpload = ({ onChange }) => {
       layer: 0,
     });
 
-    initiateUpload({
-      name: event.target.files[0].name,
-      layer: 0,
-      src: URL.createObjectURL(event.target.files[0]),
-    });
+    dispatch(
+      initiateUpload({
+        name: event.target.files[0].name,
+        layer: 0,
+        src: URL.createObjectURL(event.target.files[0]),
+      })
+    );
   };
 
   return (

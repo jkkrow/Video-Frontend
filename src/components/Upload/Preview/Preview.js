@@ -1,14 +1,14 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useMediaQuery } from "react-responsive";
 
 import { ReactComponent as PreviewIcon } from "assets/icons/play.svg";
 import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
 import VideoTree from "components/Video/Tree/VideoTree";
-import { UploadContext } from "context/upload-context";
 import "./Preview.css";
 
 const Preview = () => {
-  const { videoTree } = useContext(UploadContext);
+  const { videoTree } = useSelector((state) => state.upload);
 
   const [activePreview, setActivePreview] = useState(false);
 
