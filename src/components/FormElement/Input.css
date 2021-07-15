@@ -1,6 +1,11 @@
+.input__container {
+  width: 100%;
+}
+
 .input__container input,
 .input__container textarea {
   display: block;
+  width: 100%;
   padding: 1rem;
   border: 1px solid transparent;
   border-radius: 5px;

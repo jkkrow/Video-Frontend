@@ -99,7 +99,7 @@ const Input = ({
         inputState.isBlured && !inputState.isValid ? " invalid" : ""
       }`}
     >
-      <label htmlFor={id}>{label}</label>
+      {label && <label htmlFor={id}>{label}</label>}
       {element}
     </div>
   );

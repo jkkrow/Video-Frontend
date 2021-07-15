@@ -204,8 +204,8 @@ const TreeNode = ({ currentNode }) => {
 
         setUploadProgress("100%");
         console.log(completeUploadResponse.data, " upload response complete");
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.log(err);
       }
     };
     MultipartUploadToS3();

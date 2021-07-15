@@ -1,19 +1,21 @@
 .login-page {
-  display: grid;
   width: 50%;
+  max-width: 40rem;
   margin: auto;
   padding: 3rem;
   gap: 1rem;
 }
 
 .login-page form {
-  display: grid;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
   gap: 1rem;
 }
 
-.login-page input {
+.login-page input,
+.login-page button {
   width: 100%;
 }

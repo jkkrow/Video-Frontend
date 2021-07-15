@@ -8,11 +8,8 @@
 .search__bar {
   position: absolute;
   right: 0;
-  transform-origin: right;
-}
-
-.search__bar input {
   width: 30rem;
+  transform-origin: right;
 }
 
 /* CSS Transition */
