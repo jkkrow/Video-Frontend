@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import Header from "components/Layout/Header";
 import VideoListPage from "pages/Video/VideoListPage";
-import LoginPage from "pages/Auth/LoginPage";
+import AuthPage from "pages/Auth/AuthPage";
 import UploadVideoPage from "pages/Upload/UploadVideoPage";
 import "./App.css";
 
@@ -27,7 +27,7 @@ const App = () => {
         {/* Only available in Development */}
         <Route exact path="/upload" component={UploadVideoPage} />
         {/* /> */}
-        <Route exact path="/auth" component={LoginPage} />
+        <Route exact path="/auth" component={AuthPage} />
         <Redirect exact to="/auth" />
       </Switch>
     );

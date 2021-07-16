@@ -20,7 +20,8 @@
 }
 
 .input__container.invalid label,
-.input__container.invalid p {
+.input__container.invalid p,
+.input__container.invalid div {
   color: red;
 }
 
@@ -28,4 +29,14 @@
 .input__container.invalid textarea {
   border: 1px solid red;
   background-color: #ffd1d1;
+}
+
+.input__container div {
+  display: none;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.input__container input:focus ~ div {
+  display: block;
 }

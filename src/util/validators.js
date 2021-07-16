@@ -76,7 +76,7 @@ export const validate = (value, validators) => {
     if (validator.type === VALIDATOR_TYPE_PASSWORD) {
       isValid =
         isValid &&
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,}$/.test(
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/.test(
           value.trim()
         );
     }

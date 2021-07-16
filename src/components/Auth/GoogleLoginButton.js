@@ -4,18 +4,14 @@ import { ReactComponent as GoogleIcon } from "assets/icons/google.svg";
 import Button from "components/FormElement/Button";
 import "./GoogleLoginButton.css";
 
-const GoogleLoginButton = ({ onLogin }) => {
-  const errorHandler = (err) => {
-    console.log(err);
-  };
-
+const GoogleLoginButton = ({ onLoginSuccess, onLoginFail }) => {
   return (
     <GoogleLogin
       clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
       prompt="select_account"
       cookiePolicy={"single_host_origin"}
-      onSuccess={onLogin}
-      onFailure={errorHandler}
+      onSuccess={onLoginSuccess}
+      onFailure={onLoginFail}
       render={(renderProps) => (
         <Button
           className="google-login-button"

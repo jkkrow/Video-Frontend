@@ -37,6 +37,7 @@ const Input = ({
   validators,
   autoFocus,
   rows,
+  message,
   onChange,
   onBlur,
   onForm,
@@ -101,6 +102,7 @@ const Input = ({
     >
       {label && <label htmlFor={id}>{label}</label>}
       {element}
+      {message && <div>{message}</div>}
     </div>
   );
 };

@@ -13,34 +13,24 @@ const authSlice = createSlice({
     error: null,
   },
   reducers: {
-    registerRequest: (state) => {
+    authRequest: (state) => {
       state.loading = true;
       state.error = null;
     },
 
-    registerSuccess: (state) => {
-      state.loading = false;
-    },
-
-    registerFail: (state, { payload }) => {
+    authFail: (state, { payload }) => {
       state.loading = false;
       state.error = payload.error;
     },
 
-    loginRequest: (state) => {
-      state.loading = true;
-      state.error = null;
+    register: (state) => {
+      state.loading = false;
     },
 
-    loginSuccess: (state, { payload }) => {
+    login: (state, { payload }) => {
       state.loading = false;
       state.token = payload.token;
       state.userData = payload.userData;
-    },
-
-    loginFail: (state, { payload }) => {
-      state.loading = false;
-      state.error = payload.error;
     },
 
     logout: (state) => {

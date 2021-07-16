@@ -2,21 +2,24 @@ import axios from "axios";
 
 import { authActions } from "store/reducers/auth";
 
-export const register = (name, email, password) => {
+export const register = (name, email, password, confirmPassword, callback) => {
   return async (dispatch) => {
     try {
-      dispatch(authActions.registerRequest());
+      dispatch(authActions.authRequest());
 
       await axios.post(`${process.env.REACT_APP_SERVER_URL}/auth/register`, {
         name,
         email,
         password,
+        confirmPassword,
       });
 
-      dispatch(authActions.registerSuccess());
+      dispatch(authActions.register());
+
+      callback();
     } catch (err) {
       dispatch(
-        authActions.registerFail({
+        authActions.authFail({
           error:
             err.response && err.response.data.message
               ? err.response.data.message
@@ -30,7 +33,7 @@ export const register = (name, email, password) => {
 export const login = (email, password) => {
   return async (dispatch) => {
     try {
-      dispatch(authActions.loginRequest());
+      dispatch(authActions.authRequest());
 
       const { data } = await axios.post(
         `${process.env.REACT_APP_SERVER_URL}/auth/login`,
@@ -38,7 +41,7 @@ export const login = (email, password) => {
       );
 
       dispatch(
-        authActions.loginSuccess({
+        authActions.login({
           token: data.token,
           userData: data.userData,
         })
@@ -52,8 +55,9 @@ export const login = (email, password) => {
         })
       );
     } catch (err) {
+      console.dir(err);
       dispatch(
-        authActions.loginFail({
+        authActions.authFail({
           error:
             err.response && err.response.data.message
               ? err.response.data.message
@@ -67,7 +71,7 @@ export const login = (email, password) => {
 export const googleLogin = (googleData) => {
   return async (dispatch) => {
     try {
-      dispatch(authActions.loginRequest());
+      dispatch(authActions.authRequest());
 
       const { data } = await axios.post(
         `${process.env.REACT_APP_SERVER_URL}/auth/google-login`,
@@ -75,7 +79,7 @@ export const googleLogin = (googleData) => {
       );
 
       dispatch(
-        authActions.loginSuccess({
+        authActions.login({
           token: data.token,
           userData: data.userData,
         })
@@ -90,7 +94,7 @@ export const googleLogin = (googleData) => {
       );
     } catch (err) {
       dispatch(
-        authActions.loginFail({
+        authActions.authFail({
           error:
             err.response && err.response.data.message
               ? err.response.data.message
@@ -98,6 +102,16 @@ export const googleLogin = (googleData) => {
         })
       );
     }
+  };
+};
+
+export const googleLoginError = (err) => {
+  return (dispatch) => {
+    dispatch(
+      authActions.authFail({
+        error: err.details || err.message || null,
+      })
+    );
   };
 };
 

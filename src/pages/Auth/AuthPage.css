@@ -1,12 +1,13 @@
-.login-page {
+.auth-page {
   width: 50%;
   max-width: 40rem;
+  min-width: 20rem;
   margin: auto;
   padding: 3rem;
   gap: 1rem;
 }
 
-.login-page form {
+.auth-page form {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -15,7 +16,12 @@
   gap: 1rem;
 }
 
-.login-page input,
-.login-page button {
+.auth-page input,
+.auth-page button {
   width: 100%;
+}
+
+.auth-page span {
+  font-weight: 500;
+  cursor: pointer;
 }
