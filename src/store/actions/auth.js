@@ -55,7 +55,6 @@ export const login = (email, password) => {
         })
       );
     } catch (err) {
-      console.dir(err);
       dispatch(
         authActions.authFail({
           error:
