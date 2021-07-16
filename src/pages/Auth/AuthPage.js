@@ -104,6 +104,7 @@ const AuthPage = () => {
             formElement
             placeholder="Name *"
             message="At least 4 characters"
+            autoFocus
             validators={[VALIDATOR_MINLENGTH(4)]}
             onForm={setFormInput}
           />
