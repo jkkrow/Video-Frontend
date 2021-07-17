@@ -4,6 +4,7 @@ import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Header from "components/Layout/Header";
 import VideoListPage from "pages/Video/VideoListPage";
 import AuthPage from "pages/Auth/AuthPage";
+import VerifyEmailPage from "pages/Auth/VerifyEmailPage";
 import UploadVideoPage from "pages/Upload/UploadVideoPage";
 import "./App.css";
 
@@ -17,6 +18,11 @@ const App = () => {
       <Switch>
         <Route exact path="/" component={VideoListPage} />
         <Route exact path="/upload" component={UploadVideoPage} />
+        <Route
+          exact
+          path="/auth/verify-email/:token"
+          component={VerifyEmailPage}
+        />
         <Redirect exact to="/" />
       </Switch>
     );
@@ -28,6 +34,11 @@ const App = () => {
         <Route exact path="/upload" component={UploadVideoPage} />
         {/* /> */}
         <Route exact path="/auth" component={AuthPage} />
+        <Route
+          exact
+          path="/auth/verify-email/:token"
+          component={VerifyEmailPage}
+        />
         <Redirect exact to="/auth" />
       </Switch>
     );

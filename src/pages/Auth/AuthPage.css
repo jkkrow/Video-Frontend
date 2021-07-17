@@ -24,4 +24,9 @@
 .auth-page span {
   font-weight: 500;
   cursor: pointer;
+  transition: opacity 200ms ease-out;
+}
+
+.auth-page span:hover {
+  opacity: 0.7;
 }

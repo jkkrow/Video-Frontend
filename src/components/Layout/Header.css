@@ -22,4 +22,9 @@
 
 .header a {
   color: var(--theme-inversed);
+  transition: opacity 200ms ease-out;
+}
+
+.header a:hover {
+  opacity: 0.7;
 }

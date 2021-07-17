@@ -11,6 +11,7 @@ const authSlice = createSlice({
       : {},
     loading: false,
     error: null,
+    message: null,
   },
   reducers: {
     authRequest: (state) => {
@@ -23,8 +24,14 @@ const authSlice = createSlice({
       state.error = payload.error;
     },
 
-    register: (state) => {
+    register: (state, { payload }) => {
       state.loading = false;
+      state.message = payload.message;
+    },
+
+    verifyEmail: (state, { payload }) => {
+      state.loading = false;
+      state.message = payload.message;
     },
 
     login: (state, { payload }) => {
@@ -40,6 +47,7 @@ const authSlice = createSlice({
 
     clearError: (state) => {
       state.error = null;
+      state.message = null;
     },
   },
 });

@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from "react-redux";
 
 import LoadingSpinner from "components/UI/Loader/LoadingSpinner";
 import Card from "components/UI/Card";
+import Response from "components/FormElement/Response";
 import Input from "components/FormElement/Input";
 import Button from "components/FormElement/Button";
 import GoogleLoginButton from "components/Auth/GoogleLoginButton";
-import ErrorMessage from "components/FormElement/ErrorMessage";
 import { useForm } from "hooks/form-hook";
 import {
   VALIDATOR_EMAIL,
@@ -26,7 +26,7 @@ import "./AuthPage.css";
 
 const AuthPage = () => {
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading, error, message } = useSelector((state) => state.auth);
   const { formState, setFormInput, setFormData } = useForm({
     email: { value: "", isValid: false },
     password: { value: "", isValid: false },
@@ -95,7 +95,7 @@ const AuthPage = () => {
   return (
     <Card className="auth-page">
       <LoadingSpinner on={loading} />
-      <ErrorMessage error={error} />
+      <Response type={error ? "error" : "message"} content={error || message} />
       <form onSubmit={submitHandler}>
         {!isLogin && (
           <Input

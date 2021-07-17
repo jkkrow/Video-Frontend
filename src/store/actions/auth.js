@@ -7,16 +7,50 @@ export const register = (name, email, password, confirmPassword, callback) => {
     try {
       dispatch(authActions.authRequest());
 
-      await axios.post(`${process.env.REACT_APP_SERVER_URL}/auth/register`, {
-        name,
-        email,
-        password,
-        confirmPassword,
-      });
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/auth/register`,
+        {
+          name,
+          email,
+          password,
+          confirmPassword,
+        }
+      );
 
-      dispatch(authActions.register());
+      dispatch(
+        authActions.register({
+          message: data.message,
+        })
+      );
 
       callback();
+    } catch (err) {
+      dispatch(
+        authActions.authFail({
+          error:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : err.message,
+        })
+      );
+    }
+  };
+};
+
+export const verifyEmail = (token) => {
+  return async (dispatch) => {
+    try {
+      dispatch(authActions.authRequest());
+
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_SERVER_URL}/auth/verify-email/${token}`
+      );
+
+      dispatch(
+        authActions.verifyEmail({
+          message: data.message,
+        })
+      );
     } catch (err) {
       dispatch(
         authActions.authFail({

@@ -17,6 +17,7 @@ const GoogleLoginButton = ({ onLoginSuccess, onLoginFail }) => {
           className="google-login-button"
           onClick={renderProps.onClick}
           disabled={renderProps.disabled}
+          loading={renderProps.disabled}
         >
           <GoogleIcon />
           <p>GOOGLE SIGN IN</p>

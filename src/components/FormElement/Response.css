@@ -1,0 +1,18 @@
+.response {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid transparent;
+  border-radius: 5px;
+}
+
+.response.error {
+  color: #dc3545;
+  border-color: #dc3545;
+  background-color: #ffd1d1;
+}
+
+.response.message {
+  color: #009b24;
+  border-color: #009b24;
+  background-color: #7eff9c;
+}
