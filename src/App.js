@@ -5,6 +5,8 @@ import Header from "components/Layout/Header";
 import VideoListPage from "pages/Video/VideoListPage";
 import AuthPage from "pages/Auth/AuthPage";
 import VerifyEmailPage from "pages/Auth/VerifyEmailPage";
+import SendRecoveryEmailPage from "pages/Auth/SendRecoveryEmailPage";
+import ResetPasswordPage from "pages/Auth/ResetPasswordPage";
 import UploadVideoPage from "pages/Upload/UploadVideoPage";
 import "./App.css";
 
@@ -38,6 +40,16 @@ const App = () => {
           exact
           path="/auth/verify-email/:token"
           component={VerifyEmailPage}
+        />
+        <Route
+          exact
+          path="/auth/send-recovery-email"
+          component={SendRecoveryEmailPage}
+        />
+        <Route
+          exact
+          path="/auth/reset-password/:token"
+          component={ResetPasswordPage}
         />
         <Redirect exact to="/auth" />
       </Switch>

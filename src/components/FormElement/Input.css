@@ -32,11 +32,17 @@
 }
 
 .input__container div {
-  display: none;
+  max-height: 0;
   font-size: 1rem;
-  padding: 0.5rem;
+  overflow: hidden;
+  transition: max-height 200ms ease-out;
 }
 
+.input__container.invalid > div,
 .input__container input:focus ~ div {
-  display: block;
+  max-height: 5rem;
+}
+
+.input__container p {
+  padding: 0.5rem;
 }

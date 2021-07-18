@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
-import LoadingSpinner from "components/UI/Loader/LoadingSpinner";
 import Card from "components/UI/Card";
 import Response from "components/FormElement/Response";
 import Input from "components/FormElement/Input";
@@ -20,7 +20,7 @@ import {
   login,
   googleLogin,
   googleLoginError,
-  clearError,
+  clearResponse,
 } from "store/actions/auth";
 import "./AuthPage.css";
 
@@ -62,7 +62,7 @@ const AuthPage = () => {
   };
 
   const toggleMode = () => {
-    dispatch(clearError());
+    dispatch(clearResponse());
 
     setIsLogin((prevMode) => {
       if (prevMode) {
@@ -89,12 +89,11 @@ const AuthPage = () => {
   };
 
   useEffect(() => {
-    return () => dispatch(clearError());
+    return () => dispatch(clearResponse());
   }, [dispatch]);
 
   return (
     <Card className="auth-page">
-      <LoadingSpinner on={loading} />
       <Response type={error ? "error" : "message"} content={error || message} />
       <form onSubmit={submitHandler}>
         {!isLogin && (
@@ -102,9 +101,10 @@ const AuthPage = () => {
             id="name"
             type="text"
             formElement
+            autoFocus
+            autoComplete="name"
             placeholder="Name *"
             message="At least 4 characters"
-            autoFocus
             validators={[VALIDATOR_MINLENGTH(4)]}
             onForm={setFormInput}
           />
@@ -113,6 +113,7 @@ const AuthPage = () => {
           id="email"
           type="text"
           formElement
+          autoComplete="email"
           placeholder="Email *"
           validators={[VALIDATOR_EMAIL()]}
           onForm={setFormInput}
@@ -122,17 +123,20 @@ const AuthPage = () => {
             id="password"
             type="password"
             formElement
+            autoComplete="current-password"
             placeholder="Password *"
             validators={[VALIDATOR_REQUIRE()]}
             onForm={setFormInput}
           />
         )}
+        {isLogin && <Link to="/auth/send-recovery-email">Forgot Password</Link>}
         {!isLogin && (
           <Input
             id="password"
             type="password"
             formElement
             placeholder="Password *"
+            autoComplete="new-password"
             message="At least 8 characters with lowercase, uppercase, number, and special character"
             validators={[VALIDATOR_PASSWORD()]}
             onForm={setFormInput}
@@ -143,12 +147,13 @@ const AuthPage = () => {
             id="confirmPassword"
             type="password"
             formElement
+            autoComplete="new-password"
             placeholder="Confirm Password *"
             validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}
             onForm={setFormInput}
           />
         )}
-        <Button disabled={!formState.isValid}>
+        <Button loading={loading} disabled={!formState.isValid}>
           {isLogin ? "SIGN IN" : "SIGN UP"}
         </Button>
       </form>

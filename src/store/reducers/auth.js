@@ -12,6 +12,7 @@ const authSlice = createSlice({
     loading: false,
     error: null,
     message: null,
+    access: null,
   },
   reducers: {
     authRequest: (state) => {
@@ -19,19 +20,14 @@ const authSlice = createSlice({
       state.error = null;
     },
 
+    authSuccess: (state, { payload }) => {
+      state.loading = false;
+      state.message = payload.message;
+    },
+
     authFail: (state, { payload }) => {
       state.loading = false;
       state.error = payload.error;
-    },
-
-    register: (state, { payload }) => {
-      state.loading = false;
-      state.message = payload.message;
-    },
-
-    verifyEmail: (state, { payload }) => {
-      state.loading = false;
-      state.message = payload.message;
     },
 
     login: (state, { payload }) => {
@@ -45,9 +41,15 @@ const authSlice = createSlice({
       state.userData = {};
     },
 
-    clearError: (state) => {
+    allowAccess: (state) => {
+      state.loading = false;
+      state.access = true;
+    },
+
+    clearResponse: (state) => {
       state.error = null;
       state.message = null;
+      state.access = null;
     },
   },
 });

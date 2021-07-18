@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import LoadingSpinner from "components/UI/Loader/LoadingSpinner";
 import Response from "components/FormElement/Response";
-import { clearError, verifyEmail } from "store/actions/auth";
+import { verifyEmail, clearResponse } from "store/actions/auth";
 import "./VerifyEmailPage.css";
 
 const VerifyEmailPage = () => {
@@ -15,7 +15,7 @@ const VerifyEmailPage = () => {
   useEffect(() => {
     dispatch(verifyEmail(token));
 
-    return () => dispatch(clearError());
+    return () => dispatch(clearResponse());
   }, [dispatch, token]);
 
   return (

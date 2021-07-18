@@ -18,39 +18,12 @@ export const register = (name, email, password, confirmPassword, callback) => {
       );
 
       dispatch(
-        authActions.register({
+        authActions.authSuccess({
           message: data.message,
         })
       );
 
       callback();
-    } catch (err) {
-      dispatch(
-        authActions.authFail({
-          error:
-            err.response && err.response.data.message
-              ? err.response.data.message
-              : err.message,
-        })
-      );
-    }
-  };
-};
-
-export const verifyEmail = (token) => {
-  return async (dispatch) => {
-    try {
-      dispatch(authActions.authRequest());
-
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_SERVER_URL}/auth/verify-email/${token}`
-      );
-
-      dispatch(
-        authActions.verifyEmail({
-          message: data.message,
-        })
-      );
     } catch (err) {
       dispatch(
         authActions.authFail({
@@ -155,8 +128,114 @@ export const logout = () => {
   };
 };
 
-export const clearError = () => {
+export const clearResponse = () => {
   return (dispatch) => {
-    dispatch(authActions.clearError());
+    dispatch(authActions.clearResponse());
+  };
+};
+
+export const verifyEmail = (token) => {
+  return async (dispatch) => {
+    try {
+      dispatch(authActions.authRequest());
+
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_SERVER_URL}/auth/verify-email/${token}`
+      );
+
+      dispatch(
+        authActions.authSuccess({
+          message: data.message,
+        })
+      );
+    } catch (err) {
+      dispatch(
+        authActions.authFail({
+          error:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : err.message,
+        })
+      );
+    }
+  };
+};
+
+export const sendRecoveryEmail = (email) => {
+  return async (dispatch) => {
+    try {
+      dispatch(authActions.authRequest());
+
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/auth/send-recovery-email`,
+        { email }
+      );
+
+      dispatch(
+        authActions.authSuccess({
+          message: data.message,
+        })
+      );
+    } catch (err) {
+      dispatch(
+        authActions.authFail({
+          error:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : err.message,
+        })
+      );
+    }
+  };
+};
+
+export const getResetPassword = (token) => {
+  return async (dispatch) => {
+    try {
+      dispatch(authActions.authRequest());
+
+      await axios.get(
+        `${process.env.REACT_APP_SERVER_URL}/auth/reset-password/${token}`
+      );
+
+      dispatch(authActions.allowAccess());
+    } catch (err) {
+      dispatch(
+        authActions.authFail({
+          error:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : err.message,
+        })
+      );
+    }
+  };
+};
+
+export const postResetPassword = (password, confirmPassword, token) => {
+  return async (dispatch) => {
+    try {
+      dispatch(authActions.authRequest());
+
+      const { data } = await axios.put(
+        `${process.env.REACT_APP_SERVER_URL}/auth/reset-password/${token}`,
+        { password, confirmPassword }
+      );
+
+      dispatch(
+        authActions.authSuccess({
+          message: data.message,
+        })
+      );
+    } catch (err) {
+      dispatch(
+        authActions.authFail({
+          error:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : err.message,
+        })
+      );
+    }
   };
 };

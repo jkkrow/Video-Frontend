@@ -36,6 +36,7 @@ const Input = ({
   initialValue,
   validators,
   autoFocus,
+  autoComplete,
   rows,
   message,
   onChange,
@@ -78,6 +79,7 @@ const Input = ({
         rows={rows || 5}
         placeholder={placeholder}
         autoFocus={autoFocus}
+        autoComplete={autoComplete}
         value={inputState.value}
         onChange={onChange || inputChangeHandler}
         onBlur={onBlur || inputBlurHandler}
@@ -88,6 +90,7 @@ const Input = ({
         type={type}
         placeholder={placeholder}
         autoFocus={autoFocus}
+        autoComplete={autoComplete}
         value={inputState.value}
         onChange={onChange || inputChangeHandler}
         onBlur={onBlur || inputBlurHandler}
@@ -102,7 +105,11 @@ const Input = ({
     >
       {label && <label htmlFor={id}>{label}</label>}
       {element}
-      {message && <div>{message}</div>}
+      {message && (
+        <div>
+          <p>{message}</p>
+        </div>
+      )}
     </div>
   );
 };
