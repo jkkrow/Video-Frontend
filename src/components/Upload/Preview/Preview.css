@@ -4,8 +4,7 @@
   padding: 1rem 1rem 5rem 1rem;
   margin: 0.5rem 0 0 5rem;
   border-radius: 5px;
-  background-color: var(--theme-inversed);
-  box-shadow: 0 3px 5px var(--theme-inversed);
+  background-color: var(--bg-primary);
 }
 
 .preview--small-screen {
@@ -26,15 +25,13 @@
   height: 4.5rem;
   border-radius: 50%;
   cursor: pointer;
-  background-color: var(--theme-inversed);
-  box-shadow: 0 1px 5px var(--theme-inversed);
+  background-color: #242424;
   transition: all 200ms ease-out;
   z-index: 1000;
 }
 
 .preview__toggle svg {
   position: absolute;
-  fill: var(--theme-primary);
 }
 
 .preview__toggle:hover {
@@ -59,7 +56,7 @@
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
-  background-color: var(--theme-inversed);
+  background-color: var(--bg-black);
   transition: transform 800ms ease-out;
   z-index: 500;
 }

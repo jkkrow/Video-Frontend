@@ -4,8 +4,8 @@
   flex-direction: column;
   justify-content: center;
   border-radius: 4px;
-  background-color: var(--theme-inversed);
-  color: var(--theme-primary);
+  color: #ffffff;
+  background-color: #00000;
   outline: none;
 }
 
@@ -35,7 +35,7 @@
 }
 
 .vp-controls svg {
-  fill: var(--theme-primary);
+  fill: #ffffff;
 }
 
 .vp-controls__btn {
@@ -51,7 +51,6 @@
   transform: scale(1);
   transition: all 200ms ease-out;
   z-index: 5;
-  fill: var(--theme-inversed);
 }
 
 .vp-controls__btn:hover {
@@ -98,7 +97,7 @@
 
 .vp-controls__range--background {
   width: 100%;
-  background-color: var(--theme-secondary);
+  background-color: #858585;
 }
 
 .vp-controls__range--buffer {
@@ -251,7 +250,7 @@
   border-radius: 5px;
   padding: 0.5rem;
   background-color: rgba(0, 0, 0, 0.8);
-  color: var(--theme-primary);
+  color: #ffffff;
   text-align: center;
   cursor: pointer;
   transition: all 200ms ease-out;
@@ -291,10 +290,9 @@
   bottom: -4rem;
   left: 50%;
   border-radius: 5px;
-  background-color: var(--theme-inversed);
   transform: translate(-50%, 0);
 }
 
 .vp-navigation svg {
-  fill: var(--theme-primary);
+  fill: #ffffff;
 }

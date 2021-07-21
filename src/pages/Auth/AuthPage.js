@@ -101,9 +101,8 @@ const AuthPage = () => {
             id="name"
             type="text"
             formElement
-            autoFocus
             autoComplete="name"
-            placeholder="Name *"
+            label="Name"
             message="At least 4 characters"
             validators={[VALIDATOR_MINLENGTH(4)]}
             onForm={setFormInput}
@@ -114,7 +113,7 @@ const AuthPage = () => {
           type="text"
           formElement
           autoComplete="email"
-          placeholder="Email *"
+          label="Email"
           validators={[VALIDATOR_EMAIL()]}
           onForm={setFormInput}
         />
@@ -124,7 +123,7 @@ const AuthPage = () => {
             type="password"
             formElement
             autoComplete="current-password"
-            placeholder="Password *"
+            label="Password"
             validators={[VALIDATOR_REQUIRE()]}
             onForm={setFormInput}
           />
@@ -135,7 +134,7 @@ const AuthPage = () => {
             id="password"
             type="password"
             formElement
-            placeholder="Password *"
+            label="Password"
             autoComplete="new-password"
             message="At least 8 characters with lowercase, uppercase, number, and special character"
             validators={[VALIDATOR_PASSWORD()]}
@@ -148,7 +147,7 @@ const AuthPage = () => {
             type="password"
             formElement
             autoComplete="new-password"
-            placeholder="Confirm Password *"
+            label="Confirm Password"
             validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}
             onForm={setFormInput}
           />

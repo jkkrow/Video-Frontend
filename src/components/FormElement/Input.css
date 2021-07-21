@@ -1,5 +1,7 @@
 .input__container {
+  position: relative;
   width: 100%;
+  margin: 0.5rem 0;
 }
 
 .input__container input,
@@ -9,26 +11,32 @@
   padding: 1rem;
   border: 1px solid transparent;
   border-radius: 5px;
-  color: var(--theme-inversed);
-  background-color: #eeeeee;
+  color: var(--text-primary);
+  background-color: #242424;
+  outline: none;
 }
 
 .input__container label {
-  display: block;
+  position: absolute;
+  top: 1rem;
+  left: 1.5rem;
+  color: var(--text-secondary);
   font-weight: 500;
   margin-bottom: 0.5rem;
+  text-transform: capitalize;
+  transition: all 200ms ease-out;
 }
 
 .input__container.invalid label,
 .input__container.invalid p,
 .input__container.invalid div {
-  color: red;
+  color: var(--accent-primary);
 }
 
 .input__container.invalid input,
 .input__container.invalid textarea {
-  border: 1px solid red;
-  background-color: #ffd1d1;
+  border: 1px solid var(--accent-primary);
+  background-color: var(--accent-secondary);
 }
 
 .input__container div {
@@ -38,11 +46,16 @@
   transition: max-height 200ms ease-out;
 }
 
+.input__container p {
+  padding: 0.5rem;
+}
+
 .input__container.invalid > div,
 .input__container input:focus ~ div {
   max-height: 5rem;
 }
-
-.input__container p {
-  padding: 0.5rem;
+.input__container input:focus ~ label {
+  position: absolute;
+  display: block;
+  top: 0;
 }

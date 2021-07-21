@@ -5,7 +5,5 @@
   cursor: pointer;
   font-weight: 500;
   border-radius: 10px;
-  color: var(--theme-primary);
-  background-color: var(--theme-inversed);
-  box-shadow: 0 5px 10px var(--theme-inversed);
+  background-color: var(--bg-black);
 }

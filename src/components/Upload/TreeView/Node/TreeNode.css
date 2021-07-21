@@ -3,10 +3,6 @@
   margin-top: 0.5rem;
 }
 
-.tree-node svg {
-  fill: var(--theme-primary);
-}
-
 .tree-node__body {
   position: relative;
   display: flex;
@@ -16,9 +12,7 @@
   gap: 1rem;
   font-weight: 500;
   border-radius: 10px;
-  color: var(--theme-primary);
-  background-color: var(--theme-inversed);
-  box-shadow: 0 3px 5px var(--theme-inversed);
+  background-color: var(--bg-black);
 }
 
 .tree-node__header {
@@ -76,7 +70,7 @@
 }
 
 .tree-node__progress__bar--background {
-  background-color: var(--theme-secondary);
+  background-color: var(--bg-tertiary);
 }
 
 .tree-node__progress__bar--current {

@@ -16,16 +16,11 @@
   z-index: 200;
 }
 
-.loading-spinner__container.overlay > svg {
-  fill: var(--theme-primary);
-}
-
 .loading-spinner__container > svg {
   display: inline-block;
   width: 1em;
   height: 1rem;
   margin: 0;
-  fill: var(--theme-inversed);
   animation: loading-spinner 1.4s infinite ease-in-out both;
 }
 

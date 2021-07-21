@@ -4,9 +4,9 @@
   align-items: center;
   padding: 1rem 1.8rem;
   border-radius: 5px;
-  color: var(--theme-primary);
+  color: var(--text-inversed);
   font-weight: 500;
-  background-color: var(--theme-inversed);
+  background-color: var(--bg-inversed);
   overflow: hidden;
   transition: opacity 200ms ease-out;
 }
@@ -18,8 +18,8 @@
 .button:disabled,
 .button:hover:disabled,
 .button:active:disabled {
-  background-color: var(--theme-tertiary);
-  color: var(--theme-secondary);
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
   cursor: not-allowed;
   opacity: 1;
 }
