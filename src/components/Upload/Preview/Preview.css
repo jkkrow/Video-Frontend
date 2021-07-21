@@ -33,15 +33,12 @@
 }
 
 .preview__toggle svg {
+  position: absolute;
   fill: var(--theme-primary);
 }
 
 .preview__toggle:hover {
   transform: scale(1.5);
-}
-
-.preview__toggle svg {
-  position: absolute;
 }
 
 .preview__toggle .toggle-button {

@@ -1,6 +1,13 @@
 .video-list-page {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  gap: 6rem;
+}
+
+.video-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(24rem, 30rem));
+  grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
   justify-content: center;
   align-items: center;
   gap: 2rem;

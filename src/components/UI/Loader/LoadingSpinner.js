@@ -1,13 +1,12 @@
+import { ReactComponent as RectIcon } from "assets/icons/rect.svg";
 import "./LoadingSpinner.css";
 
-const LoadingSpinner = ({ on, size }) =>
+const LoadingSpinner = ({ on, overlay }) =>
   on ? (
-    <div className="loading-spinner__container">
-      <div
-        className={`loading-spinner${size === "small" ? " small" : ""}${
-          size === "big" ? " big" : ""
-        }`}
-      />
+    <div className={`loading-spinner__container${overlay ? " overlay" : ""}`}>
+      <RectIcon className="loading-spinner--1" />
+      <RectIcon className="loading-spinner--2" />
+      <RectIcon className="loading-spinner--3" />
     </div>
   ) : null;
 

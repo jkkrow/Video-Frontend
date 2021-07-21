@@ -16,7 +16,6 @@ import { ReactComponent as VolumeMuteIcon } from "assets/icons/volume-mute.svg";
 import { ReactComponent as FullscreenIcon } from "assets/icons/fullscreen.svg";
 import { ReactComponent as FullscreenExitIcon } from "assets/icons/fullscreen-exit.svg";
 import IconButton from "components/UI/IconButton";
-import LoadingSpinner from "components/UI/Loader/LoadingSpinner";
 import { VideoContext } from "context/video-context";
 import "./VideoPlayer.css";
 
@@ -515,9 +514,7 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
         onCanPlay={hideLoaderHandler}
         onError={errorHandler}
       />
-
       {/* Controls */}
-
       <div
         className={`vp-controls${!canPlayType ? " hidden" : ""}${
           !displayControls ? " hide" : ""
@@ -599,13 +596,14 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
           </button>
         </div>
       </div>
-
       {/* Loader */}
-
-      <LoadingSpinner on={displayLoader} />
+      {displayLoader && (
+        <div className="vp-loader__container">
+          <div className="vp-loader" />
+        </div>
+      )}
 
       {/* Selector */}
-
       <div
         className={`vp-selector__container${displaySelector ? " active" : ""}${
           displayControls ? " high" : ""
@@ -622,7 +620,6 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
           </button>
         ))}
       </div>
-
       {/* Navigation ( Edit Mode ) */}
       {editMode && (
         <div className="vp-navigation">

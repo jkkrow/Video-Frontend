@@ -35,3 +35,10 @@
 .auth-page span:hover {
   opacity: 0.7;
 }
+
+@media (max-width: 700px) {
+  .auth-page span {
+    display: block;
+    text-align: center;
+  }
+}
