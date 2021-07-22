@@ -35,7 +35,6 @@
 
 .input__container.invalid input,
 .input__container.invalid textarea {
-  border: 1px solid var(--accent-primary);
   background-color: var(--accent-secondary);
 }
 

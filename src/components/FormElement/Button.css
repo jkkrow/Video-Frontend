@@ -4,8 +4,8 @@
   align-items: center;
   padding: 1rem 1.8rem;
   border-radius: 5px;
-  color: var(--text-inversed);
   font-weight: 500;
+  color: var(--text-inversed);
   background-color: var(--bg-inversed);
   overflow: hidden;
   transition: opacity 200ms ease-out;
@@ -22,4 +22,14 @@
   color: var(--text-secondary);
   cursor: not-allowed;
   opacity: 1;
+}
+
+.button.danger {
+  background-color: red;
+}
+
+.button.danger:disabled,
+.button.danger:hover:disabled,
+.button.danger:active:disabled {
+  background-color: #830000;
 }

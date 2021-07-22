@@ -1,10 +1,10 @@
-import { ReactComponent as LogoIcon } from "assets/icons/logo.svg";
+// import { ReactComponent as LogoIcon } from "assets/icons/logo.svg";
 import "./Logo.css";
 
 const Logo = () => {
   return (
     <div className="logo">
-      <LogoIcon />
+      {/* <LogoIcon /> */}
     </div>
   );
 };
