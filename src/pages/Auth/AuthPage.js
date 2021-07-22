@@ -69,7 +69,7 @@ const AuthPage = () => {
         setFormData(
           {
             name: { value: "", isValid: false },
-            email: formState.inputs.email,
+            email: { value: "", isValid: false },
             password: { value: "", isValid: false },
             confirmPassword: { value: "", isValid: false },
           },
@@ -78,7 +78,7 @@ const AuthPage = () => {
       } else {
         setFormData(
           {
-            email: formState.inputs.email,
+            email: { value: "", isValid: false },
             password: { value: "", isValid: false },
           },
           false
@@ -96,61 +96,71 @@ const AuthPage = () => {
     <Card className="auth-page">
       <Response type={error ? "error" : "message"} content={error || message} />
       <form onSubmit={submitHandler}>
-        {!isLogin && (
-          <Input
-            id="name"
-            type="text"
-            formElement
-            autoComplete="name"
-            label="Name"
-            message="At least 4 characters"
-            validators={[VALIDATOR_MINLENGTH(4)]}
-            onForm={setFormInput}
-          />
-        )}
-        <Input
-          id="email"
-          type="text"
-          formElement
-          autoComplete="email"
-          label="Email"
-          validators={[VALIDATOR_EMAIL()]}
-          onForm={setFormInput}
-        />
         {isLogin && (
-          <Input
-            id="password"
-            type="password"
-            formElement
-            autoComplete="current-password"
-            label="Password"
-            validators={[VALIDATOR_REQUIRE()]}
-            onForm={setFormInput}
-          />
+          <>
+            <Input
+              id="email"
+              type="text"
+              formElement
+              autoComplete="email"
+              label="Email *"
+              validators={[VALIDATOR_EMAIL()]}
+              onForm={setFormInput}
+            />
+            <Input
+              id="password"
+              type="password"
+              formElement
+              autoComplete="current-password"
+              label="Password *"
+              validators={[VALIDATOR_REQUIRE()]}
+              onForm={setFormInput}
+            />
+            <Link to="/auth/send-recovery-email">Forgot Password</Link>
+          </>
         )}
-        {isLogin && <Link to="/auth/send-recovery-email">Forgot Password</Link>}
         {!isLogin && (
-          <Input
-            id="password"
-            type="password"
-            formElement
-            label="Password"
-            autoComplete="new-password"
-            message="At least 8 characters with lowercase, uppercase, number, and special character"
-            validators={[VALIDATOR_PASSWORD()]}
-            onForm={setFormInput}
-          />
-        )}
-        {!isLogin && (
-          <Input
-            id="confirmPassword"
-            type="password"
-            formElement
-            autoComplete="new-password"
-            label="Confirm Password"
-            validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}
-            onForm={setFormInput}
-          />
+          <>
+            <Input
+              id="name"
+              type="text"
+              formElement
+              autoFocus
+              autoComplete="name"
+              label="Name *"
+              message="At least 4 characters"
+              validators={[VALIDATOR_MINLENGTH(4)]}
+              onForm={setFormInput}
+            />
+            <Input
+              id="email"
+              type="text"
+              formElement
+              autoComplete="email"
+              label="Email *"
+              validators={[VALIDATOR_EMAIL()]}
+              onForm={setFormInput}
+            />
+            <Input
+              id="password"
+              type="password"
+              formElement
+              autoComplete="new-password"
+              label="Password *"
+              message="At least 8 characters with lowercase, uppercase, number, and special character"
+              validators={[VALIDATOR_PASSWORD()]}
+              onForm={setFormInput}
+            />
+            <Input
+              id="confirmPassword"
+              type="password"
+              formElement
+              autoComplete="new-password"
+              label="Confirm Password *"
+              validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}
+              onForm={setFormInput}
+            />
+          </>
         )}
         <Button loading={loading} disabled={!formState.isValid}>
           {isLogin ? "SIGN IN" : "SIGN UP"}

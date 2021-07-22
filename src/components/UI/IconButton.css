@@ -51,12 +51,12 @@
 }
 
 .icon-button.disabled > svg {
-  fill: var(--bg-secondary);
+  fill: #424242;
   cursor: not-allowed;
 }
 
 .icon-button.inversed > svg {
-  fill: var(--bg-inversed);
+  fill: var(--text-inversed);
 }
 
 .icon-button.disabled:hover > svg {

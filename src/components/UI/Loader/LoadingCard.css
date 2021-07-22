@@ -2,7 +2,7 @@
   width: 100%;
   height: max-content;
   border-radius: 5px;
-  background-color: #242424;
+  background-color: var(--bg-tertiary);
   overflow: hidden;
 }
 

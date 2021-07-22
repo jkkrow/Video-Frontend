@@ -1,29 +1,55 @@
 .input__container {
   position: relative;
   width: 100%;
-  margin: 0.5rem 0;
+  margin: 1rem 0;
 }
 
 .input__container input,
 .input__container textarea {
   display: block;
   width: 100%;
-  padding: 1rem;
-  border: 1px solid transparent;
-  border-radius: 5px;
-  color: var(--text-primary);
-  background-color: #242424;
+  padding: 1rem 0;
+  border: none;
   outline: none;
+  border-bottom: 2px solid var(--text-secondary);
+  color: var(--text-primary);
+  background-color: transparent;
+  transition: border-color 200ms ease-out;
+}
+
+.input__container input::placeholder,
+.input__container textarea::placeholder {
+  color: transparent;
+}
+
+.input__container input:focus,
+.input__container textarea:focus {
+  border-color: var(--text-primary);
+}
+
+.input__container input:placeholder-shown ~ label,
+.input__container textarea:placeholder-shown ~ label {
+  font-size: initial;
+  transform: translateY(0);
+}
+
+.input__container input:focus ~ label,
+.input__container textarea:focus ~ label {
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  transform: translateY(-2rem);
 }
 
 .input__container label {
   position: absolute;
   top: 1rem;
-  left: 1.5rem;
-  color: var(--text-secondary);
-  font-weight: 500;
+  width: max-content;
   margin-bottom: 0.5rem;
-  text-transform: capitalize;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: text;
+  font-size: 1.2rem;
+  transform: translateY(-2rem);
   transition: all 200ms ease-out;
 }
 
@@ -34,8 +60,11 @@
 }
 
 .input__container.invalid input,
-.input__container.invalid textarea {
-  background-color: var(--accent-secondary);
+.input__container.invalid textarea,
+.input__container.invalid input:focus ~ label,
+.input__container.invalid textarea:focus ~ label {
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
 }
 
 .input__container div {
@@ -53,8 +82,11 @@
 .input__container input:focus ~ div {
   max-height: 5rem;
 }
-.input__container input:focus ~ label {
-  position: absolute;
-  display: block;
-  top: 0;
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--text-primary);
+  transition: background-color 0s 9999s;
 }

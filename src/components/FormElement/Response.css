@@ -1,18 +1,16 @@
 .response {
   width: 100%;
   padding: 1rem;
-  border: 1px solid transparent;
+  margin: 1rem 0;
   border-radius: 5px;
 }
 
 .response.error {
-  color: #dc3545;
-  border-color: #dc3545;
-  background-color: #ffd1d1;
+  color: var(--accent-primary);
+  background-color: var(--accent-secondary);
 }
 
 .response.message {
-  color: #009b24;
-  border-color: #009b24;
-  background-color: #7eff9c;
+  color: #7eff9c;
+  background-color: #009b24;
 }

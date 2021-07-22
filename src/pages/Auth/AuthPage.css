@@ -21,6 +21,10 @@
   width: 100%;
 }
 
+.auth-page button {
+  margin: 0.25rem;
+}
+
 .auth-page a {
   margin: 0 1rem 0 auto;
   font-size: 1.2rem;

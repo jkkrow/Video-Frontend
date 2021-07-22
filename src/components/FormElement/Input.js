@@ -77,7 +77,7 @@ const Input = ({
       <textarea
         id={id}
         rows={rows || 5}
-        placeholder={placeholder}
+        placeholder={placeholder || label}
         autoFocus={autoFocus}
         autoComplete={autoComplete}
         value={inputState.value}
@@ -88,7 +88,7 @@ const Input = ({
       <input
         id={id}
         type={type}
-        placeholder={placeholder}
+        placeholder={placeholder || label}
         autoFocus={autoFocus}
         autoComplete={autoComplete}
         value={inputState.value}
@@ -103,8 +103,8 @@ const Input = ({
         inputState.isBlured && !inputState.isValid ? " invalid" : ""
       }`}
     >
-      {label && <label htmlFor={id}>{label}</label>}
       {element}
+      {label && <label htmlFor={id}>{label}</label>}
       {message && (
         <div>
           <p>{message}</p>

@@ -42,7 +42,7 @@ const SendRecoveryEmailPage = ({ history }) => {
               formElement
               autoFocus
               autoComplete="email"
-              placeholder="Email *"
+              label="Email *"
               validators={[VALIDATOR_EMAIL()]}
               onForm={setFormInput}
             />

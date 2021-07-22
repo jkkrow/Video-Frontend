@@ -67,8 +67,9 @@ const ResetPasswordPage = () => {
                   id="password"
                   type="password"
                   formElement
-                  placeholder="Password *"
+                  autoFocus
                   autoComplete="new-password"
+                  label="Password *"
                   message="At least 8 characters with lowercase, uppercase, number, and special character"
                   validators={[VALIDATOR_PASSWORD()]}
                   onForm={setFormInput}
@@ -78,7 +79,7 @@ const ResetPasswordPage = () => {
                   type="password"
                   formElement
                   autoComplete="new-password"
-                  placeholder="Confirm Password *"
+                  label="Confirm Password *"
                   validators={[
                     VALIDATOR_EQUAL(formState.inputs.password.value),
                   ]}

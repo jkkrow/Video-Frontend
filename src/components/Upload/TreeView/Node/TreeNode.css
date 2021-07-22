@@ -70,7 +70,7 @@
 }
 
 .tree-node__progress__bar--background {
-  background-color: var(--bg-tertiary);
+  background-color: #858585;
 }
 
 .tree-node__progress__bar--current {
