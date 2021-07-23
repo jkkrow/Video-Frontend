@@ -39,12 +39,16 @@ a {
   text-decoration: none;
   color: var(--text-primary);
   font-weight: 500;
-  transition: opacity 200ms ease-out;
   outline: none;
+  transition: opacity 200ms ease-out;
 }
 
 a:hover {
   opacity: 0.7;
+}
+
+li {
+  list-style: none;
 }
 
 button {

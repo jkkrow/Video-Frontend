@@ -1,4 +1,4 @@
-import { ReactComponent as SearchButton } from "assets/icons/search.svg";
+import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
 import "./Search.css";
 
 const Search = () => {
@@ -11,7 +11,7 @@ const Search = () => {
   return (
     <form className="search__container" onSubmit={searchHandler}>
       <label>
-        <SearchButton className="search__button" type="search" />
+        <SearchIcon className="search__button" type="search" />
         <input
           className="search__input"
           type="text"

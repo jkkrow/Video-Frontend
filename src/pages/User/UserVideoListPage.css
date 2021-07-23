@@ -1,0 +1,47 @@
+.user-video-list-page {
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+  margin: auto;
+}
+
+.user-video-list__table {
+  border-collapse: separate;
+  border-spacing: 1rem;
+}
+
+.user-video-list__table th,
+.user-video-list__table td {
+  text-align: start;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+}
+
+.user-video-list__table th {
+  background-color: var(--bg-tertiary);
+}
+
+.user-video-list__table td {
+  background-color: var(--bg-secondary);
+}
+
+.user-video-list__table td > button {
+  margin: auto;
+}
+
+.user-video-list__header {
+  margin: 1rem;
+}
+
+.user-video-list__header > button {
+  display: flex;
+  gap: 1rem;
+  margin-left: auto;
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+}
+
+.user-video-list__header svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}

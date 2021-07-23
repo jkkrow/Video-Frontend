@@ -9,9 +9,11 @@ const Modal = ({
   className,
   style,
   header,
-  children,
+  content,
   footer,
-  onSubmit = (e) => e.prevetDefault(),
+  loading,
+  disabled,
+  onConfirm,
   onCancel,
 }) => {
   return createPortal(
@@ -23,22 +25,31 @@ const Modal = ({
         mountOnEnter
         unmountOnExit
       >
-        <div
+        <form
           className={`modal__container${className ? " " + className : ""}`}
           style={style}
+          onSubmit={(e) => e.preventDefault()}
         >
-          <header className="modal__header">{header}</header>
-          <form onSubmit={onSubmit}>
-            <div className="modal__content">{children}</div>
-            <footer className="modal__footer">
-              <Button>
-                onClick={onSubmit}
+          <h3 className="modal__header">{header || "test"}</h3>
+          <div className="modal__content">{content || "test"}</div>
+          <div className="modal__footer">
+            {footer && (
+              <Button onClick={onConfirm} loading={loading} disabled={disabled}>
                 {footer}
               </Button>
-              <Button onClick={onCancel}>Cancel</Button>
-            </footer>
-          </form>
-        </div>
+            )}
+            <Button onClick={onCancel}>CANCEL</Button>
+          </div>
+        </form>
+      </CSSTransition>
+      <CSSTransition
+        in={on}
+        classNames="backdrop"
+        timeout={200}
+        mountOnEnter
+        unmountOnExit
+      >
+        <div className="modal__backdrop" onClick={onCancel} />
       </CSSTransition>
     </>,
     document.getElementById("modal-hook")
