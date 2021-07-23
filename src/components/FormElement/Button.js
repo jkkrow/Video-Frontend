@@ -12,7 +12,9 @@ const Button = ({
 }) => {
   return (
     <button
-      className={`button ${className}${danger ? " danger" : ""}`}
+      className={`button${className ? " " + className : ""}${
+        danger ? " danger" : ""
+      }`}
       type={type}
       onClick={onClick}
       disabled={disabled || loading}

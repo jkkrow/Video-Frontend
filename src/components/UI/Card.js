@@ -4,7 +4,11 @@ import "./Card.css";
 
 const Card = forwardRef(({ children, className, style }, ref) => {
   return (
-    <div className={`card ${className}`} style={style} ref={ref}>
+    <div
+      className={`card ${className ? " " + className : ""}`}
+      style={style}
+      ref={ref}
+    >
       {children}
     </div>
   );

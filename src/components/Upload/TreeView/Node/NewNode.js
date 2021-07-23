@@ -5,7 +5,7 @@ import "./NewNode.css";
 
 const NewNode = ({ onFile, onInput, onRemove }) => {
   const [optionTitle, setOptionTitle] = useState("");
-  
+
   const inputRef = useRef();
 
   useEffect(() => {
@@ -36,12 +36,13 @@ const NewNode = ({ onFile, onInput, onRemove }) => {
           onChange={inputChangeHandler}
         />
         <IconButton
-          className={`upload${optionTitle.length === 0 ? " disabled" : ""}`}
+          type="upload"
+          className={optionTitle.length === 0 ? " disabled" : ""}
           onClick={onFile}
           disabled={!optionTitle.length}
         />
       </form>
-      <IconButton className="remove" onClick={removeHandler} />
+      <IconButton type="remove" onClick={removeHandler} />
     </div>
   );
 };

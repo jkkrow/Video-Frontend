@@ -7,10 +7,17 @@ import { ReactComponent as Remove } from "assets/icons/remove.svg";
 import { ReactComponent as Search } from "assets/icons/search.svg";
 import "./IconButton.css";
 
-const IconButton = ({ className, onClick, disabled, style, dataTooltip }) => {
+const IconButton = ({
+  className,
+  type,
+  onClick,
+  disabled,
+  style,
+  dataTooltip,
+}) => {
   let Component;
 
-  switch (className.split(" ")[0]) {
+  switch (type) {
     case "left-angle":
       Component = <LeftAngle />;
       break;
@@ -39,7 +46,9 @@ const IconButton = ({ className, onClick, disabled, style, dataTooltip }) => {
 
   return (
     <button
-      className={`icon-button ${className}${dataTooltip ? " tooltip" : ""}`}
+      className={`icon-button${type ? " " + type : ""}${
+        className ? " " + className : ""
+      }${dataTooltip ? " tooltip" : ""}`}
       onClick={onClick}
       disabled={disabled}
       style={style}

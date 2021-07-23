@@ -23,7 +23,10 @@ const Modal = ({
         mountOnEnter
         unmountOnExit
       >
-        <div className={`modal__container ${className}`} style={style}>
+        <div
+          className={`modal__container${className ? " " + className : ""}`}
+          style={style}
+        >
           <header className="modal__header">{header}</header>
           <form onSubmit={onSubmit}>
             <div className="modal__content">{children}</div>

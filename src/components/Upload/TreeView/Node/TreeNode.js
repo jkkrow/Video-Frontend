@@ -226,7 +226,8 @@ const TreeNode = ({ currentNode }) => {
 
           {children.length > 0 && (
             <IconButton
-              className={`right-angle${openChildren ? " rotated" : ""}`}
+              type="right-angle"
+              className={openChildren ? " rotated" : ""}
               onClick={displayChildrenHandler}
             />
           )}
@@ -237,7 +238,7 @@ const TreeNode = ({ currentNode }) => {
 
           {children.length < 4 && (
             <IconButton
-              className="plus"
+              type="plus"
               onClick={addChildHandler}
               dataTooltip="ADD VIDEO"
             />
@@ -268,7 +269,7 @@ const TreeNode = ({ currentNode }) => {
                 <div>{uploadProgress}</div>
 
                 <div className="tree-node__progress--cancel">
-                  <IconButton className="remove" onClick={cancelFileUpload} />
+                  <IconButton type="remove" onClick={cancelFileUpload} />
                 </div>
               </>
             ) : (
