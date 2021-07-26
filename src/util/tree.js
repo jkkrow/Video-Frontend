@@ -1,4 +1,4 @@
-export const findNode = (tree, node) => {
+export const findNode = (tree, id) => {
   let currentNode = tree.root;
   let queue = [];
 
@@ -7,12 +7,7 @@ export const findNode = (tree, node) => {
   while (queue.length > 0) {
     currentNode = queue.shift();
 
-    if (
-      currentNode.info.name === node.file.name &&
-      currentNode.info.layer === node.layer &&
-      currentNode.info.optionTitle === node.optionTitle
-    )
-      return currentNode;
+    if (currentNode.id === id) return currentNode;
 
     if (currentNode.children.length)
       currentNode.children.forEach((child) => queue.push(child));

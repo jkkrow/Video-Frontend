@@ -22,7 +22,7 @@ const App = () => {
       <Switch>
         <Route exact path="/" component={VideoListPage} />
         <Route exact path="/my-videos" component={UserVideoListPage} />
-        <Route exact path="/upload" component={UploadVideoPage} />
+        <Route exact path="/new-video" component={UploadVideoPage} />
         <Route
           exact
           path="/auth/verify-email/:token"
@@ -38,7 +38,7 @@ const App = () => {
         <Route exact path="/" component={VideoListPage} />
         {/* Only available in Development */}
         <Route exact path="/my-videos" component={UserVideoListPage} />
-        <Route exact path="/upload" component={UploadVideoPage} />
+        <Route exact path="/new-video" component={UploadVideoPage} />
         {/* /> */}
         <Route exact path="/auth" component={AuthPage} />
         <Route

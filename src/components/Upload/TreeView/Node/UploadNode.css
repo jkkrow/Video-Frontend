@@ -1,0 +1,33 @@
+.upload-node {
+  width: 98%;
+  margin-top: 0.5rem;
+}
+
+.upload-node__body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  font-weight: 500;
+  border-radius: 10px;
+  background-color: var(--bg-tertiary);
+}
+
+.upload-node__body > svg {
+  position: absolute;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.upload-node__children {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  top: 100%;
+  width: 100%;
+}
+
+.upload-node__children.hide {
+  display: none;
+}

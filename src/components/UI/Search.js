@@ -11,7 +11,7 @@ const Search = () => {
   return (
     <form className="search__container" onSubmit={searchHandler}>
       <label>
-        <SearchIcon className="search__button" type="search" />
+        <SearchIcon />
         <input
           className="search__input"
           type="text"

@@ -1,11 +1,11 @@
-.file-tree {
+.upload-tree {
   width: 90%;
   display: flex;
   justify-content: center;
 }
 
 @media (min-width: 1000px) {
-  .file-tree {
+  .upload-tree {
     width: 50%;
   }
 }

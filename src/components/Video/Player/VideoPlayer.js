@@ -15,7 +15,9 @@ import { ReactComponent as VolumeLowIcon } from "assets/icons/volume-low.svg";
 import { ReactComponent as VolumeMuteIcon } from "assets/icons/volume-mute.svg";
 import { ReactComponent as FullscreenIcon } from "assets/icons/fullscreen.svg";
 import { ReactComponent as FullscreenExitIcon } from "assets/icons/fullscreen-exit.svg";
-import IconButton from "components/UI/IconButton";
+import { ReactComponent as DoubleAngleLeftIcon } from "assets/icons/double-angle-left.svg";
+import { ReactComponent as AngleLeftIcon } from "assets/icons/angle-left.svg";
+import { ReactComponent as AngleRightIcon } from "assets/icons/angle-right.svg";
 import { VideoContext } from "context/video-context";
 import "./VideoPlayer.css";
 
@@ -624,21 +626,12 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
       {editMode && (
         <div className="vp-navigation">
           {activeVideo !== tree.root && (
-            <IconButton
-              type="double-left-angle"
-              onClick={restartVideoTree}
-            />
+            <DoubleAngleLeftIcon onClick={restartVideoTree} />
           )}
           {activeVideo !== tree.root && (
-            <IconButton
-              type="left-angle"
-              onClick={navigateToPreviousVideo}
-            />
+            <AngleLeftIcon onClick={navigateToPreviousVideo} />
           )}
-          <IconButton
-            type="right-angle"
-            onClick={navigateToSelectorTimeline}
-          />
+          <AngleRightIcon onClick={navigateToSelectorTimeline} />
         </div>
       )}
     </div>

@@ -1,11 +1,13 @@
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import Modal from "components/UI/Modal";
 // import LoadingSpinner from "components/UI/Loader/LoadingSpinner";
-import IconButton from "components/UI/IconButton";
+import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
 import Input from "components/FormElement/Input";
 import Button from "components/FormElement/Button";
+import { initiateUpload } from "store/actions/upload";
 import { useForm } from "hooks/form-hook";
 import { VALIDATOR_EQUAL } from "util/validators";
 import "./UserVideoListPage.css";
@@ -25,23 +27,11 @@ const ITEMS = [
   { _id: Math.random(), title: "test_video_7", views: 6564 },
 
   { _id: Math.random(), title: "test_video_8", views: 99904351 },
-  { _id: Math.random(), title: "test_video_9", views: 456456 },
-
-  { _id: Math.random(), title: "test_video_10", views: 24756785341 },
-
-  { _id: Math.random(), title: "test_video_11", views: 654476573 },
-
-  { _id: Math.random(), title: "test_video_12", views: 89798 },
-
-  { _id: Math.random(), title: "test_video_13", views: 225235 },
-
-  { _id: Math.random(), title: "test_video_14", views: 324 },
-  { _id: Math.random(), title: "test_video_15", views: 34521 },
-
-  { _id: Math.random(), title: "test_video_16", views: 53453 },
 ];
 
 const UserVideoListPage = ({ history }) => {
+  const dispatch = useDispatch();
+  const { uploadTree } = useSelector((state) => state.upload);
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState({});
   const { formState, setFormInput } = useForm({
@@ -50,8 +40,11 @@ const UserVideoListPage = ({ history }) => {
 
   const addNewVideoHandler = () => {
     // Create new Upload Tree in redux
+    if (!uploadTree.root) {
+      dispatch(initiateUpload());
+    }
 
-    history.push("/upload");
+    history.push("/new-video");
   };
 
   const openWarningHandler = (item) => {
@@ -117,10 +110,7 @@ const UserVideoListPage = ({ history }) => {
                 <td>{video.title}</td>
                 <td>{video.views}</td>
                 <td>
-                  <IconButton
-                    type="remove"
-                    onClick={() => openWarningHandler(video)}
-                  />
+                  <RemoveIcon onClick={() => openWarningHandler(video)} />
                 </td>
               </tr>
             ))}

@@ -10,24 +10,24 @@ const uploadSlice = createSlice({
     previewTree: {},
   },
   reducers: {
-    initiateUpload: (state, { payload }) => {
+    initiateUpload: (state) => {
       state.uploadTree = {
         root: {
           id: uuidv1(),
-          info: payload,
+          info: null,
           children: [],
         },
       };
     },
 
     appendChild: (state, { payload }) => {
-      const targetNode = findNode(state.uploadTree, payload.location);
+      const targetNode = findNode(state.uploadTree, payload.nodeId);
 
       if (!targetNode) return;
 
       const newNode = {
         id: uuidv1(),
-        info: payload.nodeInfo,
+        info: null,
         children: [],
       };
 
