@@ -5,9 +5,12 @@ import "./DragDrop.css";
 
 const DragDrop = ({ type, onFile }) => {
   const [isDragging, setIsDragging] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const fileChangeHandler = useCallback(
     (e) => {
+      setIsError(false);
+
       let selectedFile;
 
       if (e.type === "drop") {
@@ -19,7 +22,7 @@ const DragDrop = ({ type, onFile }) => {
       console.log(selectedFile.type);
 
       if (type && selectedFile.type.split("/")[0] !== type) {
-        return console.log("wrong file");
+        return setIsError(true);
       }
 
       onFile(selectedFile);
@@ -61,7 +64,9 @@ const DragDrop = ({ type, onFile }) => {
 
   return (
     <div
-      className={`drag-drop${isDragging ? " dragging" : ""}`}
+      className={`drag-drop${isDragging ? " dragging" : ""}${
+        isError ? " invalid" : ""
+      }`}
       onDragEnter={dragInHandler}
       onDragLeave={dragOutHandler}
       onDragOver={dragOverHandler}

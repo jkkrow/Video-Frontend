@@ -24,12 +24,12 @@
   opacity: 1;
 }
 
-.button.danger {
+.button.invalid {
   background-color: red;
 }
 
-.button.danger:disabled,
-.button.danger:hover:disabled,
-.button.danger:active:disabled {
+.button.invalid:disabled,
+.button.invalid:hover:disabled,
+.button.invalid:active:disabled {
   background-color: #830000;
 }

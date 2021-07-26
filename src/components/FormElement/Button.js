@@ -7,13 +7,13 @@ const Button = ({
   onClick,
   loading,
   disabled,
-  danger,
+  invalid,
   children,
 }) => {
   return (
     <button
       className={`button${className ? " " + className : ""}${
-        danger ? " danger" : ""
+        invalid ? " invalid" : ""
       }`}
       type={type}
       onClick={onClick}

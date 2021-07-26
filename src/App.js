@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
@@ -14,6 +15,22 @@ import "./App.css";
 
 const App = () => {
   const { token } = useSelector((state) => state.auth);
+  const { uploadTree } = useSelector((state) => state.upload);
+
+  useEffect(() => {
+    if (!uploadTree.root) return;
+
+    const beforeunloadHandler = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", beforeunloadHandler);
+
+    return () => {
+      window.removeEventListener("beforeunload", beforeunloadHandler);
+    };
+  }, [uploadTree]);
 
   let routes;
 

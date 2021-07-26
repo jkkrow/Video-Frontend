@@ -16,6 +16,15 @@
   fill: none;
 }
 
+.drag-drop.invalid {
+  color: red;
+  background-color: #830000;
+}
+
+.drag-drop.invalid svg {
+  stroke: red;
+}
+
 .drag-drop.dragging {
   background-color: var(--bg-secondary);
 }
