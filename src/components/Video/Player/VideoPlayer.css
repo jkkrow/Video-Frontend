@@ -20,7 +20,7 @@
   height: 4rem;
   padding: 0 1rem;
   gap: 1rem;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-image: linear-gradient(transparent, #000000);
   transition: all 200ms ease-out;
   z-index: 10;
 }
@@ -32,10 +32,6 @@
 
 .vp-controls * {
   -webkit-backface-visibility: hidden;
-}
-
-.vp-controls svg {
-  fill: #ffffff;
 }
 
 .vp-controls__btn {
@@ -293,6 +289,7 @@
   transform: translate(-50%, 0);
 }
 
-.vp-navigation svg {
-  fill: #ffffff;
+.vp-navigation > svg {
+  width: 1.5rem;
+  height: 1.5rem;
 }

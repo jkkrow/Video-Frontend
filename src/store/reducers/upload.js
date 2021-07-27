@@ -11,9 +11,21 @@ const uploadSlice = createSlice({
   },
   reducers: {
     initiateUpload: (state) => {
+      const newId = uuidv1();
+
       state.uploadTree = {
         root: {
-          id: uuidv1(),
+          id: newId,
+          layer: 0,
+          info: null,
+          children: [],
+        },
+      };
+
+      state.previewTree = {
+        root: {
+          id: newId,
+          layer: 0,
           info: null,
           children: [],
         },
@@ -21,23 +33,35 @@ const uploadSlice = createSlice({
     },
 
     appendChild: (state, { payload }) => {
-      const targetNode = findNode(state.uploadTree, payload.nodeId);
-
-      if (!targetNode) return;
+      const uploadNode = findNode(state.uploadTree, payload.nodeId);
+      const previewNode = findNode(state.previewTree, payload.nodeId);
 
       const newNode = {
         id: uuidv1(),
+        layer: uploadNode.layer + 1,
         info: null,
         children: [],
       };
 
-      targetNode.children.push(newNode);
+      uploadNode.children.push(newNode);
+      previewNode.children.push(newNode);
+    },
+
+    attachVideo: (state, { payload }) => {
+      const uploadNode = findNode(state.uploadTree, payload.nodeId);
+      const previewNode = findNode(state.previewTree, payload.nodeId);
+
+      uploadNode.info = payload.info;
+      previewNode.info = {
+        ...payload.info,
+        url: payload.previewUrl,
+      };
     },
 
     updateNode: (state, { payload }) => {
-      const targetNode = findNode(state.uploadTree, payload.nodeId);
+      const uploadNode = findNode(state.uploadTree, payload.nodeId);
 
-      if (!targetNode) return;
+      if (!uploadNode) return;
     },
   },
 });

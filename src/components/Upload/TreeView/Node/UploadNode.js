@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import DragDrop from "components/FormElement/DragDrop";
 import { ReactComponent as AngleRightIcon } from "assets/icons/angle-right.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
-import { appendChild } from "store/actions/upload";
+import { appendChild, attachVideo } from "store/actions/upload";
 import "./UploadNode.css";
 
 const UploadNode = ({ currentNode }) => {
@@ -19,15 +19,17 @@ const UploadNode = ({ currentNode }) => {
     setShowChildren((prev) => !prev);
   };
 
-  const handler = (e) => console.log(e);
+  const onFileHandler = (file) => {
+    dispatch(attachVideo(file, currentNode.id));
+  };
 
   return (
     <div className="upload-node">
       <div className="upload-node__body">
         {currentNode.info ? (
-          <div />
+          <div className="upload-node__title">{currentNode.info.name}</div>
         ) : (
-          <DragDrop type="video" onFile={handler} />
+          <DragDrop type="video" onFile={onFileHandler} />
         )}
         {currentNode.children.length > 0 && (
           <AngleRightIcon

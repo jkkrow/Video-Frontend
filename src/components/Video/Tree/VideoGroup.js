@@ -12,21 +12,22 @@ const VideoGroup = ({ currentVideo, autoPlay, previousVideo }) => {
 
   return (
     <>
-      {(activeVideo.info.src === currentVideo?.info.src ||
-        activeVideo.info.src === previousVideo?.info.src) && (
+      {(activeVideo.info.url === currentVideo?.info.url ||
+        activeVideo.info.url === previousVideo?.info.url) && (
         <VideoPlayer
-          src={currentVideo?.info.src}
+          src={currentVideo?.info.url}
           next={currentVideo.children}
           autoPlay={autoPlay}
-          active={activeVideo.info.src === currentVideo?.info.src}
+          active={activeVideo.info.url === currentVideo?.info.url}
           previousVideo={previousVideo}
         />
       )}
 
       {currentVideo.children.length > 0 &&
+        currentVideo.children.info &&
         currentVideo.children.map((video) => (
           <VideoGroup
-            key={`${video.info.layer}:${video.info.src}-${video.info.optionTitle}`}
+            key={currentVideo.id}
             currentVideo={video}
             autoPlay={false}
             previousVideo={currentVideo}

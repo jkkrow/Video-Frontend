@@ -19,8 +19,6 @@ const DragDrop = ({ type, onFile }) => {
         selectedFile = e.target.files[0];
       }
 
-      console.log(selectedFile.type);
-
       if (type && selectedFile.type.split("/")[0] !== type) {
         return setIsError(true);
       }
@@ -73,7 +71,12 @@ const DragDrop = ({ type, onFile }) => {
       onDrop={dropHandler}
     >
       <label>
-        <input type="file" hidden onChange={fileChangeHandler} />
+        <input
+          type="file"
+          hidden
+          onChange={fileChangeHandler}
+          accept={`${type}/*`}
+        />
         <UploadIcon />
       </label>
       <p>Drag and Drop Video File</p>

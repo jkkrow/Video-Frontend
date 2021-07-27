@@ -614,11 +614,11 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
       >
         {next.map((video) => (
           <button
-            key={video.info.optionTitle}
+            key={video.id}
             className="vp-selector"
             onClick={() => updateActiveVideo(video)}
           >
-            {video.info.optionTitle}
+            {video.info?.label}
           </button>
         ))}
       </div>

@@ -20,6 +20,13 @@
   height: 1.5rem;
 }
 
+.upload-node__title {
+  display: flex;
+  align-items: center;
+  height: 5.5rem;
+  padding-left: 5rem;
+}
+
 .upload-node__children {
   display: flex;
   flex-direction: column;

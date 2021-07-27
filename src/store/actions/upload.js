@@ -16,6 +16,22 @@ export const appendChild = (nodeId) => {
   };
 };
 
+export const attachVideo = (file, nodeId) => {
+  return (dispatch) => {
+    console.log(file);
+    dispatch(
+      uploadActions.attachVideo({
+        info: {
+          name: file.name,
+          label: "",
+        },
+        previewUrl: URL.createObjectURL(file),
+        nodeId,
+      })
+    );
+  };
+};
+
 export const updateNode = () => {
   return (dispatch) => {};
 };
