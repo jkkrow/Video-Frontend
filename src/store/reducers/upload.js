@@ -34,7 +34,11 @@ const uploadSlice = createSlice({
       targetNode.children.push(newNode);
     },
 
-    updateNode: () => {},
+    updateNode: (state, { payload }) => {
+      const targetNode = findNode(state.uploadTree, payload.nodeId);
+
+      if (!targetNode) return;
+    },
   },
 });
 

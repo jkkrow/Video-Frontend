@@ -22,3 +22,9 @@
   padding: 1rem;
   margin: 0 0 0 1rem;
 }
+
+@media (max-width: 600px) {
+  .search__input:focus {
+    width: 20rem;
+  }
+}

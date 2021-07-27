@@ -12,3 +12,9 @@
   align-items: center;
   gap: 2rem;
 }
+
+@media (max-width: 700px) {
+  .video-carousel {
+    display: none;
+  }
+}

@@ -1,5 +1,3 @@
-import { memo } from "react";
-
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 
@@ -31,4 +29,4 @@ const Header = () => {
   );
 };
 
-export default memo(Header);
+export default Header;
