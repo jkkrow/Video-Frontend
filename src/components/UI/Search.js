@@ -10,13 +10,14 @@ const Search = () => {
 
   return (
     <form className="search__container" onSubmit={searchHandler}>
-      <label>
+      <input
+        className="search__input"
+        id="search-input"
+        type="text"
+        placeholder="Search Videos"
+      />
+      <label htmlFor="search-input">
         <SearchIcon />
-        <input
-          className="search__input"
-          type="text"
-          placeholder="Search Videos"
-        />
       </label>
     </form>
   );

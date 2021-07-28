@@ -24,15 +24,17 @@ const VideoGroup = ({ currentVideo, autoPlay, previousVideo }) => {
       )}
 
       {currentVideo.children.length > 0 &&
-        currentVideo.children.info &&
-        currentVideo.children.map((video) => (
-          <VideoGroup
-            key={currentVideo.id}
-            currentVideo={video}
-            autoPlay={false}
-            previousVideo={currentVideo}
-          />
-        ))}
+        currentVideo.children.map(
+          (video) =>
+            video.info && (
+              <VideoGroup
+                key={video.id}
+                currentVideo={video}
+                autoPlay={false}
+                previousVideo={currentVideo}
+              />
+            )
+        )}
     </>
   );
 };

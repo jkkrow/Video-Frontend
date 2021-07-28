@@ -612,15 +612,18 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
         }`}
         ref={videoSelectorRef}
       >
-        {next.map((video) => (
-          <button
-            key={video.id}
-            className="vp-selector"
-            onClick={() => updateActiveVideo(video)}
-          >
-            {video.info?.label}
-          </button>
-        ))}
+        {next.map(
+          (video) =>
+            video.info && (
+              <button
+                key={video.id}
+                className="vp-selector"
+                onClick={() => updateActiveVideo(video)}
+              >
+                {video.info?.label}
+              </button>
+            )
+        )}
       </div>
       {/* Navigation ( Edit Mode ) */}
       {editMode && (

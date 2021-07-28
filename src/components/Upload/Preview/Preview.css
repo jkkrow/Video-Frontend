@@ -41,7 +41,7 @@
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
-  background-color: var(--bg-black);
+  background-color: #000000;
   transition: transform 800ms ease-out;
   z-index: 500;
 }
