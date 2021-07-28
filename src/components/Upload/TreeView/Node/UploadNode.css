@@ -25,6 +25,11 @@
   align-items: center;
   height: 5.5rem;
   padding-left: 5rem;
+  margin-right: 5rem;
+  text-overflow: ellipsis;
+  word-break: normal;
+  overflow: hidden;
+  cursor: pointer;
 }
 
 .upload-node__children {

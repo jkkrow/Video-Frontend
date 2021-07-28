@@ -2,9 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 
 import authReducer from "./reducers/auth";
 import uploadReducer from "./reducers/upload";
+import videoReducer from "./reducers/video";
 
 const store = configureStore({
-  reducer: { auth: authReducer, upload: uploadReducer },
+  reducer: {
+    auth: authReducer,
+    upload: uploadReducer,
+    video: videoReducer,
+  },
 });
 
 export default store;

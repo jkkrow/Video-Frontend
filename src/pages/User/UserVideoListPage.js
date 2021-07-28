@@ -87,6 +87,7 @@ const UserVideoListPage = ({ history }) => {
         onConfirm={deleteHandler}
         onCancel={closeWarningHandler}
       />
+
       <div className="user-video-list__header">
         <Button onClick={addNewVideoHandler}>
           <PlusIcon />
@@ -94,28 +95,30 @@ const UserVideoListPage = ({ history }) => {
         </Button>
       </div>
       {ITEMS.length > 0 && (
-        <table className="user-video-list__table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Views</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {ITEMS.map((video) => (
-              <tr key={video._id}>
-                <td>{video._id}</td>
-                <td>{video.title}</td>
-                <td>{video.views}</td>
-                <td>
-                  <RemoveIcon onClick={() => openWarningHandler(video)} />
-                </td>
+        <div className="user-video-list__table__container">
+          <table className="user-video-list__table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Views</th>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {ITEMS.map((video) => (
+                <tr key={video._id}>
+                  <td>{video._id}</td>
+                  <td>{video.title}</td>
+                  <td>{video.views}</td>
+                  <td>
+                    <RemoveIcon onClick={() => openWarningHandler(video)} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

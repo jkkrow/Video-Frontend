@@ -4,8 +4,9 @@ import {
   useEffect,
   useLayoutEffect,
   useRef,
-  useContext,
 } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
 
 import { ReactComponent as PlayIcon } from "assets/icons/play.svg";
 import { ReactComponent as PauseIcon } from "assets/icons/pause.svg";
@@ -18,7 +19,7 @@ import { ReactComponent as FullscreenExitIcon } from "assets/icons/fullscreen-ex
 import { ReactComponent as DoubleAngleLeftIcon } from "assets/icons/double-angle-left.svg";
 import { ReactComponent as AngleLeftIcon } from "assets/icons/angle-left.svg";
 import { ReactComponent as AngleRightIcon } from "assets/icons/angle-right.svg";
-import { VideoContext } from "context/video-context";
+import { updateActiveVideo, updateVideoVolume } from "store/actions/video";
 import "./VideoPlayer.css";
 
 const shaka = require("shaka-player/dist/shaka-player.ui.js");
@@ -35,16 +36,19 @@ const formatTime = (timeInSeconds) => {
   }
 };
 
-const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
-  const {
-    tree,
-    activeVideo,
-    videoTreeRef,
-    videoVolume,
-    editMode,
-    updateActiveVideo,
-    updateVideoVolume,
-  } = useContext(VideoContext);
+const VideoPlayer = ({
+  src,
+  next,
+  autoPlay,
+  editMode,
+  active,
+  previousVideo,
+}) => {
+  const { videoTree, activeVideo, videoVolume } = useSelector(
+    (state) => state.video
+  );
+
+  const dispatch = useDispatch();
 
   // vp-container
   const [displayCursor, setDisplayCursor] = useState("default");
@@ -207,14 +211,14 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
     }
 
     if (active) {
-      updateVideoVolume(video.volume);
+      dispatch(updateVideoVolume(video.volume));
 
       clearTimeout(volumeTimer.current);
       volumeTimer.current = setTimeout(() => {
         localStorage.setItem("video-volume", video.volume);
       }, 500);
     }
-  }, [active, updateVideoVolume]);
+  }, [dispatch, active]);
 
   const toggleMuteHandler = useCallback(() => {
     if (videoRef.current.volume !== 0) {
@@ -311,9 +315,9 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
-      videoTreeRef.current.requestFullscreen();
+      document.querySelector(".video-tree").current.requestFullscreen();
     }
-  }, [videoTreeRef]);
+  }, []);
 
   const fullscreenChangeHandler = useCallback(() => {
     if (document.fullscreenElement) {
@@ -414,12 +418,12 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
    */
 
   const restartVideoTree = useCallback(() => {
-    updateActiveVideo(tree.root);
-  }, [tree.root, updateActiveVideo]);
+    dispatch(updateActiveVideo(videoTree.root));
+  }, [dispatch, videoTree.root]);
 
   const navigateToPreviousVideo = useCallback(() => {
-    updateActiveVideo(previousVideo);
-  }, [updateActiveVideo, previousVideo]);
+    dispatch(updateActiveVideo(previousVideo));
+  }, [dispatch, previousVideo]);
 
   const navigateToSelectorTimeline = useCallback(() => {
     videoRef.current.currentTime = videoRef.current.duration * 0.9;
@@ -618,9 +622,9 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
               <button
                 key={video.id}
                 className="vp-selector"
-                onClick={() => updateActiveVideo(video)}
+                onClick={() => dispatch(updateActiveVideo(video))}
               >
-                {video.info?.label}
+                {video.info.label}
               </button>
             )
         )}
@@ -628,10 +632,10 @@ const VideoPlayer = ({ src, next, autoPlay, active, previousVideo }) => {
       {/* Navigation ( Edit Mode ) */}
       {editMode && (
         <div className="vp-navigation">
-          {activeVideo !== tree.root && (
+          {activeVideo !== videoTree.root && (
             <DoubleAngleLeftIcon onClick={restartVideoTree} />
           )}
-          {activeVideo !== tree.root && (
+          {activeVideo !== videoTree.root && (
             <AngleLeftIcon onClick={navigateToPreviousVideo} />
           )}
           <AngleRightIcon onClick={navigateToSelectorTimeline} />

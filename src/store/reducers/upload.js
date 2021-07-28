@@ -1,6 +1,6 @@
+import { createSlice } from "@reduxjs/toolkit";
 import { v1 as uuidv1 } from "uuid";
 
-import { createSlice } from "@reduxjs/toolkit";
 import { findNode } from "util/tree";
 
 const uploadSlice = createSlice({
