@@ -257,7 +257,7 @@
 }
 
 .vp-selector:empty {
-  display: none;
+  /* display: none; */
 }
 
 .vp-navigation {
@@ -296,4 +296,14 @@
   box-shadow: 2px 2px 0 0 var(--accent-primary);
   transform-origin: 2rem;
   animation: loading-spinner 1s linear infinite;
+}
+
+@keyframes loading-spinner {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

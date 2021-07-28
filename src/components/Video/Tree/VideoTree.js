@@ -12,6 +12,11 @@ const VideoTree = ({ tree, autoPlay = true, editMode = false }) => {
   useEffect(() => {
     dispatch(setVideoTree(tree));
     dispatch(updateActiveVideo(tree.root));
+
+    return () => {
+      dispatch(setVideoTree({}));
+      dispatch(updateActiveVideo(null));
+    };
   }, [dispatch, tree]);
 
   return (

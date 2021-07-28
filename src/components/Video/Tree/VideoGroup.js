@@ -3,22 +3,19 @@ import { useSelector } from "react-redux";
 import VideoPlayer from "../Player/VideoPlayer";
 import "./VideoGroup.css";
 
-// "https://storage.googleapis.com/shaka-demo-assets/angel-one/dash.mpd"
-// "https://storage.googleapis.com/shaka-demo-assets/bbb-dark-truths-hls/hls.m3u8"
-
 const VideoGroup = ({ currentVideo, autoPlay, editMode, previousVideo }) => {
   const { activeVideo } = useSelector((state) => state.video);
 
   return (
     <>
-      {(activeVideo.info.url === currentVideo?.info.url ||
-        activeVideo.info.url === previousVideo?.info.url) && (
+      {(activeVideo.id === currentVideo?.id ||
+        activeVideo.id === previousVideo?.id) && (
         <VideoPlayer
           src={currentVideo?.info.url}
           next={currentVideo.children}
           autoPlay={autoPlay}
           editMode={editMode}
-          active={activeVideo.info.url === currentVideo?.info.url}
+          active={activeVideo.id === currentVideo?.id}
           previousVideo={previousVideo}
         />
       )}

@@ -5,36 +5,21 @@ import {
   useLayoutEffect,
   useRef,
 } from "react";
-
 import { useDispatch, useSelector } from "react-redux";
 
-import { ReactComponent as PlayIcon } from "assets/icons/play.svg";
-import { ReactComponent as PauseIcon } from "assets/icons/pause.svg";
-import { ReactComponent as VolumeHighIcon } from "assets/icons/volume-high.svg";
-import { ReactComponent as VolumeMiddleIcon } from "assets/icons/volume-middle.svg";
-import { ReactComponent as VolumeLowIcon } from "assets/icons/volume-low.svg";
-import { ReactComponent as VolumeMuteIcon } from "assets/icons/volume-mute.svg";
-import { ReactComponent as FullscreenIcon } from "assets/icons/fullscreen.svg";
-import { ReactComponent as FullscreenExitIcon } from "assets/icons/fullscreen-exit.svg";
-import { ReactComponent as DoubleAngleLeftIcon } from "assets/icons/double-angle-left.svg";
-import { ReactComponent as AngleLeftIcon } from "assets/icons/angle-left.svg";
-import { ReactComponent as AngleRightIcon } from "assets/icons/angle-right.svg";
+import Playback from "./Controls/Playback";
+import Volume from "./Controls/Volume";
+import Progress from "./Controls/Progress";
+import Time from "./Controls/Time";
+import Fullscreen from "./Controls/Fullscreen";
+import Selector from "./Controls/Selector";
+import Navigation from "./Controls/Navigation";
+import Loader from "./Controls/Loader";
 import { updateActiveVideo, updateVideoVolume } from "store/actions/video";
+import { formatTime } from "util/format";
 import "./VideoPlayer.css";
 
 const shaka = require("shaka-player/dist/shaka-player.ui.js");
-
-const formatTime = (timeInSeconds) => {
-  const result = new Date(timeInSeconds * 1000).toISOString().substr(11, 8);
-  // if duration is over hour
-  if (Number(result.substr(0, 2)) > 0) {
-    // show 00:00:00
-    return result;
-  } else {
-    // else show 00:00
-    return result.substr(3);
-  }
-};
 
 const VideoPlayer = ({
   src,
@@ -44,11 +29,11 @@ const VideoPlayer = ({
   active,
   previousVideo,
 }) => {
+  const dispatch = useDispatch();
+
   const { videoTree, activeVideo, videoVolume } = useSelector(
     (state) => state.video
   );
-
-  const dispatch = useDispatch();
 
   // vp-container
   const [displayCursor, setDisplayCursor] = useState("default");
@@ -58,10 +43,10 @@ const VideoPlayer = ({
   const [displayControls, setDisplayControls] = useState(true);
 
   // playback button
-  const [playbackButton, setPlaybackButton] = useState("play");
+  const [playbackState, setPlaybackState] = useState("play");
 
   // volume button
-  const [volumeButton, setVolumeButton] = useState("high");
+  const [volumeState, setVolumeState] = useState("high");
 
   // volume input
   const [currentVolume, setCurrentVolume] = useState("100");
@@ -81,7 +66,7 @@ const VideoPlayer = ({
   const [displayTime, setdisplayTime] = useState("00:00");
 
   // fullscreen button
-  const [fullscreenButton, setFullscreenButton] = useState("enter");
+  const [fullscreen, setFullscreen] = useState(false);
 
   // vp-loader
   const [displayLoader, setDisplayLoader] = useState(true);
@@ -104,7 +89,7 @@ const VideoPlayer = ({
    * PREVENT DEFAULT
    */
 
-  const eventPreventDefault = useCallback((event) => {
+  const preventDefault = useCallback((event) => {
     event.preventDefault();
   }, []);
 
@@ -155,11 +140,11 @@ const VideoPlayer = ({
   }, [showControlsHandler]);
 
   const videoPlayHandler = useCallback(() => {
-    setPlaybackButton("pause");
+    setPlaybackState("pause");
   }, []);
 
   const videoPauseHandler = useCallback(() => {
-    setPlaybackButton("play");
+    setPlaybackState("play");
   }, []);
 
   /*
@@ -201,13 +186,13 @@ const VideoPlayer = ({
     }
 
     if (video.muted || video.volume === 0) {
-      setVolumeButton("mute");
+      setVolumeState("mute");
     } else if (video.volume > 0 && video.volume < 0.3) {
-      setVolumeButton("low");
+      setVolumeState("low");
     } else if (video.volume >= 0.3 && video.volume < 0.7) {
-      setVolumeButton("middle");
+      setVolumeState("middle");
     } else {
-      setVolumeButton("high");
+      setVolumeState("high");
     }
 
     if (active) {
@@ -315,15 +300,15 @@ const VideoPlayer = ({
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
-      document.querySelector(".video-tree").current.requestFullscreen();
+      document.querySelector(".video-tree").requestFullscreen();
     }
   }, []);
 
   const fullscreenChangeHandler = useCallback(() => {
     if (document.fullscreenElement) {
-      setFullscreenButton("exit");
+      setFullscreen(true);
     } else {
-      setFullscreenButton("enter");
+      setFullscreen(false);
     }
   }, []);
 
@@ -414,18 +399,29 @@ const VideoPlayer = ({
   }, [timeChangeHandler, fullscreenChangeHandler]);
 
   /*
+   * SELECTOR
+   */
+
+  const selectNextVideoHandler = useCallback(
+    (video) => {
+      dispatch(updateActiveVideo(video));
+    },
+    [dispatch]
+  );
+
+  /*
    * NAVIGATION
    */
 
-  const restartVideoTree = useCallback(() => {
+  const restartVideoTreeHandler = useCallback(() => {
     dispatch(updateActiveVideo(videoTree.root));
   }, [dispatch, videoTree.root]);
 
-  const navigateToPreviousVideo = useCallback(() => {
+  const navigateToPreviousVideoHandler = useCallback(() => {
     dispatch(updateActiveVideo(previousVideo));
   }, [dispatch, previousVideo]);
 
-  const navigateToSelectorTimeline = useCallback(() => {
+  const navigateToSelectorTimelineHandler = useCallback(() => {
     videoRef.current.currentTime = videoRef.current.duration * 0.9;
     videoRef.current.play();
   }, []);
@@ -504,7 +500,7 @@ const VideoPlayer = ({
       onMouseMove={showControlsHandler}
       onMouseLeave={hideControlsHandler}
       onKeyDown={keyEventHandler}
-      // onContextMenu={eventPreventDefault}
+      // onContextMenu={preventDefault}
     >
       <video
         ref={videoRef}
@@ -526,121 +522,54 @@ const VideoPlayer = ({
           !displayControls ? " hide" : ""
         }`}
       >
-        <div className="vp-controls__playback">
-          <button className="vp-controls__btn" onClick={togglePlayHandler}>
-            {playbackButton === "play" && <PlayIcon />}
-            {playbackButton === "pause" && <PauseIcon />}
-          </button>
-        </div>
+        <Playback playbackState={playbackState} onToggle={togglePlayHandler} />
 
-        <div className="vp-controls__volume">
-          <button className="vp-controls__btn" onClick={toggleMuteHandler}>
-            {volumeButton === "high" && <VolumeHighIcon />}
-            {volumeButton === "middle" && <VolumeMiddleIcon />}
-            {volumeButton === "low" && <VolumeLowIcon />}
-            {volumeButton === "mute" && <VolumeMuteIcon />}
-          </button>
-          <div className="vp-controls__volume-range--outer">
-            <div className="vp-controls__volume-range--inner">
-              <div className="vp-controls__range--background" />
-              <div
-                className="vp-controls__range--current"
-                style={{ width: currentVolume }}
-              />
-              <input
-                className="vp-controls__range--seek"
-                type="range"
-                value={seekVolume}
-                max="1"
-                step="0.05"
-                onChange={volumeInputChangeHandler}
-                onKeyDown={eventPreventDefault}
-              />
-            </div>
-          </div>
-        </div>
+        <Volume
+          volumeState={volumeState}
+          currentVolume={currentVolume}
+          seekVolume={seekVolume}
+          onToggle={toggleMuteHandler}
+          onSeek={volumeInputChangeHandler}
+          onKey={preventDefault}
+        />
 
-        <div className="vp-controls__progress">
-          <div className="vp-controls__range--background" />
-          <div
-            className="vp-controls__range--buffer"
-            style={{ width: bufferProgress }}
-          />
-          <div
-            className="vp-controls__range--current"
-            style={{ width: currentProgress }}
-          />
-          <input
-            className="vp-controls__range--seek"
-            type="range"
-            step="0.1"
-            max={videoDuration}
-            value={seekProgress}
-            onMouseMove={seekMouseMoveHandler}
-            onChange={seekChangeHandler}
-            onKeyDown={eventPreventDefault}
-          />
-          <span
-            className="vp-controls__range--seek-tooltip"
-            style={{ left: seekTooltipPosition }}
-          >
-            {seekTooltip}
-          </span>
-        </div>
+        <Progress
+          bufferProgress={bufferProgress}
+          currentProgress={currentProgress}
+          videoDuration={videoDuration}
+          seekProgress={seekProgress}
+          seekTooltip={seekTooltip}
+          seekTooltipPosition={seekTooltipPosition}
+          onHover={seekMouseMoveHandler}
+          onSeek={seekChangeHandler}
+          onKey={preventDefault}
+        />
 
-        <time className="vp-controls__time" dateTime={displayTime}>
-          {displayTime}
-        </time>
+        <Time time={displayTime} />
 
-        <div
-          className="vp-controls__fullscreen"
-          onClick={toggleFullscreenHandler}
-        >
-          <button className="vp-controls__btn">
-            {fullscreenButton === "enter" && <FullscreenIcon />}
-            {fullscreenButton === "exit" && <FullscreenExitIcon />}
-          </button>
-        </div>
+        <Fullscreen
+          fullscreenState={fullscreen}
+          onToggle={toggleFullscreenHandler}
+        />
       </div>
-      {/* Loader */}
-      {displayLoader && (
-        <div className="vp-loader__container">
-          <div className="vp-loader" />
-        </div>
-      )}
 
-      {/* Selector */}
-      <div
-        className={`vp-selector__container${displaySelector ? " active" : ""}${
-          displayControls ? " high" : ""
-        }`}
-        ref={videoSelectorRef}
-      >
-        {next.map(
-          (video) =>
-            video.info && (
-              <button
-                key={video.id}
-                className="vp-selector"
-                onClick={() => dispatch(updateActiveVideo(video))}
-              >
-                {video.info.label}
-              </button>
-            )
-        )}
-      </div>
-      {/* Navigation ( Edit Mode ) */}
-      {editMode && (
-        <div className="vp-navigation">
-          {activeVideo !== videoTree.root && (
-            <DoubleAngleLeftIcon onClick={restartVideoTree} />
-          )}
-          {activeVideo !== videoTree.root && (
-            <AngleLeftIcon onClick={navigateToPreviousVideo} />
-          )}
-          <AngleRightIcon onClick={navigateToSelectorTimeline} />
-        </div>
-      )}
+      <Selector
+        on={displaySelector}
+        high={displayControls}
+        next={next}
+        onSelect={selectNextVideoHandler}
+      />
+
+      <Navigation
+        on={editMode}
+        activeVideo={activeVideo}
+        videoTree={videoTree}
+        onRestart={restartVideoTreeHandler}
+        onPrev={navigateToPreviousVideoHandler}
+        onNext={navigateToSelectorTimelineHandler}
+      />
+
+      <Loader on={displayLoader} />
     </div>
   );
 };
