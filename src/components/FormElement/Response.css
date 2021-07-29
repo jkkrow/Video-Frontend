@@ -11,6 +11,6 @@
 }
 
 .response.message {
-  color: #7eff9c;
-  background-color: #009b24;
+  color: var(--text-inversed);
+  background-color: var(--bg-inversed);
 }

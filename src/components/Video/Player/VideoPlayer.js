@@ -26,9 +26,7 @@ import "./VideoPlayer.css";
 const shaka = require("shaka-player/dist/shaka-player.ui.js");
 
 const VideoPlayer = ({
-  id,
-  src,
-  next,
+  currentVideo,
   autoPlay,
   editMode,
   active,
@@ -154,8 +152,9 @@ const VideoPlayer = ({
   }, []);
 
   const videoEndedHandler = useCallback(() => {
-    next.length > 0 && dispatch(updateActiveVideo(next[0]));
-  }, [dispatch, next]);
+    currentVideo.children.length > 0 &&
+      dispatch(updateActiveVideo(currentVideo.children[0]));
+  }, [dispatch, currentVideo.children]);
 
   /*
    * LOADING CONTROL
@@ -414,11 +413,11 @@ const VideoPlayer = ({
 
   const selectNextVideoHandler = useCallback(
     (nextId) => {
-      dispatch(selectNextVideo(id, nextId));
+      dispatch(selectNextVideo(currentVideo.id, nextId));
       setSelectedNext(true);
       setDisplaySelector(false);
     },
-    [dispatch, id]
+    [dispatch, currentVideo.id]
   );
 
   /*
@@ -451,7 +450,10 @@ const VideoPlayer = ({
   }, []);
 
   useEffect(() => {
+    const src = currentVideo.info.url;
+
     // If src type is Blob
+
     if (src.substr(0, 4) === "blob")
       return videoRef.current.setAttribute("src", src);
 
@@ -463,7 +465,7 @@ const VideoPlayer = ({
       .load(src)
       .then(() => {})
       .catch((err) => console.log(err));
-  }, [src, videoRef]);
+  }, [currentVideo.info.url, videoRef]);
 
   useEffect(() => {
     if (!active) {
@@ -574,7 +576,7 @@ const VideoPlayer = ({
           ref={videoSelectorRef}
           on={displaySelector}
           high={displayControls}
-          next={next}
+          next={currentVideo.children}
           onSelect={selectNextVideoHandler}
         />
 

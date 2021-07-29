@@ -14,10 +14,12 @@ const Navigation = ({
 }) =>
   on && (
     <div className="vp-navigation">
-      {activeVideo !== videoTree.root && (
+      {activeVideo.id !== videoTree.root.id && (
         <DoubleAngleLeftIcon onClick={onRestart} />
       )}
-      {activeVideo !== videoTree.root && <AngleLeftIcon onClick={onPrev} />}
+      {activeVideo.id !== videoTree.root.id && (
+        <AngleLeftIcon onClick={onPrev} />
+      )}
       <AngleRightIcon onClick={onNext} />
     </div>
   );

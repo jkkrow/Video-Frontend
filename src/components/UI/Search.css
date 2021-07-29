@@ -3,9 +3,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 3rem;
 }
 
 .search__input {
+  position: absolute;
+  right: 0;
   width: 25rem;
   padding: 1rem;
   border: none;
@@ -19,8 +22,7 @@
 }
 
 .search__container label {
-  position: absolute;
-  right: 0;
+  display: flex;
   transform: translateX(0);
   transition: transform 300ms ease-out;
 }
@@ -30,5 +32,5 @@
 }
 
 .search__input:focus ~ label {
-  transform: translateX(-26rem);
+  transform: translateX(-25.5rem);
 }

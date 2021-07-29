@@ -8,13 +8,10 @@ const VideoGroup = ({ currentVideo, autoPlay, editMode, previousVideo }) => {
 
   return (
     <>
-      {(activeVideo.id === currentVideo.id ||
-        activeVideo.id === previousVideo?.id ||
-        currentVideo.children.find((item) => item?.id === activeVideo.id)) && (
+      {(currentVideo.id === activeVideo.id ||
+        previousVideo?.id === activeVideo.id) && (
         <VideoPlayer
-          id={currentVideo.id}
-          src={currentVideo.info.url}
-          next={currentVideo.children}
+          currentVideo={currentVideo}
           autoPlay={autoPlay}
           editMode={editMode}
           active={activeVideo.id === currentVideo.id}
@@ -22,19 +19,18 @@ const VideoGroup = ({ currentVideo, autoPlay, editMode, previousVideo }) => {
         />
       )}
 
-      {currentVideo.children.length > 0 &&
-        currentVideo.children.map(
-          (video) =>
-            video.info && (
-              <VideoGroup
-                key={video.id}
-                currentVideo={video}
-                autoPlay={false}
-                editMode={editMode}
-                previousVideo={currentVideo}
-              />
-            )
-        )}
+      {currentVideo.children.map(
+        (video) =>
+          video.info && (
+            <VideoGroup
+              key={video.id}
+              currentVideo={video}
+              autoPlay={false}
+              editMode={editMode}
+              previousVideo={currentVideo}
+            />
+          )
+      )}
     </>
   );
 };
