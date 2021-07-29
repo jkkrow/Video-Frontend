@@ -7,7 +7,7 @@ import "./VideoTree.css";
 
 const VideoTree = ({ tree, autoPlay = true, editMode = false }) => {
   const dispatch = useDispatch();
-  const { activeVideo } = useSelector((state) => state.video);
+  const { videoTree, activeVideo } = useSelector((state) => state.video);
 
   useEffect(() => {
     dispatch(setVideoTree(tree));
@@ -21,9 +21,9 @@ const VideoTree = ({ tree, autoPlay = true, editMode = false }) => {
 
   return (
     <div className="video-tree">
-      {activeVideo && (
+      {videoTree && activeVideo && (
         <VideoGroup
-          currentVideo={tree.root}
+          currentVideo={videoTree.root}
           autoPlay={autoPlay}
           editMode={editMode}
         />

@@ -13,7 +13,7 @@
   outline: none;
   color: var(--text-primary);
   background-color: transparent;
-  transform: scale(0);
+  transform: scaleX(0);
   transform-origin: right;
   transition: transform 300ms ease-out;
 }
@@ -26,7 +26,7 @@
 }
 
 .search__input:focus {
-  transform: scale(1);
+  transform: scaleX(1);
 }
 
 .search__input:focus ~ label {

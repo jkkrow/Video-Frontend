@@ -8,14 +8,16 @@ const VideoGroup = ({ currentVideo, autoPlay, editMode, previousVideo }) => {
 
   return (
     <>
-      {(activeVideo.id === currentVideo?.id ||
-        activeVideo.id === previousVideo?.id) && (
+      {(activeVideo.id === currentVideo.id ||
+        activeVideo.id === previousVideo?.id ||
+        currentVideo.children.find((item) => item?.id === activeVideo.id)) && (
         <VideoPlayer
-          src={currentVideo?.info.url}
+          id={currentVideo.id}
+          src={currentVideo.info.url}
           next={currentVideo.children}
           autoPlay={autoPlay}
           editMode={editMode}
-          active={activeVideo.id === currentVideo?.id}
+          active={activeVideo.id === currentVideo.id}
           previousVideo={previousVideo}
         />
       )}

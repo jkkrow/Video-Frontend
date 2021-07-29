@@ -1,3 +1,17 @@
+.video-player {
+  position: absolute;
+  display: none;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.video-player.active {
+  position: static;
+  display: block;
+}
+
 .vp-container {
   position: relative;
   display: flex;
@@ -295,10 +309,10 @@
   border-radius: 50%;
   box-shadow: 2px 2px 0 0 var(--accent-primary);
   transform-origin: 2rem;
-  animation: loading-spinner 1s linear infinite;
+  animation: vp-loader 1s linear infinite;
 }
 
-@keyframes loading-spinner {
+@keyframes vp-loader {
   0% {
     transform: rotate(0);
   }

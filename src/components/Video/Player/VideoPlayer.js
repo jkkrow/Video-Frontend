@@ -15,13 +15,18 @@ import Fullscreen from "./Controls/Fullscreen";
 import Selector from "./Controls/Selector";
 import Navigation from "./Controls/Navigation";
 import Loader from "./Controls/Loader";
-import { updateActiveVideo, updateVideoVolume } from "store/actions/video";
+import {
+  updateActiveVideo,
+  selectNextVideo,
+  updateVideoVolume,
+} from "store/actions/video";
 import { formatTime } from "util/format";
 import "./VideoPlayer.css";
 
 const shaka = require("shaka-player/dist/shaka-player.ui.js");
 
 const VideoPlayer = ({
+  id,
   src,
   next,
   autoPlay,
@@ -73,6 +78,7 @@ const VideoPlayer = ({
 
   // vp-selector
   const [displaySelector, setDisplaySelector] = useState(false);
+  const [selectedNext, setSelectedNext] = useState(false);
 
   const videoRef = useRef();
   const videoContainerRef = useRef();
@@ -146,6 +152,10 @@ const VideoPlayer = ({
   const videoPauseHandler = useCallback(() => {
     setPlaybackState("play");
   }, []);
+
+  const videoEndedHandler = useCallback(() => {
+    next.length > 0 && dispatch(updateActiveVideo(next[0]));
+  }, [dispatch, next]);
 
   /*
    * LOADING CONTROL
@@ -250,12 +260,12 @@ const VideoPlayer = ({
     setdisplayTime(remainedTime);
 
     // Selector
-    if (currentTime / duration >= 0.9) {
+    if (currentTime / duration >= 0.9 && !selectedNext) {
       setDisplaySelector(true);
     } else {
       setDisplaySelector(false);
     }
-  }, []);
+  }, [selectedNext]);
 
   /*
    * SKIP CONTROL
@@ -403,10 +413,12 @@ const VideoPlayer = ({
    */
 
   const selectNextVideoHandler = useCallback(
-    (video) => {
-      dispatch(updateActiveVideo(video));
+    (nextId) => {
+      dispatch(selectNextVideo(id, nextId));
+      setSelectedNext(true);
+      setDisplaySelector(false);
     },
-    [dispatch]
+    [dispatch, id]
   );
 
   /*
@@ -492,84 +504,91 @@ const VideoPlayer = ({
    */
 
   return (
-    <div
-      className="vp-container"
-      ref={videoContainerRef}
-      style={{ display: active ? "" : "none", cursor: displayCursor }}
-      tabIndex={-1}
-      onMouseMove={showControlsHandler}
-      onMouseLeave={hideControlsHandler}
-      onKeyDown={keyEventHandler}
-      // onContextMenu={preventDefault}
-    >
-      <video
-        ref={videoRef}
-        autoPlay={autoPlay}
-        onLoadedMetadata={videoLoadHandler}
-        onClick={togglePlayHandler}
-        onPlay={videoPlayHandler}
-        onPause={videoPauseHandler}
-        onVolumeChange={volumeChangeHandler}
-        onTimeUpdate={timeChangeHandler}
-        onDoubleClick={toggleFullscreenHandler}
-        onWaiting={showLoaderHandler}
-        onCanPlay={hideLoaderHandler}
-        onError={errorHandler}
-      />
-      {/* Controls */}
+    <div className={`video-player${active ? " active" : ""}`}>
       <div
-        className={`vp-controls${!canPlayType ? " hidden" : ""}${
-          !displayControls ? " hide" : ""
-        }`}
+        className="vp-container"
+        ref={videoContainerRef}
+        style={{ cursor: displayCursor }}
+        tabIndex={-1}
+        onMouseMove={showControlsHandler}
+        onMouseLeave={hideControlsHandler}
+        onKeyDown={keyEventHandler}
+        // onContextMenu={preventDefault}
       >
-        <Playback playbackState={playbackState} onToggle={togglePlayHandler} />
+        <video
+          ref={videoRef}
+          autoPlay={autoPlay}
+          onLoadedMetadata={videoLoadHandler}
+          onClick={togglePlayHandler}
+          onPlay={videoPlayHandler}
+          onPause={videoPauseHandler}
+          onEnded={videoEndedHandler}
+          onVolumeChange={volumeChangeHandler}
+          onTimeUpdate={timeChangeHandler}
+          onDoubleClick={toggleFullscreenHandler}
+          onWaiting={showLoaderHandler}
+          onCanPlay={hideLoaderHandler}
+          onError={errorHandler}
+        />
+        {/* Controls */}
+        <div
+          className={`vp-controls${!canPlayType ? " hidden" : ""}${
+            !displayControls ? " hide" : ""
+          }`}
+        >
+          <Playback
+            playbackState={playbackState}
+            onToggle={togglePlayHandler}
+          />
 
-        <Volume
-          volumeState={volumeState}
-          currentVolume={currentVolume}
-          seekVolume={seekVolume}
-          onToggle={toggleMuteHandler}
-          onSeek={volumeInputChangeHandler}
-          onKey={preventDefault}
+          <Volume
+            volumeState={volumeState}
+            currentVolume={currentVolume}
+            seekVolume={seekVolume}
+            onToggle={toggleMuteHandler}
+            onSeek={volumeInputChangeHandler}
+            onKey={preventDefault}
+          />
+
+          <Progress
+            bufferProgress={bufferProgress}
+            currentProgress={currentProgress}
+            videoDuration={videoDuration}
+            seekProgress={seekProgress}
+            seekTooltip={seekTooltip}
+            seekTooltipPosition={seekTooltipPosition}
+            onHover={seekMouseMoveHandler}
+            onSeek={seekChangeHandler}
+            onKey={preventDefault}
+          />
+
+          <Time time={displayTime} />
+
+          <Fullscreen
+            fullscreenState={fullscreen}
+            onToggle={toggleFullscreenHandler}
+          />
+        </div>
+
+        <Selector
+          ref={videoSelectorRef}
+          on={displaySelector}
+          high={displayControls}
+          next={next}
+          onSelect={selectNextVideoHandler}
         />
 
-        <Progress
-          bufferProgress={bufferProgress}
-          currentProgress={currentProgress}
-          videoDuration={videoDuration}
-          seekProgress={seekProgress}
-          seekTooltip={seekTooltip}
-          seekTooltipPosition={seekTooltipPosition}
-          onHover={seekMouseMoveHandler}
-          onSeek={seekChangeHandler}
-          onKey={preventDefault}
+        <Navigation
+          on={editMode}
+          activeVideo={activeVideo}
+          videoTree={videoTree}
+          onRestart={restartVideoTreeHandler}
+          onPrev={navigateToPreviousVideoHandler}
+          onNext={navigateToSelectorTimelineHandler}
         />
 
-        <Time time={displayTime} />
-
-        <Fullscreen
-          fullscreenState={fullscreen}
-          onToggle={toggleFullscreenHandler}
-        />
+        <Loader on={displayLoader} />
       </div>
-
-      <Selector
-        on={displaySelector}
-        high={displayControls}
-        next={next}
-        onSelect={selectNextVideoHandler}
-      />
-
-      <Navigation
-        on={editMode}
-        activeVideo={activeVideo}
-        videoTree={videoTree}
-        onRestart={restartVideoTreeHandler}
-        onPrev={navigateToPreviousVideoHandler}
-        onNext={navigateToSelectorTimelineHandler}
-      />
-
-      <Loader on={displayLoader} />
     </div>
   );
 };

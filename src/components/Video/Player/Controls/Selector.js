@@ -13,7 +13,7 @@ const Selector = forwardRef(({ on, high, next, onSelect }, ref) => (
           <button
             key={video.id}
             className="vp-selector"
-            onClick={() => onSelect(video)}
+            onClick={() => onSelect(video.id)}
           >
             {video.info.label}
           </button>
