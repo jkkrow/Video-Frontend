@@ -31,7 +31,12 @@
 }
 
 .user-video-list__table td > button {
-  margin: auto;
+  width: 100%;
+}
+
+.user-video-list__table td:last-child {
+  background-color: transparent;
+  padding: 0;
 }
 
 .user-video-list__header {
@@ -49,4 +54,46 @@
 .user-video-list__header svg {
   width: 1.2rem;
   height: 1.2rem;
+}
+
+@media (max-width: 800px) {
+  .user-video-list__table thead {
+    display: none;
+  }
+
+  .user-video-list__table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .user-video-list__table tr {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-video-list__table td {
+    padding: 1.5rem 2rem;
+    text-align: right;
+    border-radius: initial;
+  }
+
+  .user-video-list__table td:first-child {
+    padding-top: 2rem;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  .user-video-list__table td:last-child {
+    padding: 2rem 2rem 2rem 2rem;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: var(--bg-secondary);
+  }
+
+  .user-video-list__table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    float: left;
+  }
 }

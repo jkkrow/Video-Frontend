@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 
 import Modal from "components/UI/Modal";
 // import LoadingSpinner from "components/UI/Loader/LoadingSpinner";
-import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
 import Input from "components/FormElement/Input";
 import Button from "components/FormElement/Button";
@@ -13,20 +12,60 @@ import { VALIDATOR_EQUAL } from "util/validators";
 import "./UserVideoListPage.css";
 
 const ITEMS = [
-  { _id: Math.random(), title: "test_video_1", views: 412341 },
+  {
+    _id: Math.random(),
+    title: "test_video_1",
+    views: 412341,
+    createdAt: new Date().toISOString().substr(0, 10),
+  },
 
-  { _id: Math.random(), title: "test_video_2", views: 245341 },
+  {
+    _id: Math.random(),
+    title: "test_video_2",
+    views: 245341,
+    createdAt: new Date().toISOString().substr(0, 10),
+  },
 
-  { _id: Math.random(), title: "test_video_3", views: 65443 },
+  {
+    _id: Math.random(),
+    title: "test_video_3",
+    views: 65443,
+    createdAt: new Date().toISOString().substr(0, 10),
+  },
 
-  { _id: Math.random(), title: "test_video_4", views: 2324 },
+  {
+    _id: Math.random(),
+    title: "test_video_4",
+    views: 2324,
+    createdAt: new Date().toISOString().substr(0, 10),
+  },
 
-  { _id: Math.random(), title: "test_video_5", views: 867 },
+  {
+    _id: Math.random(),
+    title: "test_video_5",
+    views: 867,
+    createdAt: new Date().toISOString().substr(0, 10),
+  },
 
-  { _id: Math.random(), title: "test_video_6", views: 23983 },
-  { _id: Math.random(), title: "test_video_7", views: 6564 },
+  {
+    _id: Math.random(),
+    title: "test_video_6",
+    views: 23983,
+    createdAt: new Date().toISOString().substr(0, 10),
+  },
+  {
+    _id: Math.random(),
+    title: "test_video_7",
+    views: 6564,
+    createdAt: new Date().toISOString().substr(0, 10),
+  },
 
-  { _id: Math.random(), title: "test_video_8", views: 99904351 },
+  {
+    _id: Math.random(),
+    title: "test_video_8",
+    views: 99904351,
+    createdAt: new Date().toISOString().substr(0, 10),
+  },
 ];
 
 const UserVideoListPage = ({ history }) => {
@@ -102,17 +141,20 @@ const UserVideoListPage = ({ history }) => {
                 <th>ID</th>
                 <th>Title</th>
                 <th>Views</th>
-                <th></th>
+                <th>Uploaded Date</th>
               </tr>
             </thead>
             <tbody>
-              {ITEMS.map((video) => (
-                <tr key={video._id}>
-                  <td>{video._id}</td>
-                  <td>{video.title}</td>
-                  <td>{video.views}</td>
+              {ITEMS.map((item) => (
+                <tr key={item._id}>
+                  <td data-label="ID">{item._id}</td>
+                  <td data-label="Title">{item.title}</td>
+                  <td data-label="Views">{item.views}</td>
+                  <td data-label="Uploaded Date">{item.createdAt}</td>
                   <td>
-                    <RemoveIcon onClick={() => openWarningHandler(video)} />
+                    <Button inversed onClick={() => openWarningHandler(item)}>
+                      DELETE
+                    </Button>
                   </td>
                 </tr>
               ))}
