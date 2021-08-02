@@ -32,6 +32,16 @@ export const attachVideo = (file, nodeId, treeId) => {
         })
       );
 
+      dispatch(
+        uploadActions.setUploadNode({
+          info: {
+            name: file.name,
+            label: "",
+          },
+          nodeId,
+        })
+      );
+
       const params = {
         videoTitle: treeId,
         fileName: file.name,
@@ -137,7 +147,7 @@ export const attachVideo = (file, nodeId, treeId) => {
 
       dispatch(
         uploadActions.setUploadProgress({
-          progress: "COMPLETED",
+          progress: "100%",
           nodeId,
         })
       );
@@ -147,6 +157,12 @@ export const attachVideo = (file, nodeId, treeId) => {
   };
 };
 
-export const updateNode = () => {
-  return (dispatch) => {};
+export const removeNode = (nodeId) => {
+  return (dispatch) => {
+    dispatch(
+      uploadActions.removeNode({
+        nodeId,
+      })
+    );
+  };
 };

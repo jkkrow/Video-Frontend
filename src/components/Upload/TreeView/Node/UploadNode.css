@@ -1,5 +1,5 @@
 .upload-node {
-  width: 98%;
+  width: 95%;
   margin-top: 0.5rem;
 }
 
@@ -8,7 +8,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1rem;
   font-weight: 500;
   border-radius: 10px;
   background-color: var(--bg-tertiary);
@@ -23,13 +22,60 @@
 .upload-node__title {
   display: flex;
   align-items: center;
+  width: max-content;
+  max-width: calc(100% - 10rem);
   height: 5.5rem;
-  padding-left: 5rem;
-  margin-right: 5rem;
+  margin: 0 5rem;
   text-overflow: ellipsis;
   word-break: normal;
   overflow: hidden;
   cursor: pointer;
+  transition: all 200ms ease-out;
+}
+
+.upload-node__title:hover {
+  opacity: 0.7;
+}
+
+.upload-node__extended {
+  display: flex;
+  flex-direction: column;
+  padding: 0 2rem 1rem 2rem;
+  gap: 1rem;
+}
+
+.upload-node__progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70%;
+  gap: 0.5rem;
+}
+
+.upload-node__progress__bar {
+  position: relative;
+  width: 100%;
+  height: 0.5rem;
+}
+
+.upload-node__progress__bar--background,
+.upload-node__progress__bar--current {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50px;
+}
+
+.upload-node__progress__bar--background {
+  background-color: #858585;
+}
+
+.upload-node__progress__bar--current {
+  background-color: var(--accent-primary);
+}
+
+.upload-node__progress__cancel {
+  display: flex;
 }
 
 .upload-node__children {

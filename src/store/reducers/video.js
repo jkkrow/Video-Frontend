@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { findNode } from "util/tree";
+import { findById } from "util/tree";
 
 const videoSlice = createSlice({
   name: "video",
@@ -19,7 +19,7 @@ const videoSlice = createSlice({
     },
 
     selectNextVideo: (state, { payload }) => {
-      const videoNode = findNode(state.videoTree, payload.currentId);
+      const videoNode = findById(state.videoTree, payload.currentId);
 
       const selectedVideo = videoNode.children.filter(
         (item) => item.id === payload.nextId

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v1 as uuidv1 } from "uuid";
 
-import { findNode } from "util/tree";
+import { findById, findByChildrenId } from "util/tree";
 
 const uploadSlice = createSlice({
   name: "upload",
@@ -11,30 +11,20 @@ const uploadSlice = createSlice({
   },
   reducers: {
     initiateUpload: (state) => {
-      const newId = uuidv1();
-
-      state.uploadTree = {
-        root: {
-          id: newId,
-          layer: 0,
-          info: null,
-          children: [],
-        },
+      const newNode = {
+        id: uuidv1(),
+        layer: 0,
+        info: null,
+        children: [],
       };
 
-      state.previewTree = {
-        root: {
-          id: newId,
-          layer: 0,
-          info: null,
-          children: [],
-        },
-      };
+      state.uploadTree.root = newNode;
+      state.previewTree.root = newNode;
     },
 
     appendChild: (state, { payload }) => {
-      const uploadNode = findNode(state.uploadTree, payload.nodeId);
-      const previewNode = findNode(state.previewTree, payload.nodeId);
+      const uploadNode = findById(state.uploadTree, payload.nodeId);
+      const previewNode = findById(state.previewTree, payload.nodeId);
 
       const newNode = {
         id: uuidv1(),
@@ -48,21 +38,29 @@ const uploadSlice = createSlice({
     },
 
     setPreviewNode: (state, { payload }) => {
-      const previewNode = findNode(state.previewTree, payload.nodeId);
+      const previewNode = findById(state.previewTree, payload.nodeId);
 
       previewNode.info = payload.info;
     },
 
     setUploadNode: (state, { payload }) => {
-      const uploadNode = findNode(state.uploadTree, payload.nodeId);
+      const uploadNode = findById(state.uploadTree, payload.nodeId);
 
       uploadNode.info = payload.info;
     },
 
     setUploadProgress: (state, { payload }) => {
-      const uploadNode = findNode(state.uploadTree, payload.nodeId);
+      const uploadNode = findById(state.uploadTree, payload.nodeId);
 
       uploadNode.info.progress = payload.progress;
+    },
+
+    removeNode: (state, { payload }) => {
+      const uploadNode = findByChildrenId(state.uploadTree, payload.nodeId);
+
+      uploadNode.children = uploadNode.children.filter(
+        (item) => item.id !== payload.nodeId
+      );
     },
   },
 });

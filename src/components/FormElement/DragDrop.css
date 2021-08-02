@@ -6,8 +6,7 @@
   padding: 3rem;
   gap: 1rem;
   border-radius: 10px;
-  background-color: var(--bg-tertiary);
-  transition: background-color 200ms ease-out;
+  transition: all 200ms ease-out;
 }
 
 .drag-drop svg {
@@ -17,16 +16,15 @@
 }
 
 .drag-drop.invalid {
-  color: red;
-  background-color: #830000;
+  color: #ff0000;
 }
 
 .drag-drop.invalid svg {
-  stroke: red;
+  stroke: #ff0000;
 }
 
 .drag-drop.dragging {
-  background-color: var(--bg-secondary);
+  opacity: 0.5;
 }
 
 .drag-drop.dragging * {

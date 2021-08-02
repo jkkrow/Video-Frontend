@@ -4,12 +4,14 @@ import { useDispatch } from "react-redux";
 import DragDrop from "components/FormElement/DragDrop";
 import { ReactComponent as AngleRightIcon } from "assets/icons/angle-right.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
-import { appendChild, attachVideo } from "store/actions/upload";
+import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
+import { appendChild, attachVideo, removeNode } from "store/actions/upload";
 import "./UploadNode.css";
 
 const UploadNode = ({ currentNode, treeId }) => {
   const dispatch = useDispatch();
   const [showChildren, setShowChildren] = useState(true);
+  const [isExtended, setIsExtended] = useState(true);
 
   const addChildHandler = () => {
     dispatch(appendChild(currentNode.id));
@@ -19,17 +21,65 @@ const UploadNode = ({ currentNode, treeId }) => {
     setShowChildren((prev) => !prev);
   };
 
+  const extendBodyHandler = () => {
+    setIsExtended((prev) => !prev);
+  };
+
+  const removeNodeHandler = () => {
+    dispatch(removeNode(currentNode.id));
+  };
+
   const onFileHandler = (file) => {
     dispatch(attachVideo(file, currentNode.id, treeId));
   };
 
   return (
     <div className="upload-node">
-      <div className="upload-node__body">
+      <div
+        className="upload-node__body"
+        style={{
+          background: currentNode.layer % 2 === 0 ? "#242424" : "#424242",
+        }}
+      >
         {currentNode.info ? (
-          <div className="upload-node__title">{currentNode.info.name}</div>
+          <>
+            <div className="upload-node__title" onClick={extendBodyHandler}>
+              {currentNode.info.name}
+            </div>
+            {isExtended && (
+              <div className="upload-node__extended">
+                <div className="upload-node__progress">
+                  <div className="upload-node__progress__bar">
+                    <div className="upload-node__progress__bar--background" />
+                    <div
+                      className="upload-node__progress__bar--current"
+                      style={{ width: currentNode.info.progress || "0%" }}
+                    />
+                  </div>
+                  <div>{currentNode.info.progress}</div>
+
+                  <div className="upload-node__progress__cancel">
+                    <RemoveIcon />
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         ) : (
-          <DragDrop type="video" onFile={onFileHandler} />
+          <>
+            <DragDrop type="video" onFile={onFileHandler} />
+            {currentNode.id !== treeId && (
+              <RemoveIcon
+                style={{
+                  top: "1.55rem",
+                  left: "-4rem",
+                  width: "2.4rem",
+                  height: "2.4rem",
+                }}
+                onClick={removeNodeHandler}
+              />
+            )}
+          </>
         )}
         {currentNode.children.length > 0 && (
           <AngleRightIcon
