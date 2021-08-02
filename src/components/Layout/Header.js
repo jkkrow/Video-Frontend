@@ -1,12 +1,24 @@
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 import Logo from "components/UI/Logo";
 import Search from "components/UI/Search";
+import Menu from "./Menu";
 import "./Header.css";
 
 const Header = () => {
   const { token, userData } = useSelector((state) => state.auth);
+  const [displayMenu, setDisplayMenu] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setDisplayMenu(false);
+  }, [location.pathname]);
+
+  const displayMenuHandler = () => {
+    setDisplayMenu((prev) => !prev);
+  };
 
   return (
     <header className="header">
@@ -17,14 +29,16 @@ const Header = () => {
       <Search />
 
       {token ? (
-        <NavLink exact to="/account">
+        <div className="link" onClick={displayMenuHandler}>
           {userData.name.toUpperCase()}
-        </NavLink>
+        </div>
       ) : (
-        <NavLink exact to="/login">
+        <NavLink exact to="/auth">
           SIGN IN
         </NavLink>
       )}
+
+      <Menu on={displayMenu} />
     </header>
   );
 };

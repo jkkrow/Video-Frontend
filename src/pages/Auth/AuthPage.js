@@ -172,11 +172,17 @@ const AuthPage = () => {
       />
       {isLogin ? (
         <p>
-          Don't have an account? <span onClick={toggleMode}>Sign up</span>
+          Don't have an account?{" "}
+          <span className="link" onClick={toggleMode}>
+            Sign up
+          </span>
         </p>
       ) : (
         <p>
-          Already have an account? <span onClick={toggleMode}>Sign in</span>
+          Already have an account?{" "}
+          <span className="link" onClick={toggleMode}>
+            Sign in
+          </span>
         </p>
       )}
     </Card>

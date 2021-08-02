@@ -43,7 +43,7 @@
   border-radius: 50%;
   background-color: #000000;
   transition: transform 800ms ease-out;
-  z-index: 500;
+  z-index: 990;
 }
 
 .preview__video__container {
@@ -54,7 +54,7 @@
   max-width: 120rem;
   visibility: hidden;
   transform: translate(-50%, -50%);
-  z-index: 700;
+  z-index: 999;
 }
 
 .preview__video {

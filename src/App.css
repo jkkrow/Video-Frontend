@@ -34,15 +34,18 @@ main {
   margin-top: 10rem;
 }
 
-a {
+a,
+.link {
   text-decoration: none;
   color: var(--text-primary);
   font-weight: 500;
   outline: none;
+  cursor: pointer;
   transition: opacity 200ms ease-out;
 }
 
-a:hover {
+a:hover,
+.link:hover {
   opacity: 0.7;
 }
 

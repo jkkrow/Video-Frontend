@@ -10,7 +10,6 @@ import SendRecoveryEmailPage from "pages/Auth/SendRecoveryEmailPage";
 import ResetPasswordPage from "pages/Auth/ResetPasswordPage";
 import UserVideoListPage from "pages/User/UserVideoListPage";
 import UploadVideoPage from "pages/Upload/UploadVideoPage";
-import AccountPage from "pages/User/AccountPage";
 import "./App.css";
 
 const App = () => {
@@ -45,7 +44,6 @@ const App = () => {
           path="/auth/verify-email/:token"
           component={VerifyEmailPage}
         />
-        <Route exact path="/account" component={AccountPage} />
         <Redirect exact to="/" />
       </Switch>
     );
@@ -54,8 +52,8 @@ const App = () => {
       <Switch>
         <Route exact path="/" component={VideoListPage} />
         {/* Only available in Development */}
-        <Route exact path="/my-videos" component={UserVideoListPage} />
-        <Route exact path="/new-video" component={UploadVideoPage} />
+        {/* <Route exact path="/my-videos" component={UserVideoListPage} />
+        <Route exact path="/new-video" component={UploadVideoPage} /> */}
         {/* /> */}
         <Route exact path="/auth" component={AuthPage} />
         <Route

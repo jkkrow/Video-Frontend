@@ -30,8 +30,8 @@ const Modal = ({
           style={style}
           onSubmit={(e) => e.preventDefault()}
         >
-          <h3 className="modal__header">{header || "test"}</h3>
-          <div className="modal__content">{content || "test"}</div>
+          <h3 className="modal__header">{header}</h3>
+          <div className="modal__content">{content}</div>
           <div className="modal__footer">
             {footer && (
               <Button onClick={onConfirm} loading={loading} disabled={disabled}>
