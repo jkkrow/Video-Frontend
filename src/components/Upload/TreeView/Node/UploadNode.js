@@ -7,7 +7,7 @@ import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
 import { appendChild, attachVideo } from "store/actions/upload";
 import "./UploadNode.css";
 
-const UploadNode = ({ currentNode }) => {
+const UploadNode = ({ currentNode, treeId }) => {
   const dispatch = useDispatch();
   const [showChildren, setShowChildren] = useState(true);
 
@@ -20,7 +20,7 @@ const UploadNode = ({ currentNode }) => {
   };
 
   const onFileHandler = (file) => {
-    dispatch(attachVideo(file, currentNode.id));
+    dispatch(attachVideo(file, currentNode.id, treeId));
   };
 
   return (
@@ -47,7 +47,7 @@ const UploadNode = ({ currentNode }) => {
       </div>
       <div className={`upload-node__children${!showChildren ? " hide" : ""}`}>
         {currentNode.children.map((item) => (
-          <UploadNode key={item.id} currentNode={item} />
+          <UploadNode key={item.id} currentNode={item} treeId={treeId} />
         ))}
       </div>
     </div>

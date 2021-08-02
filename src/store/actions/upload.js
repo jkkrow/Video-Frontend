@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import { uploadActions } from "store/reducers/upload";
 
 export const initiateUpload = () => {
@@ -16,19 +18,132 @@ export const appendChild = (nodeId) => {
   };
 };
 
-export const attachVideo = (file, nodeId) => {
-  return (dispatch) => {
-    console.log(file);
-    dispatch(
-      uploadActions.attachVideo({
-        info: {
-          name: file.name,
-          label: "",
-        },
-        previewUrl: URL.createObjectURL(file),
-        nodeId,
-      })
-    );
+export const attachVideo = (file, nodeId, treeId) => {
+  return async (dispatch) => {
+    try {
+      dispatch(
+        uploadActions.setPreviewNode({
+          info: {
+            name: file.name,
+            label: "",
+            url: URL.createObjectURL(file),
+          },
+          nodeId,
+        })
+      );
+
+      const params = {
+        videoTitle: treeId,
+        fileName: file.name,
+        fileType: file.type,
+      };
+
+      const response = await axios.get(
+        `${process.env.REACT_APP_SERVER_URL}/upload/initiate-upload`,
+        { params }
+      );
+
+      const { uploadId } = response.data;
+
+      dispatch(
+        uploadActions.setUploadNode({
+          info: {
+            name: file.name,
+            label: "",
+            uploadId,
+          },
+          nodeId,
+        })
+      );
+
+      const fileSize = file.size;
+      const CHUNK_SIZE = 10000000; // 10MB
+      const CHUNKS_COUNT = Math.floor(fileSize / CHUNK_SIZE) + 1;
+      const promisesArray = [];
+      const progressArray = [];
+
+      let start, end, blob;
+
+      const uploadProgressHandler = async (progressEvent, index) => {
+        if (progressEvent.loaded >= progressEvent.total) return;
+
+        const currentProgress =
+          Math.round(progressEvent.loaded * 100) / progressEvent.total;
+
+        progressArray[index - 1] = currentProgress;
+        const sum = progressArray.reduce((acc, cur) => acc + cur);
+
+        dispatch(
+          uploadActions.setUploadProgress({
+            progress: `${Math.round(sum / CHUNKS_COUNT)}%`,
+            nodeId,
+          })
+        );
+      };
+
+      for (let index = 1; index < CHUNKS_COUNT + 1; index++) {
+        start = (index - 1) * CHUNK_SIZE;
+        end = index * CHUNK_SIZE;
+        blob =
+          index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
+
+        // Initiate Upload
+        const getUploadUrlResponse = await axios.get(
+          `${process.env.REACT_APP_SERVER_URL}/upload/get-upload-url`,
+          {
+            params: {
+              videoTitle: treeId,
+              fileName: file.name,
+              partNumber: index,
+              uploadId,
+            },
+          }
+        );
+
+        const { presignedUrl } = getUploadUrlResponse.data;
+
+        // Upload Parts
+        const uploadResponse = axios.put(presignedUrl, blob, {
+          onUploadProgress: (e) => uploadProgressHandler(e, index),
+          headers: {
+            "Content-Type": file.type,
+          },
+        });
+        promisesArray.push(uploadResponse);
+      }
+
+      const resolvedArray = await Promise.all(promisesArray);
+
+      const uploadPartsArray = [];
+      resolvedArray.forEach((resolvedPromise, index) => {
+        uploadPartsArray.push({
+          ETag: resolvedPromise.headers.etag,
+          PartNumber: index + 1,
+        });
+      });
+
+      // Complete Upload
+      await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/upload/complete-upload`,
+        {
+          params: {
+            videoTitle: treeId,
+            fileName: file.name,
+            parts: uploadPartsArray,
+            uploadId,
+          },
+        }
+      );
+
+      dispatch(
+        uploadActions.setUploadProgress({
+          progress: "COMPLETED",
+          nodeId,
+        })
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 };
 

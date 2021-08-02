@@ -47,21 +47,22 @@ const uploadSlice = createSlice({
       previewNode.children.push(newNode);
     },
 
-    attachVideo: (state, { payload }) => {
-      const uploadNode = findNode(state.uploadTree, payload.nodeId);
+    setPreviewNode: (state, { payload }) => {
       const previewNode = findNode(state.previewTree, payload.nodeId);
 
-      uploadNode.info = payload.info;
-      previewNode.info = {
-        ...payload.info,
-        url: payload.previewUrl,
-      };
+      previewNode.info = payload.info;
     },
 
-    updateNode: (state, { payload }) => {
+    setUploadNode: (state, { payload }) => {
       const uploadNode = findNode(state.uploadTree, payload.nodeId);
 
-      if (!uploadNode) return;
+      uploadNode.info = payload.info;
+    },
+
+    setUploadProgress: (state, { payload }) => {
+      const uploadNode = findNode(state.uploadTree, payload.nodeId);
+
+      uploadNode.info.progress = payload.progress;
     },
   },
 });
