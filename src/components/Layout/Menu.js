@@ -8,7 +8,9 @@ import "./Menu.css";
 
 const Menu = ({ on }) => {
   const dispatch = useDispatch();
+
   const { token } = useSelector((state) => state.auth);
+  
   const history = useHistory();
 
   const logoutHandler = () => {
@@ -25,9 +27,15 @@ const Menu = ({ on }) => {
       unmountOnExit
     >
       <div className="menu">
-        <NavLink to="/#">Account</NavLink>
-        <NavLink to="/my-videos">My Videos</NavLink>
-        <NavLink to="#">History</NavLink>
+        <NavLink activeStyle={{ opacity: 0.7 }} to="/account">
+          Account
+        </NavLink>
+        <NavLink activeStyle={{ opacity: 0.7 }} to="/my-videos">
+          My Videos
+        </NavLink>
+        <NavLink activeStyle={{ opacity: 0.7 }} to="/history">
+          History
+        </NavLink>
         <div className="link" onClick={logoutHandler}>
           Logout
         </div>

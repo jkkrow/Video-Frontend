@@ -41,39 +41,39 @@
 .modal-enter {
   transform: scale(0.5);
   opacity: 0;
+  transition: all 200ms;
 }
 
 .modal-enter-active {
   transform: scale(1);
   opacity: 1;
-  transition: all 200ms;
 }
 
 .modal-exit {
   transform: scale(1);
   opacity: 1;
+  transition: all 200ms;
 }
 
 .modal-exit-active {
   transform: scale(0.5);
   opacity: 0;
-  transition: all 200ms;
 }
 
 .backdrop-enter {
   opacity: 0;
+  transition: opacity 200ms;
 }
 
 .backdrop-enter-active {
   opacity: 1;
-  transition: opacity 200ms;
 }
 
 .backdrop-exit {
   opacity: 1;
+  transition: opacity 200ms;
 }
 
 .backdrop-exit-active {
   opacity: 0;
-  transition: opacity 200ms;
 }

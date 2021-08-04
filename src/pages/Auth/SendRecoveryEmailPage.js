@@ -10,7 +10,7 @@ import { VALIDATOR_EMAIL } from "util/validators";
 import { sendRecoveryEmail, clearResponse } from "store/actions/auth";
 import "./SendRecoveryEmailPage.css";
 
-const SendRecoveryEmailPage = ({ history }) => {
+const SendRecoveryEmailPage = () => {
   const dispatch = useDispatch();
   const { loading, error, message } = useSelector((state) => state.auth);
   const { formState, setFormInput } = useForm({

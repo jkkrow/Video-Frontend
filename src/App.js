@@ -8,6 +8,7 @@ import AuthPage from "pages/Auth/AuthPage";
 import VerifyEmailPage from "pages/Auth/VerifyEmailPage";
 import SendRecoveryEmailPage from "pages/Auth/SendRecoveryEmailPage";
 import ResetPasswordPage from "pages/Auth/ResetPasswordPage";
+import AccountPage from "pages/User/AccountPage";
 import UserVideoListPage from "pages/User/UserVideoListPage";
 import UploadVideoPage from "pages/Upload/UploadVideoPage";
 import "./App.css";
@@ -37,6 +38,7 @@ const App = () => {
     routes = (
       <Switch>
         <Route exact path="/" component={VideoListPage} />
+        <Route exact path="/account" component={AccountPage} />
         <Route exact path="/my-videos" component={UserVideoListPage} />
         <Route exact path="/new-video" component={UploadVideoPage} />
         <Route

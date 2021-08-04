@@ -134,7 +134,7 @@ export const clearResponse = () => {
   };
 };
 
-export const verifyEmail = (token) => {
+export const verifyEmail = (token, callback) => {
   return async (dispatch) => {
     try {
       dispatch(authActions.authRequest());
@@ -148,6 +148,8 @@ export const verifyEmail = (token) => {
           message: data.message,
         })
       );
+
+      callback();
     } catch (err) {
       dispatch(
         authActions.authFail({
@@ -237,5 +239,15 @@ export const postResetPassword = (password, confirmPassword, token) => {
         })
       );
     }
+  };
+};
+
+export const updateUserData = (diff) => {
+  return (dispatch) => {
+    dispatch(
+      authActions.updateUserData({
+        diff,
+      })
+    );
   };
 };

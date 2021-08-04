@@ -9,12 +9,14 @@ import "./Header.css";
 
 const Header = () => {
   const { token, userData } = useSelector((state) => state.auth);
+
   const [displayMenu, setDisplayMenu] = useState(false);
+  
   const location = useLocation();
 
   useEffect(() => {
     setDisplayMenu(false);
-  }, [location.pathname]);
+  }, [location]);
 
   const displayMenuHandler = () => {
     setDisplayMenu((prev) => !prev);

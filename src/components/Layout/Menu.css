@@ -13,22 +13,53 @@
   background-color: var(--bg-primary);
 }
 
+.menu > * {
+  transform: translateX(300%);
+  animation: menu-item 300ms ease-out forwards;
+}
+
+.menu > *:nth-child(1) {
+  animation-delay: 100ms;
+}
+
+.menu > *:nth-child(2) {
+  animation-delay: 200ms;
+}
+
+.menu > *:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+.menu > *:nth-child(4) {
+  animation-delay: 400ms;
+}
+
+@keyframes menu-item {
+  0% {
+    transform: translateX(300%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
 /* CSS Transition */
 
 .menu-enter {
   transform: translateX(100%);
+  transition: all 300ms;
 }
 
 .menu-enter-active {
   transform: translateX(0%);
-  transition: all 300ms;
 }
 
 .menu-exit {
   transform: translateX(0%);
+  transition: all 300ms;
 }
 
 .menu-exit-active {
   transform: translateX(100%);
-  transition: all 300ms;
 }

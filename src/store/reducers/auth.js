@@ -41,6 +41,12 @@ const authSlice = createSlice({
       state.userData = {};
     },
 
+    updateUserData: (state, { payload }) => {
+      for (const prop in payload.diff) {
+        state.userData[prop] = payload.diff[prop];
+      }
+    },
+
     allowAccess: (state) => {
       state.loading = false;
       state.access = true;
