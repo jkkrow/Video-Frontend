@@ -11,6 +11,7 @@ import ResetPasswordPage from "pages/Auth/ResetPasswordPage";
 import AccountPage from "pages/User/AccountPage";
 import UserVideoListPage from "pages/User/UserVideoListPage";
 import UploadVideoPage from "pages/Upload/UploadVideoPage";
+import HistoryPage from "pages/User/HistoryPage";
 import "./App.css";
 
 const App = () => {
@@ -41,6 +42,7 @@ const App = () => {
         <Route exact path="/account" component={AccountPage} />
         <Route exact path="/my-videos" component={UserVideoListPage} />
         <Route exact path="/new-video" component={UploadVideoPage} />
+        <Route exact path="/history" component={HistoryPage} />
         <Route
           exact
           path="/auth/verify-email/:token"
