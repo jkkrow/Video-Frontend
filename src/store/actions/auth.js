@@ -53,14 +53,6 @@ export const login = (email, password) => {
           userData: data.userData,
         })
       );
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          token: data.token,
-          userData: data.userData,
-        })
-      );
     } catch (err) {
       dispatch(
         authActions.authFail({
@@ -86,14 +78,6 @@ export const googleLogin = (googleData) => {
 
       dispatch(
         authActions.login({
-          token: data.token,
-          userData: data.userData,
-        })
-      );
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
           token: data.token,
           userData: data.userData,
         })
@@ -124,7 +108,6 @@ export const googleLoginError = (err) => {
 export const logout = () => {
   return (dispatch) => {
     dispatch(authActions.logout());
-    localStorage.removeItem("user");
   };
 };
 
@@ -150,6 +133,34 @@ export const verifyEmail = (token, callback) => {
       );
 
       callback();
+    } catch (err) {
+      dispatch(
+        authActions.authFail({
+          error:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : err.message,
+        })
+      );
+    }
+  };
+};
+
+export const sendVerifyEmail = (email) => {
+  return async (dispatch) => {
+    try {
+      dispatch(authActions.authRequest());
+
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/auth/send-verify-email`,
+        { email }
+      );
+
+      dispatch(
+        authActions.authSuccess({
+          message: data.message,
+        })
+      );
     } catch (err) {
       dispatch(
         authActions.authFail({

@@ -15,8 +15,22 @@ import HistoryPage from "pages/User/HistoryPage";
 import "./App.css";
 
 const App = () => {
-  const { token } = useSelector((state) => state.auth);
+  const { token, userData } = useSelector((state) => state.auth);
   const { uploadTree } = useSelector((state) => state.upload);
+
+  useEffect(() => {
+    if (!token) {
+      localStorage.removeItem("user");
+    } else {
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          token,
+          userData,
+        })
+      );
+    }
+  }, [token, userData]);
 
   useEffect(() => {
     if (!uploadTree.root) return;

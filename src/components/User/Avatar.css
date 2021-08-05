@@ -1,0 +1,28 @@
+.avatar {
+  width: 4rem;
+  height: 4rem;
+}
+
+.avatar > img {
+  width: 100%;
+  height: 100%;
+}
+
+.avatar > svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  cursor: initial;
+}
+
+.avatar > svg:hover {
+  opacity: initial;
+}
+
+.avatar.btn > svg {
+  cursor: pointer;
+}
+
+.avatar.btn > svg:hover {
+  opacity: 0.7;
+}

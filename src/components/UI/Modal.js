@@ -14,7 +14,7 @@ const Modal = ({
   loading,
   disabled,
   onConfirm,
-  onCancel,
+  onClose,
 }) => {
   return createPortal(
     <>
@@ -38,7 +38,7 @@ const Modal = ({
                 {footer}
               </Button>
             )}
-            <Button onClick={onCancel}>CANCEL</Button>
+            <Button onClick={onClose}>{footer ? "CANCEL" : "OK"}</Button>
           </div>
         </form>
       </CSSTransition>
@@ -49,7 +49,7 @@ const Modal = ({
         mountOnEnter
         unmountOnExit
       >
-        <div className="modal__backdrop" onClick={onCancel} />
+        <div className="modal__backdrop" onClick={onClose} />
       </CSSTransition>
     </>,
     document.getElementById("modal-hook")

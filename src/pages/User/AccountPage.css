@@ -1,0 +1,27 @@
+.account-page {
+  padding: 5rem;
+  gap: 2rem;
+}
+
+.account__profile {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+  gap: 3rem;
+}
+
+.account__profile__picture {
+  padding: 2rem;
+  margin: auto auto auto 0;
+}
+
+.account__profile__info {
+  padding: 2rem 0;
+  text-align: end;
+}
+
+.account__verification,
+.account__premium {
+  width: 100%;
+}

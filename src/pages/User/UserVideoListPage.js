@@ -124,7 +124,7 @@ const UserVideoListPage = ({ history }) => {
         loading={false}
         disabled={!formState.isValid}
         onConfirm={deleteHandler}
-        onCancel={closeWarningHandler}
+        onClose={closeWarningHandler}
       />
 
       <div className="user-video-list__header">
