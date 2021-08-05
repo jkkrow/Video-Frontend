@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v1 as uuidv1 } from "uuid";
 
-import { findById, findByChildrenId } from "util/tree";
+import { findById, findByChildId } from "util/tree";
 
 const uploadSlice = createSlice({
   name: "upload",
@@ -56,7 +56,7 @@ const uploadSlice = createSlice({
     },
 
     removeNode: (state, { payload }) => {
-      const uploadNode = findByChildrenId(state.uploadTree, payload.nodeId);
+      const uploadNode = findByChildId(state.uploadTree, payload.nodeId);
 
       uploadNode.children = uploadNode.children.filter(
         (item) => item.id !== payload.nodeId

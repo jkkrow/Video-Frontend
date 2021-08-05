@@ -16,7 +16,7 @@ export const findById = (tree, id) => {
   return null;
 };
 
-export const findByChildrenId = (tree, id) => {
+export const findByChildId = (tree, id) => {
   let currentNode = tree.root;
   let queue = [];
 
