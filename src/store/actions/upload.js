@@ -22,21 +22,21 @@ export const attachVideo = (file, nodeId, treeId) => {
   return async (dispatch) => {
     try {
       dispatch(
-        uploadActions.setPreviewNode({
+        uploadActions.setUploadNode({
           info: {
             name: file.name,
             label: "",
-            url: URL.createObjectURL(file),
           },
           nodeId,
         })
       );
 
       dispatch(
-        uploadActions.setUploadNode({
+        uploadActions.setPreviewNode({
           info: {
             name: file.name,
             label: "",
+            url: URL.createObjectURL(file),
           },
           nodeId,
         })
@@ -58,8 +58,6 @@ export const attachVideo = (file, nodeId, treeId) => {
       dispatch(
         uploadActions.setUploadNode({
           info: {
-            name: file.name,
-            label: "",
             uploadId,
           },
           nodeId,
@@ -156,6 +154,24 @@ export const attachVideo = (file, nodeId, treeId) => {
     } catch (err) {
       console.log(err);
     }
+  };
+};
+
+export const updateNode = (info, nodeId) => {
+  return (dispatch) => {
+    dispatch(
+      uploadActions.setUploadNode({
+        info,
+        nodeId,
+      })
+    );
+
+    dispatch(
+      uploadActions.setPreviewNode({
+        info,
+        nodeId,
+      })
+    );
   };
 };
 

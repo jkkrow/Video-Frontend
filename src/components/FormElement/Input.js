@@ -31,6 +31,7 @@ const Input = ({
   formElement,
   id,
   type,
+  value,
   label,
   placeholder,
   initialValue,
@@ -80,7 +81,7 @@ const Input = ({
         placeholder={placeholder || label}
         autoFocus={autoFocus}
         autoComplete={autoComplete}
-        value={inputState.value}
+        value={value || inputState.value}
         onChange={onChange || inputChangeHandler}
         onBlur={onBlur || inputBlurHandler}
       />
@@ -91,7 +92,7 @@ const Input = ({
         placeholder={placeholder || label}
         autoFocus={autoFocus}
         autoComplete={autoComplete}
-        value={inputState.value}
+        value={value || inputState.value}
         onChange={onChange || inputChangeHandler}
         onBlur={onBlur || inputBlurHandler}
       />

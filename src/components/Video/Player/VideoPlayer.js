@@ -34,8 +34,6 @@ const VideoPlayer = ({
     (state) => state.video
   );
 
-  const [nextVideos, setNextVideos] = useState(currentVideo.children);
-
   // vp-container
   const [displayCursor, setDisplayCursor] = useState("default");
 
@@ -75,6 +73,7 @@ const VideoPlayer = ({
   // vp-selector
   const [displaySelector, setDisplaySelector] = useState(false);
   const [selectedNext, setSelectedNext] = useState(false);
+  const [selectedNextVideo, setSelectedNextVideo] = useState(null);
 
   const videoRef = useRef();
   const videoContainerRef = useRef();
@@ -150,8 +149,14 @@ const VideoPlayer = ({
   }, []);
 
   const videoEndedHandler = useCallback(() => {
-    nextVideos.length > 0 && dispatch(updateActiveVideo(nextVideos[0]));
-  }, [dispatch, nextVideos]);
+    if (currentVideo.children.length === 0) return;
+
+    if (selectedNextVideo) {
+      dispatch(updateActiveVideo(selectedNextVideo));
+    } else {
+      dispatch(updateActiveVideo(currentVideo.children[0]));
+    }
+  }, [dispatch, currentVideo.children, selectedNextVideo]);
 
   /*
    * LOADING CONTROL
@@ -408,8 +413,8 @@ const VideoPlayer = ({
    * SELECTOR
    */
 
-  const selectNextVideoHandler = useCallback((nextId) => {
-    setNextVideos((prev) => prev.filter((video) => video.id === nextId));
+  const selectNextVideoHandler = useCallback((video) => {
+    setSelectedNextVideo(video);
     setSelectedNext(true);
     setDisplaySelector(false);
   }, []);
@@ -522,7 +527,7 @@ const VideoPlayer = ({
           onCanPlay={hideLoaderHandler}
           onError={errorHandler}
         />
-        {/* Controls */}
+
         <div
           className={`vp-controls${!canPlayType ? " hidden" : ""}${
             !displayControls ? " hide" : ""
@@ -563,10 +568,10 @@ const VideoPlayer = ({
         </div>
 
         <Selector
-          ref={videoSelectorRef}
           on={displaySelector}
+          ref={videoSelectorRef}
           high={displayControls}
-          next={nextVideos}
+          next={currentVideo.children}
           onSelect={selectNextVideoHandler}
         />
 

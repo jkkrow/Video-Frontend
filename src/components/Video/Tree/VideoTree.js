@@ -7,16 +7,12 @@ import "./VideoTree.css";
 
 const VideoTree = ({ tree, autoPlay = true, editMode = false }) => {
   const dispatch = useDispatch();
+  
   const { videoTree, activeVideo } = useSelector((state) => state.video);
 
   useEffect(() => {
     dispatch(setVideoTree(tree));
     dispatch(updateActiveVideo(tree.root));
-
-    return () => {
-      dispatch(setVideoTree({}));
-      dispatch(updateActiveVideo(null));
-    };
   }, [dispatch, tree]);
 
   return (

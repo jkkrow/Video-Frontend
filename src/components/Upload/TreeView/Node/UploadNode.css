@@ -51,6 +51,7 @@
 .upload-node__inputs {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   width: 100%;
   gap: 0.5rem;
 }
@@ -60,14 +61,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-.upload-node__progress {
-  margin: auto;
-}
-
-.upload-node__action > button {
-  margin: auto 0 1rem 0;
+  gap: 1rem;
 }
 
 .upload-node__progress {

@@ -7,11 +7,17 @@ import Button from "components/FormElement/Button";
 import { ReactComponent as AngleRightIcon } from "assets/icons/angle-right.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
 import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
-import { appendChild, attachVideo, removeNode } from "store/actions/upload";
+import {
+  appendChild,
+  attachVideo,
+  updateNode,
+  removeNode,
+} from "store/actions/upload";
 import "./UploadNode.css";
 
 const UploadNode = ({ currentNode, treeId }) => {
   const dispatch = useDispatch();
+
   const [showChildren, setShowChildren] = useState(true);
   const [isExtended, setIsExtended] = useState(true);
 
@@ -36,6 +42,14 @@ const UploadNode = ({ currentNode, treeId }) => {
     dispatch(attachVideo(file, currentNode.id, treeId));
   };
 
+  const labelChangeHandler = (event) => {
+    dispatch(updateNode({ label: event.target.value }, currentNode.id));
+  };
+
+  const timelineChangeHandler = (event) => {
+    dispatch(updateNode({ timeline: event.target.value }, currentNode.id));
+  };
+
   return (
     <div className="upload-node">
       <div
@@ -57,8 +71,22 @@ const UploadNode = ({ currentNode, treeId }) => {
             {isExtended && (
               <div className="upload-node__extended">
                 <div className="upload-node__inputs">
-                  <Input id="label" type="text" label="Label" />
-                  <Input id="timeline" type="number" label="Timeline" />
+                  {currentNode.id !== treeId && (
+                    <Input
+                      id={`${currentNode.id}-label`}
+                      type="text"
+                      label="Label"
+                      value={currentNode.info.label}
+                      onChange={labelChangeHandler}
+                    />
+                  )}
+                  <Input
+                    id={`${currentNode.id}-timeline`}
+                    type="number"
+                    label="Timeline"
+                    value={currentNode.info.timeline}
+                    onChange={timelineChangeHandler}
+                  />
                 </div>
                 <div className="upload-node__action">
                   <div className="upload-node__progress">
@@ -99,6 +127,7 @@ const UploadNode = ({ currentNode, treeId }) => {
           />
         )}
       </div>
+
       <div className={`upload-node__children${!showChildren ? " hide" : ""}`}>
         {currentNode.children.map((item) => (
           <UploadNode key={item.id} currentNode={item} treeId={treeId} />

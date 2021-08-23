@@ -37,19 +37,6 @@ const uploadSlice = createSlice({
       previewNode.children.push(newNode);
     },
 
-    setPreviewNode: (state, { payload }) => {
-      const previewNode = findById(state.previewTree, payload.nodeId);
-
-      if (!previewNode.info) {
-        previewNode.info = payload.info;
-      } else {
-        previewNode.info = {
-          ...previewNode.info,
-          ...payload.info,
-        };
-      }
-    },
-
     setUploadNode: (state, { payload }) => {
       const uploadNode = findById(state.uploadTree, payload.nodeId);
 
@@ -63,10 +50,27 @@ const uploadSlice = createSlice({
       }
     },
 
+    setPreviewNode: (state, { payload }) => {
+      const previewNode = findById(state.previewTree, payload.nodeId);
+
+      if (!previewNode.info) {
+        previewNode.info = payload.info;
+      } else {
+        previewNode.info = {
+          ...previewNode.info,
+          ...payload.info,
+        };
+      }
+    },
+
     removeNode: (state, { payload }) => {
       const uploadNode = findByChildId(state.uploadTree, payload.nodeId);
+      const previewNode = findByChildId(state.previewTree, payload.nodeId);
 
       uploadNode.children = uploadNode.children.filter(
+        (item) => item.id !== payload.nodeId
+      );
+      previewNode.children = previewNode.children.filter(
         (item) => item.id !== payload.nodeId
       );
     },
