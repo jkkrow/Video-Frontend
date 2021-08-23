@@ -84,8 +84,10 @@ export const attachVideo = (file, nodeId, treeId) => {
         const sum = progressArray.reduce((acc, cur) => acc + cur);
 
         dispatch(
-          uploadActions.setUploadProgress({
-            progress: `${Math.round(sum / CHUNKS_COUNT)}%`,
+          uploadActions.setUploadNode({
+            info: {
+              progress: `${Math.round(sum / CHUNKS_COUNT)}%`,
+            },
             nodeId,
           })
         );
@@ -146,8 +148,8 @@ export const attachVideo = (file, nodeId, treeId) => {
       );
 
       dispatch(
-        uploadActions.setUploadProgress({
-          progress: "100%",
+        uploadActions.setUploadNode({
+          info: { progress: "100%" },
           nodeId,
         })
       );

@@ -40,19 +40,27 @@ const uploadSlice = createSlice({
     setPreviewNode: (state, { payload }) => {
       const previewNode = findById(state.previewTree, payload.nodeId);
 
-      previewNode.info = payload.info;
+      if (!previewNode.info) {
+        previewNode.info = payload.info;
+      } else {
+        previewNode.info = {
+          ...previewNode.info,
+          ...payload.info,
+        };
+      }
     },
 
     setUploadNode: (state, { payload }) => {
       const uploadNode = findById(state.uploadTree, payload.nodeId);
 
-      uploadNode.info = payload.info;
-    },
-
-    setUploadProgress: (state, { payload }) => {
-      const uploadNode = findById(state.uploadTree, payload.nodeId);
-
-      uploadNode.info.progress = payload.progress;
+      if (!uploadNode.info) {
+        uploadNode.info = payload.info;
+      } else {
+        uploadNode.info = {
+          ...uploadNode.info,
+          ...payload.info,
+        };
+      }
     },
 
     removeNode: (state, { payload }) => {

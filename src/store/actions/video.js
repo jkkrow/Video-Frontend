@@ -20,17 +20,6 @@ export const updateActiveVideo = (video) => {
   };
 };
 
-export const selectNextVideo = (currentId, nextId) => {
-  return (dispatch) => {
-    dispatch(
-      videoActions.selectNextVideo({
-        currentId,
-        nextId,
-      })
-    );
-  };
-};
-
 export const updateVideoVolume = (volume) => {
   return (dispatch) => {
     dispatch(

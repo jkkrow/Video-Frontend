@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
 
 import VideoPlayer from "../Player/VideoPlayer";
-import "./VideoGroup.css";
+import "./VideoNode.css";
 
-const VideoGroup = ({ currentVideo, autoPlay, editMode, previousVideo }) => {
+const VideoNode = ({ currentVideo, autoPlay, editMode, previousVideo }) => {
   const { activeVideo } = useSelector((state) => state.video);
 
   return (
@@ -22,7 +22,7 @@ const VideoGroup = ({ currentVideo, autoPlay, editMode, previousVideo }) => {
       {currentVideo.children.map(
         (video) =>
           video.info && (
-            <VideoGroup
+            <VideoNode
               key={video.id}
               currentVideo={video}
               autoPlay={false}
@@ -35,4 +35,4 @@ const VideoGroup = ({ currentVideo, autoPlay, editMode, previousVideo }) => {
   );
 };
 
-export default VideoGroup;
+export default VideoNode;

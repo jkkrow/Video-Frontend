@@ -15,11 +15,7 @@ import Fullscreen from "./Controls/Fullscreen";
 import Selector from "./Controls/Selector";
 import Navigation from "./Controls/Navigation";
 import Loader from "./Controls/Loader";
-import {
-  updateActiveVideo,
-  selectNextVideo,
-  updateVideoVolume,
-} from "store/actions/video";
+import { updateActiveVideo, updateVideoVolume } from "store/actions/video";
 import { formatTime } from "util/format";
 import "./VideoPlayer.css";
 
@@ -37,6 +33,8 @@ const VideoPlayer = ({
   const { videoTree, activeVideo, videoVolume } = useSelector(
     (state) => state.video
   );
+
+  const [nextVideos, setNextVideos] = useState(currentVideo.children);
 
   // vp-container
   const [displayCursor, setDisplayCursor] = useState("default");
@@ -152,9 +150,8 @@ const VideoPlayer = ({
   }, []);
 
   const videoEndedHandler = useCallback(() => {
-    currentVideo.children.length > 0 &&
-      dispatch(updateActiveVideo(currentVideo.children[0]));
-  }, [dispatch, currentVideo.children]);
+    nextVideos.length > 0 && dispatch(updateActiveVideo(nextVideos[0]));
+  }, [dispatch, nextVideos]);
 
   /*
    * LOADING CONTROL
@@ -313,13 +310,13 @@ const VideoPlayer = ({
     }
   }, []);
 
-  const fullscreenChangeHandler = useCallback(() => {
+  const fullscreenChangeHandler = () => {
     if (document.fullscreenElement) {
       setFullscreen(true);
     } else {
       setFullscreen(false);
     }
-  }, []);
+  };
 
   /*
    * KEYBOARD SHORTKUTS
@@ -405,20 +402,17 @@ const VideoPlayer = ({
     timeChangeHandler();
 
     document.addEventListener("fullscreenchange", fullscreenChangeHandler);
-  }, [timeChangeHandler, fullscreenChangeHandler]);
+  }, [timeChangeHandler]);
 
   /*
    * SELECTOR
    */
 
-  const selectNextVideoHandler = useCallback(
-    (nextId) => {
-      dispatch(selectNextVideo(currentVideo.id, nextId));
-      setSelectedNext(true);
-      setDisplaySelector(false);
-    },
-    [dispatch, currentVideo.id]
-  );
+  const selectNextVideoHandler = useCallback((nextId) => {
+    setNextVideos((prev) => prev.filter((video) => video.id === nextId));
+    setSelectedNext(true);
+    setDisplaySelector(false);
+  }, []);
 
   /*
    * NAVIGATION
@@ -446,6 +440,8 @@ const VideoPlayer = ({
       clearTimeout(controlsTimer.current);
       clearTimeout(volumeTimer.current);
       clearTimeout(loaderTimer.current);
+
+      document.removeEventListener("fullscreenchange", fullscreenChangeHandler);
     };
   }, []);
 
@@ -453,7 +449,6 @@ const VideoPlayer = ({
     const src = currentVideo.info.url;
 
     // If src type is Blob
-
     if (src.substr(0, 4) === "blob")
       return videoRef.current.setAttribute("src", src);
 
@@ -465,7 +460,7 @@ const VideoPlayer = ({
       .load(src)
       .then(() => {})
       .catch((err) => console.log(err));
-  }, [currentVideo.info.url, videoRef]);
+  }, [currentVideo.info.url]);
 
   useEffect(() => {
     if (!active) {
@@ -483,11 +478,6 @@ const VideoPlayer = ({
       videoContainerRef.current.blur();
     }
   }, [active]);
-
-  useEffect(() => {
-    if (displaySelector) {
-    }
-  }, [displaySelector]);
 
   useLayoutEffect(() => {
     if (active) {
@@ -576,7 +566,7 @@ const VideoPlayer = ({
           ref={videoSelectorRef}
           on={displaySelector}
           high={displayControls}
-          next={currentVideo.children}
+          next={nextVideos}
           onSelect={selectNextVideoHandler}
         />
 

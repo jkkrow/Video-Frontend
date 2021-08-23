@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import DragDrop from "components/FormElement/DragDrop";
+import Input from "components/FormElement/Input";
+import Button from "components/FormElement/Button";
 import { ReactComponent as AngleRightIcon } from "assets/icons/angle-right.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
 import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
@@ -15,6 +17,7 @@ const UploadNode = ({ currentNode, treeId }) => {
 
   const addChildHandler = () => {
     dispatch(appendChild(currentNode.id));
+    setShowChildren(true);
   };
 
   const displayChildrenHandler = () => {
@@ -43,24 +46,25 @@ const UploadNode = ({ currentNode, treeId }) => {
       >
         {currentNode.info ? (
           <>
-            <div className="upload-node__title" onClick={extendBodyHandler}>
+            <div
+              className={`upload-node__title${
+                currentNode.children.length > 0 ? " parent" : ""
+              }`}
+              onClick={extendBodyHandler}
+            >
               {currentNode.info.name}
             </div>
             {isExtended && (
               <div className="upload-node__extended">
-                <div className="upload-node__progress">
-                  <div className="upload-node__progress__bar">
-                    <div className="upload-node__progress__bar--background" />
-                    <div
-                      className="upload-node__progress__bar--current"
-                      style={{ width: currentNode.info.progress || "0%" }}
-                    />
+                <div className="upload-node__inputs">
+                  <Input id="label" type="text" label="Label" />
+                  <Input id="timeline" type="number" label="Timeline" />
+                </div>
+                <div className="upload-node__action">
+                  <div className="upload-node__progress">
+                    {currentNode.info.progress || "0%"}
                   </div>
-                  <div>{currentNode.info.progress}</div>
-
-                  <div className="upload-node__progress__cancel">
-                    <RemoveIcon />
-                  </div>
+                  <Button>Delete</Button>
                 </div>
               </div>
             )}

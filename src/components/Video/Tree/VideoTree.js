@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import VideoGroup from "./VideoGroup";
+import VideoNode from "./VideoNode";
 import { setVideoTree, updateActiveVideo } from "store/actions/video";
 import "./VideoTree.css";
 
@@ -22,7 +22,7 @@ const VideoTree = ({ tree, autoPlay = true, editMode = false }) => {
   return (
     <div className="video-tree">
       {videoTree && activeVideo && (
-        <VideoGroup
+        <VideoNode
           currentVideo={videoTree.root}
           autoPlay={autoPlay}
           editMode={editMode}

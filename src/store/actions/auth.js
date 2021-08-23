@@ -253,11 +253,11 @@ export const postResetPassword = (password, confirmPassword, token) => {
   };
 };
 
-export const updateUserData = (diff) => {
+export const updateUserData = (info) => {
   return (dispatch) => {
     dispatch(
       authActions.updateUserData({
-        diff,
+        info,
       })
     );
   };
