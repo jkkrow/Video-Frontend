@@ -542,7 +542,6 @@ const VideoPlayer = ({
         className="vp-container"
         ref={videoContainerRef}
         style={{ cursor: displayCursor }}
-        tabIndex={-1}
         onMouseMove={showControlsHandler}
         onMouseLeave={hideControlsHandler}
         // onContextMenu={preventDefault}
@@ -572,7 +571,6 @@ const VideoPlayer = ({
             playbackState={playbackState}
             onToggle={togglePlayHandler}
           />
-
           <Volume
             volumeState={volumeState}
             currentVolume={currentVolume}
@@ -581,7 +579,6 @@ const VideoPlayer = ({
             onSeek={volumeInputChangeHandler}
             onKey={preventDefault}
           />
-
           <Progress
             bufferProgress={bufferProgress}
             currentProgress={currentProgress}
@@ -604,9 +601,7 @@ const VideoPlayer = ({
             onSeek={seekChangeHandler}
             onKey={preventDefault}
           />
-
           <Time time={displayTime} />
-
           <Fullscreen
             fullscreenState={fullscreen}
             onToggle={toggleFullscreenHandler}
@@ -621,17 +616,18 @@ const VideoPlayer = ({
           onSelect={selectNextVideoHandler}
         />
 
-        <Navigation
-          on={editMode}
-          activeVideo={activeVideo}
-          videoTree={videoTree}
-          onRestart={restartVideoTreeHandler}
-          onPrev={navigateToPreviousVideoHandler}
-          onNext={navigateToSelectorTimelineHandler}
-          onMark={markTimelineHandler}
-        />
-
         <Loader on={displayLoader} />
+
+        {editMode && (
+          <Navigation
+            activeVideo={activeVideo}
+            videoTree={videoTree}
+            onRestart={restartVideoTreeHandler}
+            onPrev={navigateToPreviousVideoHandler}
+            onNext={navigateToSelectorTimelineHandler}
+            onMark={markTimelineHandler}
+          />
+        )}
       </div>
     </div>
   );
