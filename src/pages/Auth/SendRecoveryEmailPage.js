@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Card from "components/UI/Card";
 import Response from "components/FormElement/Response";
+import Form from "components/FormElement/Form";
 import Input from "components/FormElement/Input";
 import Button from "components/FormElement/Button";
 import { useForm } from "hooks/form-hook";
@@ -17,8 +18,8 @@ const SendRecoveryEmailPage = () => {
     email: { value: "", isValid: false },
   });
 
-  const submitHandler = (event) => {
-    event.preventDefault();
+  const submitHandler = () => {
+    if (!formState.isValid) return;
 
     dispatch(sendRecoveryEmail(formState.inputs.email.value));
   };
@@ -28,30 +29,23 @@ const SendRecoveryEmailPage = () => {
   }, [dispatch]);
 
   return (
-    <Card className="send-recovery-email-page">
-      <form onSubmit={submitHandler}>
-        <Response
-          type={error ? "error" : "message"}
-          content={error || message}
-        />
-        {!message && (
-          <>
-            <Input
-              id="email"
-              type="text"
-              formElement
-              autoFocus
-              autoComplete="email"
-              label="Email *"
-              validators={[VALIDATOR_EMAIL()]}
-              onForm={setFormInput}
-            />
-            <Button loading={loading} disabled={!formState.isValid}>
-              SEND RECOVERY EMAIL
-            </Button>
-          </>
-        )}
-      </form>
+    <Card className="auth-page">
+      <Response type={error ? "error" : "message"} content={error || message} />
+      {!message && (
+        <Form onSubmit={submitHandler}>
+          <Input
+            id="email"
+            type="text"
+            formElement
+            autoFocus
+            autoComplete="email"
+            label="Email *"
+            validators={[VALIDATOR_EMAIL()]}
+            onForm={setFormInput}
+          />
+          <Button loading={loading}>SEND RECOVERY EMAIL</Button>
+        </Form>
+      )}
     </Card>
   );
 };

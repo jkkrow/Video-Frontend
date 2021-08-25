@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import Card from "components/UI/Card";
 import Response from "components/FormElement/Response";
+import Form from "components/FormElement/Form";
 import Input from "components/FormElement/Input";
 import Button from "components/FormElement/Button";
 import GoogleLoginButton from "components/Auth/GoogleLoginButton";
@@ -41,8 +42,8 @@ const AuthPage = () => {
     dispatch(googleLoginError(err));
   };
 
-  const submitHandler = (event) => {
-    event.preventDefault();
+  const submitHandler = () => {
+    if (!formState.isValid) return;
 
     if (isLogin) {
       dispatch(
@@ -95,77 +96,74 @@ const AuthPage = () => {
   return (
     <Card className="auth-page">
       <Response type={error ? "error" : "message"} content={error || message} />
-      <form onSubmit={submitHandler}>
-        {isLogin && (
-          <>
-            <Input
-              id="email"
-              type="text"
-              formElement
-              autoComplete="email"
-              label="Email *"
-              validators={[VALIDATOR_EMAIL()]}
-              onForm={setFormInput}
-            />
-            <Input
-              id="password"
-              type="password"
-              formElement
-              autoComplete="current-password"
-              label="Password *"
-              validators={[VALIDATOR_REQUIRE()]}
-              onForm={setFormInput}
-            />
-            <Link to="/auth/send-recovery-email">Forgot Password</Link>
-          </>
-        )}
-        {!isLogin && (
-          <>
-            <Input
-              id="name"
-              type="text"
-              formElement
-              autoFocus
-              autoComplete="name"
-              label="Name *"
-              message="At least 4 characters"
-              validators={[VALIDATOR_MINLENGTH(4)]}
-              onForm={setFormInput}
-            />
-            <Input
-              id="email"
-              type="text"
-              formElement
-              autoComplete="email"
-              label="Email *"
-              validators={[VALIDATOR_EMAIL()]}
-              onForm={setFormInput}
-            />
-            <Input
-              id="password"
-              type="password"
-              formElement
-              autoComplete="new-password"
-              label="Password *"
-              message="At least 8 characters with lowercase, uppercase, number, and special character"
-              validators={[VALIDATOR_PASSWORD()]}
-              onForm={setFormInput}
-            />
-            <Input
-              id="confirmPassword"
-              type="password"
-              formElement
-              autoComplete="new-password"
-              label="Confirm Password *"
-              validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}
-              onForm={setFormInput}
-            />
-          </>
-        )}
-        <Button loading={loading} disabled={!formState.isValid}>
-          {isLogin ? "SIGN IN" : "SIGN UP"}
-        </Button>
-      </form>
+      {isLogin && (
+        <Form onSubmit={submitHandler}>
+          <Input
+            id="email"
+            type="text"
+            formElement
+            autoComplete="email"
+            label="Email *"
+            validators={[VALIDATOR_EMAIL()]}
+            onForm={setFormInput}
+          />
+          <Input
+            id="password"
+            type="password"
+            formElement
+            autoComplete="current-password"
+            label="Password *"
+            validators={[VALIDATOR_REQUIRE()]}
+            onForm={setFormInput}
+          />
+          <Link to="/auth/send-recovery-email">Forgot Password</Link>
+          <Button loading={loading}>SIGN IN</Button>
+        </Form>
+      )}
+      {!isLogin && (
+        <Form onSubmit={submitHandler}>
+          <Input
+            id="name"
+            type="text"
+            formElement
+            autoFocus
+            autoComplete="name"
+            label="Name *"
+            message="At least 4 characters"
+            validators={[VALIDATOR_MINLENGTH(4)]}
+            onForm={setFormInput}
+          />
+          <Input
+            id="email"
+            type="text"
+            formElement
+            autoComplete="email"
+            label="Email *"
+            validators={[VALIDATOR_EMAIL()]}
+            onForm={setFormInput}
+          />
+          <Input
+            id="password"
+            type="password"
+            formElement
+            autoComplete="new-password"
+            label="Password *"
+            message="At least 8 characters with lowercase, uppercase, number, and special character"
+            validators={[VALIDATOR_PASSWORD()]}
+            onForm={setFormInput}
+          />
+          <Input
+            id="confirmPassword"
+            type="password"
+            formElement
+            autoComplete="new-password"
+            label="Confirm Password *"
+            validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}
+            onForm={setFormInput}
+          />
+          <Button loading={loading}>SIGN UP</Button>
+        </Form>
+      )}
       <GoogleLoginButton
         onLoginSuccess={googleLoginHandler}
         onLoginFail={googleLoginErrorHandler}

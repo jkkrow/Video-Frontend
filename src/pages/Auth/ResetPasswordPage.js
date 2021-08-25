@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Card from "components/UI/Card";
 import Response from "components/FormElement/Response";
+import Form from "components/FormElement/Form";
 import Input from "components/FormElement/Input";
 import Button from "components/FormElement/Button";
 import { useForm } from "hooks/form-hook";
@@ -28,8 +29,8 @@ const ResetPasswordPage = () => {
   });
   const { token } = useParams();
 
-  const submitHandler = (event) => {
-    event.preventDefault();
+  const submitHandler = () => {
+    if (!formState.isValid) return;
 
     dispatch(
       postResetPassword(
@@ -56,42 +57,36 @@ const ResetPasswordPage = () => {
       )}
       {access && (
         <Card className="reset-password-page">
-          <form onSubmit={submitHandler}>
-            <Response
-              type={error ? "error" : "message"}
-              content={error || message}
-            />
-            {!message && (
-              <>
-                <Input
-                  id="password"
-                  type="password"
-                  formElement
-                  autoFocus
-                  autoComplete="new-password"
-                  label="Password *"
-                  message="At least 8 characters with lowercase, uppercase, number, and special character"
-                  validators={[VALIDATOR_PASSWORD()]}
-                  onForm={setFormInput}
-                />
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  formElement
-                  autoComplete="new-password"
-                  label="Confirm Password *"
-                  validators={[
-                    VALIDATOR_EQUAL(formState.inputs.password.value),
-                  ]}
-                  onForm={setFormInput}
-                />
-                <Button loading={loading} disabled={!formState.isValid}>
-                  SEND RECOVERY EMAIL
-                </Button>
-              </>
-            )}
-            {message && <Link to="/auth">Sign in</Link>}
-          </form>
+          <Response
+            type={error ? "error" : "message"}
+            content={error || message}
+          />
+          {!message && (
+            <Form onSubmit={submitHandler}>
+              <Input
+                id="password"
+                type="password"
+                formElement
+                autoFocus
+                autoComplete="new-password"
+                label="Password *"
+                message="At least 8 characters with lowercase, uppercase, number, and special character"
+                validators={[VALIDATOR_PASSWORD()]}
+                onForm={setFormInput}
+              />
+              <Input
+                id="confirmPassword"
+                type="password"
+                formElement
+                autoComplete="new-password"
+                label="Confirm Password *"
+                validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}
+                onForm={setFormInput}
+              />
+              <Button loading={loading}>SEND RECOVERY EMAIL</Button>
+              {message && <Link to="/auth">Sign in</Link>}
+            </Form>
+          )}
         </Card>
       )}
     </>

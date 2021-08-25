@@ -36,6 +36,7 @@ const Input = ({
   placeholder,
   initialValue,
   validators,
+  isValidated,
   autoFocus,
   autoComplete,
   rows,
@@ -49,6 +50,8 @@ const Input = ({
     isValid: formElement ? false : true,
     isBlured: false,
   });
+
+  console.log(isValidated);
 
   useEffect(() => {
     if (formElement) {
@@ -101,7 +104,7 @@ const Input = ({
   return (
     <div
       className={`input__container${
-        inputState.isBlured && !inputState.isValid ? " invalid" : ""
+        isValidated && !inputState.isValid ? " invalid" : ""
       }`}
     >
       {element}
