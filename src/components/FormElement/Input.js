@@ -51,8 +51,6 @@ const Input = ({
     isBlured: false,
   });
 
-  console.log(isValidated);
-
   useEffect(() => {
     if (formElement) {
       onForm(id, inputState.value, inputState.isValid);
