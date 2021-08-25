@@ -325,13 +325,13 @@ const VideoPlayer = ({
     }
   }, []);
 
-  const fullscreenChangeHandler = () => {
+  const fullscreenChangeHandler = useCallback(() => {
     if (document.fullscreenElement) {
       setFullscreen(true);
     } else {
       setFullscreen(false);
     }
-  };
+  }, []);
 
   /*
    * KEYBOARD SHORTKUTS
@@ -393,10 +393,11 @@ const VideoPlayer = ({
         default:
           return;
       }
-    },
-    [displaySelector, togglePlayHandler]
-  );
 
+      showControlsHandler();
+    },
+    [displaySelector, togglePlayHandler, showControlsHandler]
+  );
   /*
    * INITIALIZE VIDEO
    */
@@ -417,7 +418,7 @@ const VideoPlayer = ({
     timeChangeHandler();
 
     document.addEventListener("fullscreenchange", fullscreenChangeHandler);
-  }, [timeChangeHandler]);
+  }, [timeChangeHandler, fullscreenChangeHandler]);
 
   /*
    * SELECTOR
@@ -480,24 +481,14 @@ const VideoPlayer = ({
    */
 
   useEffect(() => {
-    return () => {
-      clearTimeout(controlsTimer.current);
-      clearTimeout(volumeTimer.current);
-      clearTimeout(loaderTimer.current);
-
-      document.removeEventListener("fullscreenchange", fullscreenChangeHandler);
-    };
-  }, []);
-
-  useEffect(() => {
     const src = currentVideo.info.url;
 
     // If src type is Blob
-    if (src.substr(0, 4) === "blob")
+    if (src.substr(0, 4) === "blob") {
       return videoRef.current.setAttribute("src", src);
-
+    }
     // Connect video to Shaka Player
-    let player = new shaka.Player(videoRef.current);
+    const player = new shaka.Player(videoRef.current);
 
     // Try to load a manifest (async process).
     player
@@ -517,13 +508,29 @@ const VideoPlayer = ({
     if (active) {
       videoRef.current.play();
       setDisplayCursor("none");
+      document.addEventListener("keydown", keyEventHandler);
     }
 
     if (!active) {
       videoRef.current.currentTime = 0;
       videoRef.current.pause();
+      document.removeEventListener("keydown", keyEventHandler);
     }
-  }, [active]);
+
+    return () => {
+      document.removeEventListener("keydown", keyEventHandler);
+    };
+  }, [active, keyEventHandler]);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(controlsTimer.current);
+      clearTimeout(volumeTimer.current);
+      clearTimeout(loaderTimer.current);
+
+      document.removeEventListener("fullscreenchange", fullscreenChangeHandler);
+    };
+  }, [fullscreenChangeHandler]);
 
   /*
    * RENDER
@@ -538,7 +545,6 @@ const VideoPlayer = ({
         tabIndex={-1}
         onMouseMove={showControlsHandler}
         onMouseLeave={hideControlsHandler}
-        onKeyDown={keyEventHandler}
         // onContextMenu={preventDefault}
       >
         <video
