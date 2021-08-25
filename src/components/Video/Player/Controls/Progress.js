@@ -7,6 +7,9 @@ const Progress = ({
   seekProgress,
   seekTooltipPosition,
   seekTooltip,
+  timelinePosition,
+  timelineDuration,
+  editMode,
   onHover,
   onSeek,
   onKey,
@@ -17,6 +20,15 @@ const Progress = ({
       className="vp-controls__range--buffer"
       style={{ width: bufferProgress }}
     />
+    {editMode && (
+      <div
+        className="vp-controls__range--timeline"
+        style={{
+          left: timelinePosition,
+          width: timelineDuration,
+        }}
+      />
+    )}
     <div
       className="vp-controls__range--current"
       style={{ width: currentProgress }}

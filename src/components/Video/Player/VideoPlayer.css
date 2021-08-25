@@ -118,6 +118,10 @@
   background: var(--accent-primary);
 }
 
+.vp-controls__range--timeline {
+  background-color: yellow;
+}
+
 .vp-controls__range--seek {
   -webkit-appearance: none;
   position: absolute;
@@ -259,7 +263,7 @@
   width: 40%;
   border-radius: 5px;
   padding: 0.5rem;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.85);
   color: #ffffff;
   text-align: center;
   cursor: pointer;
@@ -279,6 +283,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 1rem;
   bottom: -4rem;
   left: 50%;
   border-radius: 5px;

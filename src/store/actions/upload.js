@@ -26,6 +26,8 @@ export const attachVideo = (file, nodeId, treeId) => {
           info: {
             name: file.name,
             label: "",
+            timelineStart: null,
+            timelineEnd: null,
           },
           nodeId,
         })
@@ -36,6 +38,8 @@ export const attachVideo = (file, nodeId, treeId) => {
           info: {
             name: file.name,
             label: "",
+            timelineStart: null,
+            timelineEnd: null,
             url: URL.createObjectURL(file),
           },
           nodeId,

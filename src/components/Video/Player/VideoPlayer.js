@@ -16,6 +16,7 @@ import Selector from "./Controls/Selector";
 import Navigation from "./Controls/Navigation";
 import Loader from "./Controls/Loader";
 import { updateActiveVideo, updateVideoVolume } from "store/actions/video";
+import { updateNode } from "store/actions/upload";
 import { formatTime } from "util/format";
 import "./VideoPlayer.css";
 
@@ -72,8 +73,10 @@ const VideoPlayer = ({
 
   // vp-selector
   const [displaySelector, setDisplaySelector] = useState(false);
-  const [selectedNext, setSelectedNext] = useState(false);
   const [selectedNextVideo, setSelectedNextVideo] = useState(null);
+
+  // vp-navigation
+  const [timelineMarked, setTimelineMarked] = useState(false);
 
   const videoRef = useRef();
   const videoContainerRef = useRef();
@@ -261,12 +264,19 @@ const VideoPlayer = ({
     setdisplayTime(remainedTime);
 
     // Selector
-    if (currentTime / duration >= 0.9 && !selectedNext) {
+    const timelineStart = currentVideo.info.timelineStart || duration - 10;
+    const timelineEnd = currentVideo.info.timelineEnd || timelineStart + 10;
+
+    if (
+      currentTime >= timelineStart &&
+      currentTime < timelineEnd &&
+      !selectedNextVideo
+    ) {
       setDisplaySelector(true);
     } else {
       setDisplaySelector(false);
     }
-  }, [selectedNext]);
+  }, [currentVideo.info, selectedNextVideo]);
 
   /*
    * SKIP CONTROL
@@ -415,7 +425,6 @@ const VideoPlayer = ({
 
   const selectNextVideoHandler = useCallback((video) => {
     setSelectedNextVideo(video);
-    setSelectedNext(true);
     setDisplaySelector(false);
   }, []);
 
@@ -432,9 +441,39 @@ const VideoPlayer = ({
   }, [dispatch, previousVideo]);
 
   const navigateToSelectorTimelineHandler = useCallback(() => {
-    videoRef.current.currentTime = videoRef.current.duration * 0.9;
+    const timelineStart =
+      currentVideo.info.timelineStart || videoRef.current.duration - 10;
+
+    if (videoRef.current.currentTime < timelineStart) {
+      videoRef.current.currentTime = timelineStart;
+    } else {
+      videoRef.current.currentTime = videoRef.current.duration;
+    }
+
     videoRef.current.play();
-  }, []);
+  }, [currentVideo.info]);
+
+  const markTimelineHandler = useCallback(() => {
+    if (!timelineMarked) {
+      dispatch(
+        updateNode(
+          {
+            timelineStart: videoRef.current.currentTime,
+          },
+          currentVideo.id
+        )
+      );
+    } else {
+      dispatch(
+        updateNode(
+          { timelineEnd: videoRef.current.currentTime },
+          currentVideo.id
+        )
+      );
+    }
+
+    setTimelineMarked((prev) => !prev);
+  }, [dispatch, currentVideo, timelineMarked]);
 
   /*
    * USEEFFECT
@@ -473,16 +512,6 @@ const VideoPlayer = ({
       setDisplayControls(false);
     }
   }, [active, videoVolume]);
-
-  useEffect(() => {
-    if (active) {
-      videoContainerRef.current.focus();
-    }
-
-    if (!active) {
-      videoContainerRef.current.blur();
-    }
-  }, [active]);
 
   useLayoutEffect(() => {
     if (active) {
@@ -554,6 +583,17 @@ const VideoPlayer = ({
             seekProgress={seekProgress}
             seekTooltip={seekTooltip}
             seekTooltipPosition={seekTooltipPosition}
+            timelinePosition={
+              (currentVideo.info.timelineStart / videoDuration) * 100 + "%"
+            }
+            timelineDuration={
+              ((currentVideo.info.timelineEnd -
+                currentVideo.info.timelineStart) /
+                videoDuration) *
+                100 +
+              "%"
+            }
+            editMode={editMode}
             onHover={seekMouseMoveHandler}
             onSeek={seekChangeHandler}
             onKey={preventDefault}
@@ -582,6 +622,7 @@ const VideoPlayer = ({
           onRestart={restartVideoTreeHandler}
           onPrev={navigateToPreviousVideoHandler}
           onNext={navigateToSelectorTimelineHandler}
+          onMark={markTimelineHandler}
         />
 
         <Loader on={displayLoader} />

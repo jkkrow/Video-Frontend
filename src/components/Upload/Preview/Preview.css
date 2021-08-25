@@ -11,7 +11,7 @@
   cursor: pointer;
   background-color: var(--bg-tertiary);
   transition: all 200ms ease-out;
-  z-index: 1000;
+  z-index: 50;
 }
 
 .preview__toggle:hover {
@@ -43,7 +43,7 @@
   border-radius: 50%;
   background-color: #000000;
   transition: transform 800ms ease-out;
-  z-index: 990;
+  z-index: 49;
 }
 
 .preview__video__container {
@@ -54,7 +54,7 @@
   max-width: 120rem;
   visibility: hidden;
   transform: translate(-50%, -50%);
-  z-index: 999;
+  z-index: 50;
 }
 
 .preview__video {

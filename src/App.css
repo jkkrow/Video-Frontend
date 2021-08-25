@@ -22,7 +22,7 @@
 
 html {
   font-size: 62.5%;
-  overflow-y: overlay;
+  overflow: overlay;
 }
 
 body {
@@ -83,16 +83,16 @@ svg.rotated {
   transform: rotate(90deg);
 }
 
-svg.disabled > svg {
+svg.disabled {
   fill: #424242;
   cursor: not-allowed;
 }
 
-svg.inversed > svg {
+svg.inversed {
   fill: var(--text-inversed);
 }
 
-svg.disabled:hover > svg {
+svg.disabled:hover {
   opacity: 1;
 }
 

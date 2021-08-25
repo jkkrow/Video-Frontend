@@ -46,8 +46,14 @@ const UploadNode = ({ currentNode, treeId }) => {
     dispatch(updateNode({ label: event.target.value }, currentNode.id));
   };
 
-  const timelineChangeHandler = (event) => {
-    dispatch(updateNode({ timeline: event.target.value }, currentNode.id));
+  const timelineStartHandler = (event) => {
+    dispatch(
+      updateNode({ timelineStart: +event.target.value }, currentNode.id)
+    );
+  };
+
+  const timelineEndHandler = (event) => {
+    dispatch(updateNode({ timelineEnd: +event.target.value }, currentNode.id));
   };
 
   return (
@@ -80,13 +86,24 @@ const UploadNode = ({ currentNode, treeId }) => {
                       onChange={labelChangeHandler}
                     />
                   )}
-                  <Input
-                    id={`${currentNode.id}-timeline`}
-                    type="number"
-                    label="Timeline"
-                    value={currentNode.info.timeline}
-                    onChange={timelineChangeHandler}
-                  />
+                  <div className="upload-node__timeline">
+                    Timeline
+                    <Input
+                      id={`${currentNode.id}-timelineStart`}
+                      type="number"
+                      label="start"
+                      value={currentNode.info.timelineStart}
+                      onChange={timelineStartHandler}
+                    />
+                    to
+                    <Input
+                      id={`${currentNode.id}-timelineEnd`}
+                      type="number"
+                      label="end"
+                      value={currentNode.info.timelineEnd}
+                      onChange={timelineEndHandler}
+                    />
+                  </div>
                 </div>
                 <div className="upload-node__action">
                   <div className="upload-node__progress">
