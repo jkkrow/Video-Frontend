@@ -10,7 +10,7 @@ const VideoTree = ({ tree, autoPlay = true, editMode = false }) => {
 
   const { videoTree, activeVideo } = useSelector((state) => state.video);
 
-  const rootVideo = useState(tree.root)[0];
+  const [rootVideo] = useState(tree.root);
 
   useEffect(() => {
     dispatch(setVideoTree(tree));

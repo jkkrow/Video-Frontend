@@ -27,7 +27,7 @@ const VerifyEmailPage = () => {
   }, [dispatch, token, param]);
 
   return (
-    <div className="verify-email-page">
+    <div className="auth-page">
       <LoadingSpinner on={loading} />
       <Response type={error ? "error" : "message"} content={error || message} />
     </div>

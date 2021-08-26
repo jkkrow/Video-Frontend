@@ -50,13 +50,13 @@ const ResetPasswordPage = () => {
   return (
     <>
       {!access && (
-        <div className="reset-password-page">
+        <div className="auth-page">
           <LoadingSpinner on={loading} />
           <Response type="error" content={error} />
         </div>
       )}
       {access && (
-        <Card className="reset-password-page">
+        <Card className="auth-page">
           <Response
             type={error ? "error" : "message"}
             content={error || message}
