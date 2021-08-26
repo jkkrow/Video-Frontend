@@ -116,7 +116,9 @@ const AuthPage = () => {
             validators={[VALIDATOR_REQUIRE()]}
             onForm={setFormInput}
           />
-          <Link to="/auth/send-recovery-email">Forgot Password</Link>
+          <>
+            <Link to="/auth/send-recovery-email">Forgot Password</Link>
+          </>
           <Button loading={loading}>SIGN IN</Button>
         </Form>
       )}
@@ -167,6 +169,7 @@ const AuthPage = () => {
       <GoogleLoginButton
         onLoginSuccess={googleLoginHandler}
         onLoginFail={googleLoginErrorHandler}
+        loading={loading}
       />
       {isLogin ? (
         <p>

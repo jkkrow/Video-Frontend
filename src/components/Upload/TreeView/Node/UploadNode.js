@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import DragDrop from "components/FormElement/DragDrop";
-import Input from "components/FormElement/Input";
 import Button from "components/FormElement/Button";
 import { ReactComponent as AngleRightIcon } from "assets/icons/angle-right.svg";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
@@ -46,16 +45,6 @@ const UploadNode = ({ currentNode, treeId }) => {
     dispatch(updateNode({ label: event.target.value }, currentNode.id));
   };
 
-  const timelineStartHandler = (event) => {
-    dispatch(
-      updateNode({ timelineStart: +event.target.value }, currentNode.id)
-    );
-  };
-
-  const timelineEndHandler = (event) => {
-    dispatch(updateNode({ timelineEnd: +event.target.value }, currentNode.id));
-  };
-
   return (
     <div className="upload-node">
       <div
@@ -78,30 +67,27 @@ const UploadNode = ({ currentNode, treeId }) => {
               <div className="upload-node__extended">
                 <div className="upload-node__inputs">
                   {currentNode.id !== treeId && (
-                    <Input
-                      id={`${currentNode.id}-label`}
-                      type="text"
-                      label="Label"
-                      value={currentNode.info.label}
-                      onChange={labelChangeHandler}
-                    />
+                    <label>
+                      Label
+                      <input
+                        type="text"
+                        value={currentNode.info.label}
+                        onChange={labelChangeHandler}
+                      />
+                    </label>
                   )}
                   <div className="upload-node__timeline">
                     Timeline
-                    <Input
-                      id={`${currentNode.id}-timelineStart`}
+                    <input
                       type="number"
-                      label="start"
-                      value={currentNode.info.timelineStart}
-                      onChange={timelineStartHandler}
+                      readOnly
+                      value={currentNode.info.timelineStart || 0}
                     />
                     to
-                    <Input
-                      id={`${currentNode.id}-timelineEnd`}
+                    <input
                       type="number"
-                      label="end"
-                      value={currentNode.info.timelineEnd}
-                      onChange={timelineEndHandler}
+                      readOnly
+                      value={currentNode.info.timelineEnd || 0}
                     />
                   </div>
                 </div>

@@ -74,6 +74,11 @@ const uploadSlice = createSlice({
         (item) => item.id !== payload.nodeId
       );
     },
+
+    removeTree: (state) => {
+      state.uploadTree = {};
+      state.previewTree = {};
+    },
   },
 });
 

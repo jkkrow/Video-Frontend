@@ -188,3 +188,9 @@ export const removeNode = (nodeId) => {
     );
   };
 };
+
+export const removeTree = () => {
+  return (dispatch) => {
+    dispatch(uploadActions.removeTree());
+  };
+};

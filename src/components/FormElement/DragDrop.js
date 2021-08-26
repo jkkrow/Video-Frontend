@@ -79,7 +79,7 @@ const DragDrop = ({ type, onFile }) => {
         />
         <UploadIcon />
       </label>
-      <p>Drag and Drop Video File</p>
+      <p>Drag and Drop {type[0].toUpperCase() + type.substring(1)} File</p>
     </div>
   );
 };

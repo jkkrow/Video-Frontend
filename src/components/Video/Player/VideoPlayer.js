@@ -467,7 +467,9 @@ const VideoPlayer = ({
     } else {
       dispatch(
         updateNode(
-          { timelineEnd: videoRef.current.currentTime },
+          {
+            timelineEnd: videoRef.current.currentTime,
+          },
           currentVideo.id
         )
       );
@@ -586,16 +588,8 @@ const VideoPlayer = ({
             seekProgress={seekProgress}
             seekTooltip={seekTooltip}
             seekTooltipPosition={seekTooltipPosition}
-            timelinePosition={
-              (currentVideo.info.timelineStart / videoDuration) * 100 + "%"
-            }
-            timelineDuration={
-              ((currentVideo.info.timelineEnd -
-                currentVideo.info.timelineStart) /
-                videoDuration) *
-                100 +
-              "%"
-            }
+            timelineStart={currentVideo.info.timelineStart}
+            timelineEnd={currentVideo.info.timelineEnd}
             editMode={editMode}
             onHover={seekMouseMoveHandler}
             onSeek={seekChangeHandler}

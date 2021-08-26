@@ -7,49 +7,60 @@ const Progress = ({
   seekProgress,
   seekTooltipPosition,
   seekTooltip,
-  timelinePosition,
-  timelineDuration,
+  timelineStart,
+  timelineEnd,
   editMode,
   onHover,
   onSeek,
   onKey,
-}) => (
-  <div className="vp-controls__progress">
-    <div className="vp-controls__range--background" />
-    <div
-      className="vp-controls__range--buffer"
-      style={{ width: bufferProgress }}
-    />
-    {editMode && (
+}) => {
+  const timelineStartPosition =
+    timelineStart >= videoDuration ? videoDuration - 10 : timelineStart;
+
+  const timelineEndPosition =
+    timelineEnd > videoDuration ? videoDuration : timelineEnd;
+
+  const timelineDuration =
+    ((timelineEndPosition - timelineStartPosition) / videoDuration) * 100 + "%";
+
+  return (
+    <div className="vp-controls__progress">
+      <div className="vp-controls__range--background" />
       <div
-        className="vp-controls__range--timeline"
-        style={{
-          left: timelinePosition,
-          width: timelineDuration,
-        }}
+        className="vp-controls__range--buffer"
+        style={{ width: bufferProgress }}
       />
-    )}
-    <div
-      className="vp-controls__range--current"
-      style={{ width: currentProgress }}
-    />
-    <input
-      className="vp-controls__range--seek"
-      type="range"
-      step="0.1"
-      max={videoDuration}
-      value={seekProgress}
-      onMouseMove={onHover}
-      onChange={onSeek}
-      onKeyDown={onKey}
-    />
-    <span
-      className="vp-controls__range--seek-tooltip"
-      style={{ left: seekTooltipPosition }}
-    >
-      {seekTooltip}
-    </span>
-  </div>
-);
+      {editMode && (
+        <div
+          className="vp-controls__range--timeline"
+          style={{
+            left: (timelineStartPosition / videoDuration) * 100 + "%",
+            width: timelineDuration,
+          }}
+        />
+      )}
+      <div
+        className="vp-controls__range--current"
+        style={{ width: currentProgress }}
+      />
+      <input
+        className="vp-controls__range--seek"
+        type="range"
+        step="0.1"
+        max={videoDuration}
+        value={seekProgress}
+        onMouseMove={onHover}
+        onChange={onSeek}
+        onKeyDown={onKey}
+      />
+      <span
+        className="vp-controls__range--seek-tooltip"
+        style={{ left: seekTooltipPosition }}
+      >
+        {seekTooltip}
+      </span>
+    </div>
+  );
+};
 
 export default memo(Progress);

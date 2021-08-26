@@ -4,6 +4,7 @@ import { CSSTransition } from "react-transition-group";
 import { useDispatch, useSelector } from "react-redux";
 
 import { logout } from "store/actions/auth";
+import { removeTree } from "store/actions/upload";
 import "./Menu.css";
 
 const Menu = ({ on }) => {
@@ -14,6 +15,7 @@ const Menu = ({ on }) => {
   const history = useHistory();
 
   const logoutHandler = () => {
+    dispatch(removeTree());
     dispatch(logout());
     history.push("/auth");
   };
