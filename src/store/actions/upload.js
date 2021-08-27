@@ -25,7 +25,7 @@ export const attachVideo = (file, nodeId, treeId) => {
         uploadActions.setUploadNode({
           info: {
             name: file.name,
-            label: "",
+            label: "DEFAULT",
             timelineStart: null,
             timelineEnd: null,
           },
@@ -37,7 +37,7 @@ export const attachVideo = (file, nodeId, treeId) => {
         uploadActions.setPreviewNode({
           info: {
             name: file.name,
-            label: "",
+            label: "DEFAULT",
             timelineStart: null,
             timelineEnd: null,
             url: URL.createObjectURL(file),

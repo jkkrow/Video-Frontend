@@ -82,6 +82,7 @@ const UploadNode = ({ currentNode, treeId }) => {
                       type="number"
                       readOnly
                       value={currentNode.info.timelineStart || 0}
+                      data-description="Mark timeline with button below Video Player."
                     />
                     to
                     <input
@@ -89,6 +90,7 @@ const UploadNode = ({ currentNode, treeId }) => {
                       readOnly
                       value={currentNode.info.timelineEnd || 0}
                     />
+                    <p>Mark timeline with a button below Video Player.</p>
                   </div>
                 </div>
                 <div className="upload-node__action">

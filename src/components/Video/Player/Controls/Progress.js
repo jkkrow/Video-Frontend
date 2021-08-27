@@ -15,10 +15,12 @@ const Progress = ({
   onKey,
 }) => {
   const timelineStartPosition =
-    timelineStart >= videoDuration ? videoDuration - 10 : timelineStart;
+    (timelineStart >= videoDuration ? videoDuration - 10 : timelineStart) ||
+    videoDuration - 10;
 
   const timelineEndPosition =
-    timelineEnd > videoDuration ? videoDuration : timelineEnd;
+    (timelineEnd > videoDuration ? videoDuration : timelineEnd) ||
+    videoDuration;
 
   const timelineDuration =
     ((timelineEndPosition - timelineStartPosition) / videoDuration) * 100 + "%";

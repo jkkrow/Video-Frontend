@@ -276,6 +276,7 @@ const VideoPlayer = ({
     if (
       currentTime >= timelineStart &&
       currentTime < timelineEnd &&
+      currentVideo.children.length > 0 &&
       !selectedNextVideo
     ) {
       hideControlsHandler();
@@ -283,7 +284,7 @@ const VideoPlayer = ({
     } else {
       setDisplaySelector(false);
     }
-  }, [currentVideo.info, selectedNextVideo, hideControlsHandler]);
+  }, [currentVideo, selectedNextVideo, hideControlsHandler]);
 
   /*
    * SKIP CONTROL
