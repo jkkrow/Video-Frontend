@@ -117,17 +117,23 @@ const VideoPlayer = ({
   }, []);
 
   const showControlsHandler = useCallback(() => {
-    setDisplayControls(true);
     setDisplayCursor("default");
+
+    if (!displaySelector || (displaySelector && videoRef.current.paused)) {
+      setDisplayControls(true);
+    }
 
     if (videoRef.current.paused) return;
 
     clearTimeout(controlsTimer.current);
     controlsTimer.current = setTimeout(() => {
       hideControlsHandler();
-      setDisplayCursor("none");
+
+      if (!videoRef.current.paused) {
+        setDisplayCursor("none");
+      }
     }, 2000);
-  }, [hideControlsHandler]);
+  }, [displaySelector, hideControlsHandler]);
 
   /*
    * PLAYBACK CONTROL
@@ -272,11 +278,12 @@ const VideoPlayer = ({
       currentTime < timelineEnd &&
       !selectedNextVideo
     ) {
+      hideControlsHandler();
       setDisplaySelector(true);
     } else {
       setDisplaySelector(false);
     }
-  }, [currentVideo.info, selectedNextVideo]);
+  }, [currentVideo.info, selectedNextVideo, hideControlsHandler]);
 
   /*
    * SKIP CONTROL
