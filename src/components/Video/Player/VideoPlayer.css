@@ -67,8 +67,8 @@
   transform: scale(1.5);
 }
 
-.vp-controls__btn * {
-  pointer-events: none;
+.vp-controls__btn:hover > svg {
+  opacity: 1;
 }
 
 .vp-controls__volume {
@@ -153,16 +153,18 @@
 
 .vp-controls__range--seek::-webkit-slider-thumb {
   -webkit-appearance: none;
-  height: 1rem;
   width: 1rem;
-  background-color: transparent;
-  border: none;
+  height: 1rem;
+  background-color: var(--accent-primary);
+  transform: scale(0);
+  transition: transform 200ms ease-out;
 }
 
 .vp-controls__range--seek::-moz-range-thumb {
   -moz-appearance: none;
-  background-color: transparent;
-  border: none;
+  background-color: var(--accent-primary);
+  transform: scale(0);
+  transition: transform 200ms ease-out;
 }
 
 .vp-controls__range--seek:focus {
@@ -211,19 +213,20 @@
   transition: transform 200ms ease-out;
 }
 
-.vp-controls__volume-range--inner div,
-.vp-controls__volume-range--inner input {
+.vp-controls__volume-range--inner:hover > div,
+.vp-controls__volume-range--inner:hover > input {
+}
+
+.vp-controls__volume-range--inner > div,
+.vp-controls__volume-range--inner > input {
   position: absolute;
   width: 100%;
-  transform-origin: left;
+  border-radius: 50px;
   transition: transform 200ms ease-out;
 }
 
-.vp-controls__volume-range--inner div {
+.vp-controls__volume-range--inner > div {
   height: 100%;
-  border-radius: 50px;
-  transform-origin: left;
-  transition: transform 200ms ease-out;
 }
 
 .vp-controls__time {
@@ -260,7 +263,7 @@
   width: 40%;
   border-radius: 5px;
   padding: 0.5rem;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(0, 0, 0, 0.8);
   color: #ffffff;
   text-align: center;
   cursor: pointer;
