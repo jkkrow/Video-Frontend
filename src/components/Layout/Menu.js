@@ -11,10 +11,19 @@ const Menu = ({ on }) => {
   const dispatch = useDispatch();
 
   const { token } = useSelector((state) => state.auth);
+  const { uploadTree } = useSelector((state) => state.upload);
 
   const history = useHistory();
 
   const logoutHandler = () => {
+    if (uploadTree.root) {
+      const result = window.confirm(
+        "There is unfinished uploading process. The process will be lost if you logout. Are you sure to proceed?"
+      );
+
+      if (!result) return;
+    }
+
     dispatch(removeTree());
     dispatch(logout());
     history.push("/auth");
