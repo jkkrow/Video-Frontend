@@ -100,9 +100,20 @@
 .vp-controls__progress > div,
 .vp-controls__progress > input {
   position: absolute;
-  height: 0.5rem;
   border-radius: 50px;
+}
+
+.vp-controls__progress > div {
+  height: 0.5rem;
   transition: transform 200ms ease-out;
+}
+
+.vp-controls__progress > input {
+  height: 100%;
+}
+
+.vp-controls__progress:hover > div {
+  transform: scaleY(2);
 }
 
 .vp-controls__range--background {
@@ -144,20 +155,14 @@
   -webkit-appearance: none;
   height: 1rem;
   width: 1rem;
-  background: var(--accent-primary);
+  background-color: transparent;
   border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transform: scale(0);
-  transition: transform 200ms ease-out;
 }
 
 .vp-controls__range--seek::-moz-range-thumb {
   -moz-appearance: none;
-  background: var(--accent-primary);
+  background-color: transparent;
   border: none;
-  transform: scale(0);
-  transition: transform 200ms ease-out;
 }
 
 .vp-controls__range--seek:focus {
@@ -168,14 +173,6 @@
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
-}
-
-.vp-controls__range--seek:hover::-webkit-slider-thumb {
-  transform: scale(1.2);
-}
-
-.vp-controls__range--seek:hover::-moz-range-thumb {
-  transform: scale(1);
 }
 
 .vp-controls__range--seek-tooltip {

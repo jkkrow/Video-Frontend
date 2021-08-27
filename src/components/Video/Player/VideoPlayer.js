@@ -471,6 +471,20 @@ const VideoPlayer = ({
           currentVideo.id
         )
       );
+
+      if (videoRef.current.currentTime > currentVideo.info.timelineEnd) {
+        dispatch(
+          updateNode(
+            {
+              timelineEnd:
+                videoRef.current.currentTime + 10 > videoDuration
+                  ? videoDuration
+                  : videoRef.current.currentTime + 10,
+            },
+            currentVideo.id
+          )
+        );
+      }
     } else {
       dispatch(
         updateNode(
@@ -480,10 +494,24 @@ const VideoPlayer = ({
           currentVideo.id
         )
       );
+
+      if (videoRef.current.currentTime < currentVideo.info.timelineStart) {
+        dispatch(
+          updateNode(
+            {
+              timelineStart:
+                videoRef.current.currentTime - 10 < 0
+                  ? 0
+                  : videoRef.current.currentTime - 10,
+            },
+            currentVideo.id
+          )
+        );
+      }
     }
 
     setTimelineMarked((prev) => !prev);
-  }, [dispatch, currentVideo, timelineMarked]);
+  }, [dispatch, currentVideo, timelineMarked, videoDuration]);
 
   /*
    * USEEFFECT
