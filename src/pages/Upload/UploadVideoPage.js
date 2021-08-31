@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 
-import UploadTree from "components/Upload/TreeView/Tree/UploadTree";
+import UploadTree from "components/Upload/TreeView/UploadTree";
 import Preview from "components/Upload/Preview/Preview";
 import "./UploadVideoPage.css";
 

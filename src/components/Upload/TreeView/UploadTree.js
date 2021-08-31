@@ -1,4 +1,4 @@
-import UploadNode from "../Node/UploadNode";
+import UploadNode from "./UploadNode";
 import "./UploadTree.css";
 
 const UploadTree = ({ tree }) => {
