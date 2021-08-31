@@ -10,7 +10,7 @@ import "./Menu.css";
 const Menu = ({ on }) => {
   const dispatch = useDispatch();
 
-  const { token } = useSelector((state) => state.auth);
+  const { userData } = useSelector((state) => state.auth);
   const { uploadTree } = useSelector((state) => state.upload);
 
   const history = useHistory();
@@ -31,7 +31,7 @@ const Menu = ({ on }) => {
 
   return createPortal(
     <CSSTransition
-      in={on && !!token}
+      in={on && !!userData}
       classNames="menu"
       timeout={300}
       mountOnEnter

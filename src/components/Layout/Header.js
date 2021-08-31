@@ -8,10 +8,10 @@ import Menu from "./Menu";
 import "./Header.css";
 
 const Header = () => {
-  const { token, userData } = useSelector((state) => state.auth);
+  const { userData } = useSelector((state) => state.auth);
 
   const [displayMenu, setDisplayMenu] = useState(false);
-  
+
   const location = useLocation();
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const Header = () => {
 
       <Search />
 
-      {token ? (
+      {userData ? (
         <div className="link" onClick={displayMenuHandler}>
           {userData.name.toUpperCase()}
         </div>

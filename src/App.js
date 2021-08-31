@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import Header from "components/Layout/Header";
@@ -12,25 +12,24 @@ import AccountPage from "pages/User/AccountPage";
 import UserVideoListPage from "pages/User/UserVideoListPage";
 import UploadVideoPage from "pages/Upload/UploadVideoPage";
 import HistoryPage from "pages/User/HistoryPage";
+import { logout, updateRefreshToken } from "store/actions/auth";
 import "./App.css";
 
 const App = () => {
-  const { token, userData } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  const { refreshToken, userData } = useSelector((state) => state.auth);
   const { uploadTree } = useSelector((state) => state.upload);
 
   useEffect(() => {
-    if (!token) {
-      localStorage.removeItem("user");
+    if (!refreshToken.value) return;
+
+    if (new Date(refreshToken.expiresIn) < new Date()) {
+      dispatch(logout());
     } else {
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          token,
-          userData,
-        })
-      );
+      dispatch(updateRefreshToken(refreshToken.value));
     }
-  }, [token, userData]);
+  }, [dispatch, refreshToken]);
 
   useEffect(() => {
     if (!uploadTree.root) return;
@@ -49,7 +48,7 @@ const App = () => {
 
   let routes;
 
-  if (token) {
+  if (userData) {
     routes = (
       <Switch>
         <Route exact path="/" component={VideoListPage} />
@@ -69,10 +68,6 @@ const App = () => {
     routes = (
       <Switch>
         <Route exact path="/" component={VideoListPage} />
-        {/* Only available in Development */}
-        {/* <Route exact path="/my-videos" component={UserVideoListPage} />
-        <Route exact path="/new-video" component={UploadVideoPage} /> */}
-        {/* /> */}
         <Route exact path="/auth" component={AuthPage} />
         <Route
           exact

@@ -49,10 +49,20 @@ export const login = (email, password) => {
 
       dispatch(
         authActions.login({
-          token: data.token,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
           userData: data.userData,
         })
       );
+
+      localStorage.setItem(
+        "token",
+        JSON.stringify({
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        })
+      );
+      localStorage.setItem("userData", JSON.stringify(data.userData));
     } catch (err) {
       dispatch(
         authActions.authFail({
@@ -78,10 +88,20 @@ export const googleLogin = (googleData) => {
 
       dispatch(
         authActions.login({
-          token: data.token,
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
           userData: data.userData,
         })
       );
+
+      localStorage.setItem(
+        "token",
+        JSON.stringify({
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        })
+      );
+      localStorage.setItem("userData", JSON.stringify(data.userData));
     } catch (err) {
       dispatch(
         authActions.authFail({
@@ -108,6 +128,16 @@ export const googleLoginError = (err) => {
 export const logout = () => {
   return (dispatch) => {
     dispatch(authActions.logout());
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("userData");
+  };
+};
+
+export const updateRefreshToken = () => {
+  return async (dispatch) => {
+    // TODO: Implement update refreshToken
+    // const { data } = await axios.post();
   };
 };
 
@@ -260,5 +290,14 @@ export const updateUserData = (info) => {
         info,
       })
     );
+
+    const prevUserData = JSON.parse(localStorage.getItem("userData"));
+
+    const newUserData = {
+      ...prevUserData,
+      ...info,
+    };
+
+    localStorage.setItem("userData", JSON.stringify(newUserData));
   };
 };

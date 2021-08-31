@@ -10,21 +10,23 @@ import "./VerifyEmailPage.css";
 const VerifyEmailPage = () => {
   const dispatch = useDispatch();
 
-  const { token, loading, error, message } = useSelector((state) => state.auth);
+  const { userData, loading, error, message } = useSelector(
+    (state) => state.auth
+  );
 
-  const param = useParams().token;
+  const { token } = useParams();
 
   useEffect(() => {
     const updateUserVerfied = () => {
-      if (!token) return;
+      if (!userData) return;
 
       dispatch(updateUserData({ isVerified: true }));
     };
 
-    dispatch(verifyEmail(param, updateUserVerfied));
+    dispatch(verifyEmail(token, updateUserVerfied));
 
     return () => dispatch(clearResponse());
-  }, [dispatch, token, param]);
+  }, [dispatch, userData, token]);
 
   return (
     <div className="auth-page">
