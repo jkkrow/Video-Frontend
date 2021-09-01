@@ -12,7 +12,11 @@ import AccountPage from "pages/User/AccountPage";
 import UserVideoListPage from "pages/User/UserVideoListPage";
 import UploadVideoPage from "pages/Upload/UploadVideoPage";
 import HistoryPage from "pages/User/HistoryPage";
-import { logout, updateRefreshToken } from "store/actions/auth";
+import {
+  logout,
+  updateRefreshToken,
+  updateAccessToken,
+} from "store/actions/auth";
 import "./App.css";
 
 const App = () => {
@@ -22,13 +26,27 @@ const App = () => {
   const { uploadTree } = useSelector((state) => state.upload);
 
   useEffect(() => {
-    if (!refreshToken.value) return;
+    const refreshToken = JSON.parse(localStorage.getItem("refreshToken"));
 
-    if (new Date(refreshToken.expiresIn) < new Date()) {
-      dispatch(logout());
-    } else {
+    if (!refreshToken) return;
+
+    if (new Date(refreshToken.expiresIn) > new Date()) {
       dispatch(updateRefreshToken(refreshToken.value));
+    } else {
+      dispatch(logout());
     }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!refreshToken) return;
+
+    let timer = setInterval(() => {
+      dispatch(updateAccessToken(refreshToken.value));
+    }, 1000 * 60 * 14);
+
+    return () => {
+      clearInterval(timer);
+    };
   }, [dispatch, refreshToken]);
 
   useEffect(() => {

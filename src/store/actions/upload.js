@@ -52,10 +52,7 @@ export const attachVideo = (file, nodeId, treeId) => {
         fileType: file.type,
       };
 
-      const response = await axios.get(
-        `${process.env.REACT_APP_SERVER_URL}/upload/initiate-upload`,
-        { params }
-      );
+      const response = await axios.get("/upload/initiate-upload", { params });
 
       const { uploadId } = response.data;
 
@@ -102,17 +99,14 @@ export const attachVideo = (file, nodeId, treeId) => {
           index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
 
         // Initiate Upload
-        const getUploadUrlResponse = await axios.get(
-          `${process.env.REACT_APP_SERVER_URL}/upload/get-upload-url`,
-          {
-            params: {
-              videoTitle: treeId,
-              fileName: file.name,
-              partNumber: index,
-              uploadId,
-            },
-          }
-        );
+        const getUploadUrlResponse = await axios.get("/upload/get-upload-url", {
+          params: {
+            videoTitle: treeId,
+            fileName: file.name,
+            partNumber: index,
+            uploadId,
+          },
+        });
 
         const { presignedUrl } = getUploadUrlResponse.data;
 
@@ -137,17 +131,14 @@ export const attachVideo = (file, nodeId, treeId) => {
       });
 
       // Complete Upload
-      await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/upload/complete-upload`,
-        {
-          params: {
-            videoTitle: treeId,
-            fileName: file.name,
-            parts: uploadPartsArray,
-            uploadId,
-          },
-        }
-      );
+      await axios.post("/upload/complete-upload", {
+        params: {
+          videoTitle: treeId,
+          fileName: file.name,
+          parts: uploadPartsArray,
+          uploadId,
+        },
+      });
 
       dispatch(
         uploadActions.setUploadNode({

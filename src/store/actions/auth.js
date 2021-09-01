@@ -7,15 +7,12 @@ export const register = (name, email, password, confirmPassword, callback) => {
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/auth/register`,
-        {
-          name,
-          email,
-          password,
-          confirmPassword,
-        }
-      );
+      const { data } = await axios.post("/auth/register", {
+        name,
+        email,
+        password,
+        confirmPassword,
+      });
 
       dispatch(
         authActions.authSuccess({
@@ -42,10 +39,7 @@ export const login = (email, password) => {
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/auth/login`,
-        { email, password }
-      );
+      const { data } = await axios.post("/auth/login", { email, password });
 
       dispatch(
         authActions.login({
@@ -55,13 +49,7 @@ export const login = (email, password) => {
         })
       );
 
-      localStorage.setItem(
-        "token",
-        JSON.stringify({
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-        })
-      );
+      localStorage.setItem("refreshToken", JSON.stringify(data.refreshToken));
       localStorage.setItem("userData", JSON.stringify(data.userData));
     } catch (err) {
       dispatch(
@@ -81,10 +69,9 @@ export const googleLogin = (googleData) => {
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/auth/google-login`,
-        { tokenId: googleData.tokenId }
-      );
+      const { data } = await axios.post("/auth/google-login", {
+        tokenId: googleData.tokenId,
+      });
 
       dispatch(
         authActions.login({
@@ -94,13 +81,7 @@ export const googleLogin = (googleData) => {
         })
       );
 
-      localStorage.setItem(
-        "token",
-        JSON.stringify({
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-        })
-      );
+      localStorage.setItem("refreshToken", JSON.stringify(data.refreshToken));
       localStorage.setItem("userData", JSON.stringify(data.userData));
     } catch (err) {
       dispatch(
@@ -129,15 +110,67 @@ export const logout = () => {
   return (dispatch) => {
     dispatch(authActions.logout());
 
-    localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
     localStorage.removeItem("userData");
   };
 };
 
-export const updateRefreshToken = () => {
+export const updateRefreshToken = (token) => {
+  let success = false;
+  let retry = 0;
+
   return async (dispatch) => {
-    // TODO: Implement update refreshToken
-    // const { data } = await axios.post();
+    while (!success && retry <= 3) {
+      try {
+        const { data } = await axios.get("/auth/update-refresh-token", {
+          headers: { Authorization: "Bearer " + token },
+        });
+
+        dispatch(
+          authActions.updateRefreshToken({
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken,
+          })
+        );
+
+        localStorage.setItem("refreshToken", JSON.stringify(data.refreshToken));
+
+        success = true;
+      } catch (err) {
+        console.log(err);
+
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        retry++;
+      }
+    }
+  };
+};
+
+export const updateAccessToken = (token) => {
+  let success = false;
+  let retry = 0;
+
+  return async (dispatch) => {
+    while (!success && retry <= 3) {
+      try {
+        const { data } = await axios.get("/auth/update-access-token", {
+          headers: { Authorization: "Bearer " + token },
+        });
+
+        dispatch(
+          authActions.updateAccessToken({
+            accessToken: data.accessToken,
+          })
+        );
+
+        success = true;
+      } catch (err) {
+        console.log(err);
+
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        retry++;
+      }
+    }
   };
 };
 
@@ -152,9 +185,7 @@ export const verifyEmail = (token, callback) => {
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_SERVER_URL}/auth/verify-email/${token}`
-      );
+      const { data } = await axios.get(`/auth/verify-email/${token}`);
 
       dispatch(
         authActions.authSuccess({
@@ -181,10 +212,7 @@ export const sendVerifyEmail = (email) => {
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/auth/send-verify-email`,
-        { email }
-      );
+      const { data } = await axios.post("/auth/send-verify-email", { email });
 
       dispatch(
         authActions.authSuccess({
@@ -209,10 +237,7 @@ export const sendRecoveryEmail = (email) => {
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/auth/send-recovery-email`,
-        { email }
-      );
+      const { data } = await axios.post("/auth/send-recovery-email", { email });
 
       dispatch(
         authActions.authSuccess({
@@ -237,9 +262,7 @@ export const getResetPassword = (token) => {
     try {
       dispatch(authActions.authRequest());
 
-      await axios.get(
-        `${process.env.REACT_APP_SERVER_URL}/auth/reset-password/${token}`
-      );
+      await axios.get(`/auth/reset-password/${token}`);
 
       dispatch(authActions.allowAccess());
     } catch (err) {
@@ -260,10 +283,10 @@ export const postResetPassword = (password, confirmPassword, token) => {
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await axios.put(
-        `${process.env.REACT_APP_SERVER_URL}/auth/reset-password/${token}`,
-        { password, confirmPassword }
-      );
+      const { data } = await axios.put(`/auth/reset-password/${token}`, {
+        password,
+        confirmPassword,
+      });
 
       dispatch(
         authActions.authSuccess({
