@@ -117,7 +117,9 @@ const AuthPage = () => {
             onForm={setFormInput}
           />
           <>
-            <Link to="/auth/send-recovery-email">Forgot Password</Link>
+            <Link to="/auth/send-recovery-email" tabIndex={-1}>
+              Forgot Password
+            </Link>
           </>
           <Button loading={loading}>SIGN IN</Button>
         </Form>

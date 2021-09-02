@@ -13,6 +13,7 @@ import Progress from "./Controls/Progress";
 import Time from "./Controls/Time";
 import Fullscreen from "./Controls/Fullscreen";
 import Selector from "./Controls/Selector";
+import SelectorTimer from "./Controls/SelectorTimer";
 import Navigation from "./Controls/Navigation";
 import Loader from "./Controls/Loader";
 import { updateActiveVideo, updateVideoVolume } from "store/actions/video";
@@ -53,8 +54,8 @@ const VideoPlayer = ({
   const [seekVolume, setSeekVolume] = useState(1);
 
   // progress bar
-  const [currentProgress, setCurrentProgress] = useState("0");
-  const [bufferProgress, setBufferProgress] = useState("0");
+  const [currentProgress, setCurrentProgress] = useState(0);
+  const [bufferProgress, setBufferProgress] = useState(0);
   const [seekProgress, setSeekProgress] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
 
@@ -74,6 +75,9 @@ const VideoPlayer = ({
   // vp-selector
   const [displaySelector, setDisplaySelector] = useState(false);
   const [selectedNextVideo, setSelectedNextVideo] = useState(null);
+
+  // vp-selector-timer
+  const [selectorTimer, setSelectorTimer] = useState(0);
 
   // vp-navigation
   const [timelineMarked, setTimelineMarked] = useState(false);
@@ -248,7 +252,7 @@ const VideoPlayer = ({
     const buffer = videoRef.current.buffered;
 
     // Progress
-    setCurrentProgress((currentTime / duration) * 100 + "%");
+    setCurrentProgress((currentTime / duration) * 100);
     setSeekProgress(currentTime);
 
     if (duration > 0) {
@@ -258,7 +262,7 @@ const VideoPlayer = ({
           buffer.start(buffer.length - 1 - i) < videoRef.current.currentTime
         ) {
           setBufferProgress(
-            (buffer.end(buffer.length - 1 - i) / duration) * 100 + "%"
+            (buffer.end(buffer.length - 1 - i) / duration) * 100
           );
           break;
         }
@@ -281,6 +285,14 @@ const VideoPlayer = ({
     ) {
       hideControlsHandler();
       setDisplaySelector(true);
+
+      setSelectorTimer(
+        parseInt(
+          100 -
+            ((currentTime - timelineStart) / (timelineEnd - timelineStart)) *
+              100
+        )
+      );
     } else {
       setDisplaySelector(false);
     }
@@ -317,7 +329,7 @@ const VideoPlayer = ({
     const skipTo = progressSeekData.current || event.target.value;
 
     videoRef.current.currentTime = skipTo;
-    setCurrentProgress((skipTo / videoRef.current.duration) * 100 + "%");
+    setCurrentProgress((skipTo / videoRef.current.duration) * 100);
     setSeekProgress(skipTo);
   }, []);
 
@@ -643,7 +655,13 @@ const VideoPlayer = ({
           ref={videoSelectorRef}
           high={displayControls}
           next={currentVideo.children}
+          timer={selectorTimer}
           onSelect={selectNextVideoHandler}
+        />
+
+        <SelectorTimer
+          on={displaySelector && !displayControls}
+          timer={selectorTimer}
         />
 
         <Loader on={displayLoader} />

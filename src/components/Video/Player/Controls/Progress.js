@@ -30,7 +30,7 @@ const Progress = ({
       <div className="vp-controls__range--background" />
       <div
         className="vp-controls__range--buffer"
-        style={{ width: bufferProgress }}
+        style={{ width: bufferProgress + "%" }}
       />
       {editMode && (
         <div
@@ -43,7 +43,7 @@ const Progress = ({
       )}
       <div
         className="vp-controls__range--current"
-        style={{ width: currentProgress }}
+        style={{ width: currentProgress + "%" }}
       />
       <input
         className="vp-controls__range--seek"
