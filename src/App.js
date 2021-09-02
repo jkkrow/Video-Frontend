@@ -30,7 +30,7 @@ const App = () => {
 
     if (!refreshToken) return;
 
-    if (new Date(refreshToken.expiresIn) > new Date()) {
+    if (refreshToken.expiresIn > Date.now()) {
       dispatch(updateRefreshToken(refreshToken.value));
     } else {
       dispatch(logout());
