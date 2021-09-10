@@ -34,3 +34,13 @@
 .search__input:focus ~ label {
   transform: translateX(-25.5rem);
 }
+
+@media (max-width: 500px) {
+  .search__input {
+    width: 15rem;
+  }
+
+  .search__input:focus ~ label {
+  transform: translateX(-15.5rem);
+}
+}

@@ -64,10 +64,6 @@ const App = () => {
     };
   }, [uploadTree]);
 
-  useEffect(() => {
-    document.addEventListener("scroll", (event) => {});
-  }, []);
-
   let routes;
 
   if (userData) {
