@@ -88,12 +88,19 @@
   transform: scaleX(1);
 }
 
+.vp-controls__progress__container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 .vp-controls__progress {
   position: relative;
   display: flex;
   align-items: center;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .vp-controls__progress > div,
@@ -170,7 +177,7 @@
   outline: none;
 }
 
-.vp-controls__range--seek:hover + .vp-controls__range--seek-tooltip {
+.vp-controls__progress:hover + .vp-controls__range--seek-tooltip {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);

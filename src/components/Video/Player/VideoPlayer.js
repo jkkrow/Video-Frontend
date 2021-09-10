@@ -307,7 +307,9 @@ const VideoPlayer = ({
       (event.nativeEvent.offsetX / event.target.clientWidth) *
       parseInt(event.target.getAttribute("max"), 10);
 
-    progressSeekData.current = skipTo;
+    progressSeekData.current = skipTo.toFixed(2);
+
+    const rect = videoRef.current.getBoundingClientRect();
 
     let newTime;
     if (skipTo > videoRef.current.duration) {
@@ -316,13 +318,10 @@ const VideoPlayer = ({
       newTime = "00:00";
     } else {
       newTime = formatTime(skipTo);
+      setSeekTooltipPosition(`${event.pageX - rect.left}px`);
     }
 
     setSeekTooltip(newTime);
-
-    const rect = videoRef.current.getBoundingClientRect();
-
-    setSeekTooltipPosition(`${event.pageX - rect.left}px`);
   }, []);
 
   const seekChangeHandler = useCallback((event) => {

@@ -26,35 +26,38 @@ const Progress = ({
     ((timelineEndPosition - timelineStartPosition) / videoDuration) * 100 + "%";
 
   return (
-    <div className="vp-controls__progress">
-      <div className="vp-controls__range--background" />
-      <div
-        className="vp-controls__range--buffer"
-        style={{ width: bufferProgress + "%" }}
-      />
-      {editMode && (
+    <div className="vp-controls__progress__container">
+      <div className="vp-controls__progress">
+        <div className="vp-controls__range--background" />
         <div
-          className="vp-controls__range--timeline"
-          style={{
-            left: (timelineStartPosition / videoDuration) * 100 + "%",
-            width: timelineDuration,
-          }}
+          className="vp-controls__range--buffer"
+          style={{ width: bufferProgress + "%" }}
         />
-      )}
-      <div
-        className="vp-controls__range--current"
-        style={{ width: currentProgress + "%" }}
-      />
-      <input
-        className="vp-controls__range--seek"
-        type="range"
-        step="0.1"
-        max={videoDuration}
-        value={seekProgress}
-        onMouseMove={onHover}
-        onChange={onSeek}
-        onKeyDown={onKey}
-      />
+        {editMode && (
+          <div
+            className="vp-controls__range--timeline"
+            style={{
+              left: (timelineStartPosition / videoDuration) * 100 + "%",
+              width: timelineDuration,
+            }}
+          />
+        )}
+        <div
+          className="vp-controls__range--current"
+          style={{ width: currentProgress + "%" }}
+        />
+        <input
+          className="vp-controls__range--seek"
+          type="range"
+          step="0.1"
+          max={videoDuration}
+          value={seekProgress}
+          onMouseMove={onHover}
+          onChange={onSeek}
+          onKeyDown={onKey}
+        />
+      </div>
+
       <span
         className="vp-controls__range--seek-tooltip"
         style={{ left: seekTooltipPosition }}
