@@ -139,7 +139,7 @@ export const updateRefreshToken = (token) => {
       } catch (err) {
         console.log(err);
 
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 5000));
         retry++;
       }
     }
@@ -167,7 +167,7 @@ export const updateAccessToken = (token) => {
       } catch (err) {
         console.log(err);
 
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 5000));
         retry++;
       }
     }
