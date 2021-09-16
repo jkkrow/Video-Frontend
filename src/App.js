@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
 import Header from "components/Layout/Header";
+import Footer from "components/Layout/Footer";
 import GuestRoute from "routes/GuestRoute";
 import UserRoute from "routes/UserRoute";
 import {
@@ -64,7 +65,7 @@ const App = () => {
         {userData && <UserRoute />}
         {!userData && <GuestRoute />}
       </main>
-      <footer></footer>
+      <Footer />
     </BrowserRouter>
   );
 };
