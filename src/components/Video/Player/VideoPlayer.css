@@ -316,9 +316,10 @@
   left: 50%;
   border-radius: 5px;
   transform: translate(-50%, 0);
+  z-index: 10;
 }
 
-.vp-navigation > svg {
+.vp-navigation svg {
   width: 1.5rem;
   height: 1.5rem;
 }
@@ -333,7 +334,7 @@
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 200;
+  z-index: 20;
 }
 
 .vp-loader {
