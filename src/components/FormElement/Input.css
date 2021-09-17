@@ -32,12 +32,12 @@
 
 .input__container div {
   max-height: 0;
-  font-size: 1rem;
   overflow: hidden;
   transition: max-height 200ms ease-out;
 }
 
 .input__container p {
+  font-size: 1.2rem;
   padding: 0.5rem;
 }
 

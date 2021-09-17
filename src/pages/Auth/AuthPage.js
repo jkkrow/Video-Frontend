@@ -130,7 +130,6 @@ const AuthPage = () => {
             id="name"
             type="text"
             formElement
-            autoFocus
             autoComplete="name"
             label="Name *"
             message="At least 4 characters"

@@ -16,6 +16,10 @@
   gap: 1rem;
 }
 
+.auth-page form > button {
+  margin-top: 1rem;
+}
+
 .auth-page input,
 .auth-page button {
   width: 100%;

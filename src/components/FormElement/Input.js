@@ -28,6 +28,7 @@ const inputReducer = (state, action) => {
 };
 
 const Input = ({
+  style,
   formElement,
   id,
   type,
@@ -104,6 +105,7 @@ const Input = ({
       className={`input__container${
         isValidated && !inputState.isValid ? " invalid" : ""
       }`}
+      style={style}
     >
       {element}
       {label && <label htmlFor={id}>{label}</label>}
