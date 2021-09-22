@@ -1,6 +1,5 @@
 .upload-node {
-  width: 95%;
-  margin-top: 1rem;
+  width: 100%;
 }
 
 .upload-node__body {
@@ -8,9 +7,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-top: 1rem;
   font-weight: 500;
   border-radius: 10px;
-  background-color: var(--bg-tertiary);
 }
 
 .upload-node__body > svg {
@@ -22,15 +21,14 @@
 .upload-node__title {
   display: flex;
   align-items: center;
-  max-width: calc(100% - 7rem);
+  max-width: 100%;
   width: max-content;
   height: 5.5rem;
-  margin: 0 5rem 0 2rem;
   text-overflow: ellipsis;
   word-break: normal;
   overflow: hidden;
   cursor: pointer;
-  transition: all 200ms ease-out;
+  /* transition: all 200ms ease-out; */
 }
 
 .upload-node__title:hover {
@@ -38,12 +36,13 @@
 }
 
 .upload-node__title.parent {
-  max-width: calc(100% - 10rem);
-  transform: translateX(3rem);
+  max-width: calc(100% - 8rem);
+  transform: translateX(5rem);
 }
 
-.upload-node__extended {
+.upload-node__content {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   padding: 0 2rem 1rem 2rem;
   gap: 2rem;
@@ -144,13 +143,9 @@
 }
 
 .upload-node__children {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  top: 100%;
-  width: 100%;
 }
 
-.upload-node__children.hide {
-  display: none;
+.upload-node.active > .upload-node__children {
+  width: 95%;
+  margin-left: auto;
 }

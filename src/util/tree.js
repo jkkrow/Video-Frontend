@@ -20,6 +20,8 @@ export const findByChildId = (tree, id) => {
   let currentNode = tree.root;
   const queue = [];
 
+  queue.push(currentNode);
+
   while (queue.length) {
     currentNode = queue.shift();
 

@@ -152,6 +152,16 @@ export const attachVideo = (file, nodeId, treeId) => {
   };
 };
 
+export const updateActiveNode = (nodeId) => {
+  return (dispatch) => {
+    dispatch(
+      uploadActions.updateActiveNode({
+        nodeId,
+      })
+    );
+  };
+};
+
 export const updateNode = (info, nodeId) => {
   return (dispatch) => {
     dispatch(

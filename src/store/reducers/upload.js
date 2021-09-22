@@ -8,6 +8,7 @@ const uploadSlice = createSlice({
   initialState: {
     uploadTree: {},
     previewTree: {},
+    activeId: "",
   },
   reducers: {
     initiateUpload: (state) => {
@@ -20,6 +21,8 @@ const uploadSlice = createSlice({
 
       state.uploadTree.root = newNode;
       state.previewTree.root = newNode;
+
+      state.activeId = newNode.id;
     },
 
     appendChild: (state, { payload }) => {
@@ -35,6 +38,10 @@ const uploadSlice = createSlice({
 
       uploadNode.children.push(newNode);
       previewNode.children.push(newNode);
+    },
+
+    updateActiveNode: (state, { payload }) => {
+      state.activeId = payload.nodeId;
     },
 
     setUploadNode: (state, { payload }) => {
