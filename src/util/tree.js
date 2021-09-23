@@ -35,8 +35,8 @@ export const findByChildId = (tree, id) => {
   return null;
 };
 
-export const traverseTree = (tree) => {
-  let currentNode = tree.root;
+export const traverseTree = (root) => {
+  let currentNode = root;
   const queue = [];
   const allNodes = [];
 
@@ -52,4 +52,18 @@ export const traverseTree = (tree) => {
   }
 
   return allNodes;
+};
+
+export const validateTree = (root, key, value, bool = true) => {
+  const nodes = traverseTree(root);
+
+  let isValid;
+
+  if (bool) {
+    isValid = nodes.find((node) => node[key] === value);
+  } else {
+    isValid = nodes.find((node) => node[key] !== value);
+  }
+
+  return !!isValid;
 };

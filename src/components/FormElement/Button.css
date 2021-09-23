@@ -8,7 +8,7 @@
   color: var(--text-inversed);
   background-color: var(--bg-inversed);
   overflow: hidden;
-  transition: opacity 200ms ease-out;
+  transition: all 200ms ease-out;
 }
 
 .button:hover {
@@ -30,11 +30,15 @@
 }
 
 .button.invalid {
-  background-color: red;
+  color: var(--text-primary);
+  background-color: #a50000;
 }
 
 .button.invalid:disabled,
 .button.invalid:hover:disabled,
 .button.invalid:active:disabled {
-  background-color: #830000;
+  background-color: #8d0000;
+  color: #777777;
+  cursor: not-allowed;
+  opacity: 1;
 }

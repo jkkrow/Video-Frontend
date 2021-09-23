@@ -16,6 +16,12 @@ const Modal = ({
   onConfirm,
   onClose,
 }) => {
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    onConfirm();
+  };
+
   return createPortal(
     <>
       <CSSTransition
@@ -28,17 +34,19 @@ const Modal = ({
         <form
           className={`modal__container${className ? " " + className : ""}`}
           style={style}
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={submitHandler}
         >
           <h3 className="modal__header">{header}</h3>
           <div className="modal__content">{content}</div>
           <div className="modal__footer">
             {footer && (
-              <Button onClick={onConfirm} loading={loading} disabled={disabled}>
+              <Button loading={loading} disabled={disabled}>
                 {footer}
               </Button>
             )}
-            <Button onClick={onClose}>{footer ? "CANCEL" : "OK"}</Button>
+            <Button type="button" onClick={onClose}>
+              {footer ? "CANCEL" : "OK"}
+            </Button>
           </div>
         </form>
       </CSSTransition>

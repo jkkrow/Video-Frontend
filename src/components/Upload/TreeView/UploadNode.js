@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import DragDrop from "components/FormElement/DragDrop";
+import Modal from "components/UI/Modal";
+import Tooltip from "components/UI/Tooltip";
 import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
 import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
 import { ReactComponent as AngleLeftIcon } from "assets/icons/angle-left.svg";
@@ -12,12 +15,15 @@ import {
   updateNode,
   removeNode,
 } from "store/actions/upload";
+import { validateTree } from "util/tree";
 import "./UploadNode.css";
 
 const UploadNode = ({ currentNode, previousNode, treeId }) => {
   const dispatch = useDispatch();
 
   const { activeId } = useSelector((state) => state.upload);
+
+  const [displayModal, setDisplayModal] = useState(false);
 
   const activeNodeHandler = (id) => {
     dispatch(updateActiveNode(id));
@@ -28,11 +34,21 @@ const UploadNode = ({ currentNode, previousNode, treeId }) => {
   };
 
   const removeNodeHandler = () => {
+    if (!displayModal) {
+      const isNotEmpty = validateTree(currentNode, "info", null, false);
+
+      if (isNotEmpty) return setDisplayModal(true);
+    }
+
     dispatch(removeNode(currentNode.id));
 
     if (currentNode.id === activeId) {
       dispatch(updateActiveNode(previousNode.id));
     }
+  };
+
+  const closeWarningHandler = () => {
+    setDisplayModal(false);
   };
 
   const onFileHandler = (file) => {
@@ -47,6 +63,14 @@ const UploadNode = ({ currentNode, previousNode, treeId }) => {
     <div
       className={`upload-node${currentNode.id === activeId ? " active" : ""}`}
     >
+      <Modal
+        on={displayModal}
+        header="Remove Video"
+        content="This will remove all videos appended to it. Are you sure to proceed?"
+        footer="REMOVE"
+        onConfirm={removeNodeHandler}
+        onClose={closeWarningHandler}
+      />
       {(currentNode.id === activeId || previousNode?.id === activeId) && (
         <div
           className="upload-node__body"
@@ -59,9 +83,12 @@ const UploadNode = ({ currentNode, previousNode, treeId }) => {
             <div className="upload-node__content">
               <div
                 className={`upload-node__title${
-                  currentNode.id === activeId && previousNode ? " parent" : ""
+                  currentNode.id === activeId ? " parent" : ""
                 }`}
-                onClick={() => activeNodeHandler(currentNode.id)}
+                onClick={() =>
+                  currentNode.id !== activeId &&
+                  activeNodeHandler(currentNode.id)
+                }
               >
                 {currentNode.info.name}
               </div>
@@ -82,7 +109,6 @@ const UploadNode = ({ currentNode, previousNode, treeId }) => {
                     type="number"
                     readOnly
                     value={currentNode.info.timelineStart || 0}
-                    data-description="Mark timeline with button below Video Player."
                   />
                   to
                   <input
@@ -105,7 +131,7 @@ const UploadNode = ({ currentNode, previousNode, treeId }) => {
           {currentNode.id !== treeId && (
             <RemoveIcon
               style={{
-                top: "1.55rem",
+                top: "2rem",
                 left: "-4rem",
                 width: "2.4rem",
                 height: "2.4rem",
@@ -114,21 +140,33 @@ const UploadNode = ({ currentNode, previousNode, treeId }) => {
             />
           )}
           {currentNode.children.length < 4 && currentNode.id === activeId && (
-            <PlusIcon
-              style={{ top: "2rem", right: "2rem" }}
-              onClick={addChildHandler}
+            <Tooltip
+              style={{ position: "absolute", top: "2.5rem", right: "2rem" }}
+              text="Append next video"
+              direction="top"
+            >
+              <PlusIcon onClick={addChildHandler} style={{ width: "100%" }} />
+            </Tooltip>
+          )}
+          {currentNode.id === treeId && (
+            <Tooltip
+              style={{ position: "absolute", top: "2rem", left: "2rem" }}
+              text="This is first video"
+              direction="top"
+            >
+              <strong>ROOT</strong>
+            </Tooltip>
+          )}
+          {currentNode.id === activeId && currentNode.id !== treeId && (
+            <DoubleAngleLeftIcon
+              style={{ top: "2.5rem", left: "2rem" }}
+              onClick={() => activeNodeHandler(treeId)}
             />
           )}
           {currentNode.id === activeId && previousNode && (
             <AngleLeftIcon
-              style={{ top: "2rem", left: "4rem" }}
+              style={{ top: "2.5rem", left: "4.5rem" }}
               onClick={() => activeNodeHandler(previousNode.id)}
-            />
-          )}
-          {currentNode.id === activeId && currentNode.id !== treeId && (
-            <DoubleAngleLeftIcon
-              style={{ top: "2rem", left: "2rem" }}
-              onClick={() => activeNodeHandler(treeId)}
             />
           )}
         </div>

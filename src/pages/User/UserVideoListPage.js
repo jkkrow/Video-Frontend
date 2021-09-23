@@ -120,7 +120,7 @@ const UserVideoListPage = ({ history }) => {
             />
           </>
         }
-        footer="Delete"
+        footer="DELETE"
         loading={false}
         disabled={!formState.isValid}
         onConfirm={deleteHandler}
