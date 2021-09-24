@@ -4,7 +4,7 @@ const videoSlice = createSlice({
   name: "video",
   initialState: {
     videoTree: {},
-    activeVideo: null,
+    activeId: "",
     videoVolume: 1,
   },
   reducers: {
@@ -13,7 +13,7 @@ const videoSlice = createSlice({
     },
 
     updateActiveVideo: (state, { payload }) => {
-      state.activeVideo = payload.activeVideo;
+      state.activeId = payload.activeId;
     },
 
     updateVideoVolume: (state, { payload }) => {

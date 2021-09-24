@@ -7,7 +7,7 @@ import { ReactComponent as MarkerIcon } from "assets/icons/marker.svg";
 import Tooltip from "components/UI/Tooltip";
 
 const Navigation = ({
-  activeVideo,
+  activeId,
   videoTree,
   onRestart,
   onPrev,
@@ -17,14 +17,14 @@ const Navigation = ({
   <div className="vp-navigation">
     <Tooltip text="Return to first video" direction="bottom">
       <DoubleAngleLeftIcon
-        className={activeVideo.id === videoTree.root.id ? "disabled" : ""}
-        onClick={activeVideo.id !== videoTree.root.id ? onRestart : null}
+        className={activeId === videoTree.root.id ? "disabled" : ""}
+        onClick={activeId !== videoTree.root.id ? onRestart : null}
       />
     </Tooltip>
     <Tooltip text="Back to previous video" direction="bottom">
       <AngleLeftIcon
-        className={activeVideo.id === videoTree.root.id ? "disabled" : ""}
-        onClick={activeVideo.id !== videoTree.root.id ? onPrev : null}
+        className={activeId === videoTree.root.id ? "disabled" : ""}
+        onClick={activeId !== videoTree.root.id ? onPrev : null}
       />
     </Tooltip>
     <Tooltip text="Skip to next video" direction="bottom">

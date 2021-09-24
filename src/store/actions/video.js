@@ -10,11 +10,11 @@ export const setVideoTree = (tree) => {
   };
 };
 
-export const updateActiveVideo = (video) => {
+export const updateActiveVideo = (id) => {
   return (dispatch) => {
     dispatch(
       videoActions.updateActiveVideo({
-        activeVideo: video,
+        activeId: id,
       })
     );
   };

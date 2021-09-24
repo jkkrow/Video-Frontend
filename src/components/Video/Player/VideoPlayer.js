@@ -32,7 +32,7 @@ const VideoPlayer = ({
 }) => {
   const dispatch = useDispatch();
 
-  const { videoTree, activeVideo, videoVolume } = useSelector(
+  const { videoTree, activeId, videoVolume } = useSelector(
     (state) => state.video
   );
 
@@ -165,9 +165,9 @@ const VideoPlayer = ({
     if (currentVideo.children.length === 0) return;
 
     if (selectedNextVideo) {
-      dispatch(updateActiveVideo(selectedNextVideo));
+      dispatch(updateActiveVideo(selectedNextVideo.id));
     } else {
-      dispatch(updateActiveVideo(currentVideo.children[0]));
+      dispatch(updateActiveVideo(currentVideo.children[0].id));
     }
   }, [dispatch, currentVideo.children, selectedNextVideo]);
 
@@ -453,11 +453,11 @@ const VideoPlayer = ({
    */
 
   const restartVideoTreeHandler = useCallback(() => {
-    dispatch(updateActiveVideo(videoTree.root));
+    dispatch(updateActiveVideo(videoTree.root.id));
   }, [dispatch, videoTree.root]);
 
   const navigateToPreviousVideoHandler = useCallback(() => {
-    dispatch(updateActiveVideo(previousVideo));
+    dispatch(updateActiveVideo(previousVideo.id));
   }, [dispatch, previousVideo]);
 
   const navigateToSelectorTimelineHandler = useCallback(() => {
@@ -667,7 +667,7 @@ const VideoPlayer = ({
 
         {editMode && (
           <Navigation
-            activeVideo={activeVideo}
+            activeId={activeId}
             videoTree={videoTree}
             onRestart={restartVideoTreeHandler}
             onPrev={navigateToPreviousVideoHandler}

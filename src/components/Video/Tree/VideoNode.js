@@ -4,17 +4,16 @@ import VideoPlayer from "../Player/VideoPlayer";
 import "./VideoNode.css";
 
 const VideoNode = ({ currentVideo, autoPlay, editMode, previousVideo }) => {
-  const { activeVideo } = useSelector((state) => state.video);
+  const { activeId } = useSelector((state) => state.video);
 
   return (
     <>
-      {(currentVideo.id === activeVideo.id ||
-        previousVideo?.id === activeVideo.id) && (
+      {(currentVideo.id === activeId || previousVideo?.id === activeId) && (
         <VideoPlayer
           currentVideo={currentVideo}
           autoPlay={autoPlay}
           editMode={editMode}
-          active={activeVideo.id === currentVideo.id}
+          active={activeId === currentVideo.id}
           previousVideo={previousVideo}
         />
       )}

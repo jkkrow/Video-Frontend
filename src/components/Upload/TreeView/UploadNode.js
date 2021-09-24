@@ -148,7 +148,7 @@ const UploadNode = ({ currentNode, previousNode, treeId }) => {
               <PlusIcon onClick={addChildHandler} style={{ width: "100%" }} />
             </Tooltip>
           )}
-          {currentNode.id === treeId && (
+          {currentNode.id === treeId && currentNode.info && (
             <Tooltip
               style={{ position: "absolute", top: "2rem", left: "2rem" }}
               text="This is first video"
