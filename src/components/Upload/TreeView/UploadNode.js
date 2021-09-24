@@ -22,6 +22,7 @@ const UploadNode = ({ currentNode, previousNode, treeId }) => {
   const dispatch = useDispatch();
 
   const { activeId } = useSelector((state) => state.upload);
+  const { accessToken } = useSelector((state) => state.auth);
 
   const [displayModal, setDisplayModal] = useState(false);
 
@@ -52,7 +53,7 @@ const UploadNode = ({ currentNode, previousNode, treeId }) => {
   };
 
   const onFileHandler = (file) => {
-    dispatch(attachVideo(file, currentNode.id, treeId));
+    dispatch(attachVideo(file, currentNode.id, treeId, accessToken));
   };
 
   const labelChangeHandler = (event) => {
